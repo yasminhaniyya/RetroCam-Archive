@@ -1,37 +1,37 @@
 /**
  * RetroCam Archive - Visual Design System
- * Theme: Modern Vintage Dark Industrial (CCD Nostalgia & Analog Optics)
+ * Theme: Clean Modern-Vintage White (Catalog & Retro Elegance)
  */
 
 :root {
-  --bg-primary: #121316;
-  --bg-surface: #1a1c23;
-  --bg-surface-elevated: #232630;
-  --bg-glass: rgba(26, 28, 35, 0.85);
+  --bg-primary: #f8f9fa;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #f1f3f6;
+  --bg-glass: rgba(255, 255, 255, 0.92);
   
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-medium: rgba(255, 255, 255, 0.14);
-  --border-accent: rgba(224, 122, 95, 0.35);
+  --border-subtle: #e5e7eb;
+  --border-medium: #d1d5db;
+  --border-accent: rgba(200, 90, 50, 0.25);
 
-  --accent-terracotta: #e07a5f;
-  --accent-amber: #f4a261;
-  --accent-gold: #e9c46a;
-  --accent-sage: #81b29a;
-  --accent-teal: #2a9d8f;
-  --accent-crimson: #e63946;
+  --accent-terracotta: #c85a32;
+  --accent-amber: #d97706;
+  --accent-gold: #b45309;
+  --accent-sage: #2d6a4f;
+  --accent-teal: #0f766e;
+  --accent-crimson: #be123c;
 
-  --text-primary: #f5f5f7;
-  --text-secondary: #a0a4b8;
-  --text-muted: #6c7084;
-  --text-inverted: #121316;
+  --text-primary: #191c21;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --text-inverted: #ffffff;
 
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-serif: 'Playfair Display', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
 
   --radius-sm: 8px;
   --radius-md: 14px;
@@ -80,17 +80,18 @@ button, input, select {
 }
 
 /* ==========================================================================
-   Header (App Bar)
+   Header (App Bar) - Clean Frosted White
    ========================================================================== */
 .app-header {
   position: sticky;
   top: 0;
   z-index: 900;
   height: var(--header-height);
-  background: rgba(18, 19, 22, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border-subtle);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
 }
 
 .header-container {
@@ -118,13 +119,13 @@ button, input, select {
   width: 40px;
   height: 40px;
   border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, var(--bg-surface-elevated), #2c2f3c);
+  background: linear-gradient(135deg, #ffffff, #f1f3f6);
   border: 1px solid var(--border-medium);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--accent-terracotta);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-sm);
 }
 
 .brand-text {
@@ -136,7 +137,7 @@ button, input, select {
   font-size: 1.15rem;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: #111827;
 }
 
 .brand-title em {
@@ -173,15 +174,15 @@ button, input, select {
 }
 
 .status-pill.online {
-  background: rgba(42, 157, 143, 0.15);
-  color: #48cae4;
-  border-color: rgba(42, 157, 143, 0.3);
+  background: rgba(45, 106, 79, 0.1);
+  color: #2d6a4f;
+  border-color: rgba(45, 106, 79, 0.25);
 }
 
 .status-pill.offline {
-  background: rgba(224, 122, 95, 0.15);
+  background: rgba(200, 90, 50, 0.1);
   color: var(--accent-terracotta);
-  border-color: rgba(224, 122, 95, 0.3);
+  border-color: rgba(200, 90, 50, 0.25);
 }
 
 .status-dot {
@@ -189,7 +190,6 @@ button, input, select {
   height: 7px;
   border-radius: 50%;
   background: currentColor;
-  box-shadow: 0 0 8px currentColor;
 }
 
 .header-install-btn {
@@ -226,35 +226,35 @@ button, input, select {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--accent-terracotta);
-  background: rgba(224, 122, 95, 0.12);
+  background: rgba(200, 90, 50, 0.1);
   padding: 0.3rem 0.75rem;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(224, 122, 95, 0.25);
+  border: 1px solid rgba(200, 90, 50, 0.25);
   margin-bottom: 0.6rem;
 }
 
 .badge-amber {
   color: var(--accent-amber);
-  background: rgba(244, 162, 97, 0.12);
-  border-color: rgba(244, 162, 97, 0.25);
+  background: rgba(217, 119, 6, 0.1);
+  border-color: rgba(217, 119, 6, 0.25);
 }
 
 .badge-rose {
-  color: #ff758f;
-  background: rgba(255, 117, 143, 0.12);
-  border-color: rgba(255, 117, 143, 0.25);
+  color: var(--accent-crimson);
+  background: rgba(190, 18, 60, 0.1);
+  border-color: rgba(190, 18, 60, 0.25);
 }
 
 .badge-teal {
   color: var(--accent-teal);
-  background: rgba(42, 157, 143, 0.12);
-  border-color: rgba(42, 157, 143, 0.25);
+  background: rgba(15, 118, 110, 0.1);
+  border-color: rgba(15, 118, 110, 0.25);
 }
 
 .badge-gold {
   color: var(--accent-gold);
-  background: rgba(233, 196, 106, 0.12);
-  border-color: rgba(233, 196, 106, 0.25);
+  background: rgba(180, 83, 9, 0.1);
+  border-color: rgba(180, 83, 9, 0.25);
 }
 
 .badge-dot {
@@ -268,7 +268,7 @@ button, input, select {
   font-size: 1.85rem;
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: #ffffff;
+  color: #111827;
   margin-bottom: 0.4rem;
   line-height: 1.25;
 }
@@ -315,7 +315,7 @@ button, input, select {
 
 .input-search {
   width: 100%;
-  background: var(--bg-primary);
+  background: #ffffff;
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-sm);
   padding: 0.75rem 2.5rem 0.75rem 2.8rem;
@@ -327,7 +327,7 @@ button, input, select {
 
 .input-search:focus {
   border-color: var(--accent-terracotta);
-  box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.15);
+  box-shadow: 0 0 0 3px rgba(200, 90, 50, 0.15);
 }
 
 .btn-clear {
@@ -389,13 +389,14 @@ button, input, select {
 .chip:hover {
   border-color: var(--border-medium);
   color: var(--text-primary);
+  background: #e9ecef;
 }
 
 .chip.active {
   background: var(--accent-terracotta);
   border-color: var(--accent-terracotta);
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(224, 122, 95, 0.35);
+  box-shadow: 0 2px 8px rgba(200, 90, 50, 0.25);
 }
 
 .filter-meta-row {
@@ -418,7 +419,7 @@ button, input, select {
 }
 
 .custom-select {
-  background: var(--bg-primary);
+  background: #ffffff;
   border: 1px solid var(--border-medium);
   color: var(--text-primary);
   font-size: 0.82rem;
@@ -464,12 +465,11 @@ button, input, select {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #48cae4;
-  box-shadow: 0 0 6px #48cae4;
+  background: #0f766e;
 }
 
 /* ==========================================================================
-   Cards Grid & Card Layout
+   Cards Grid & Card Layout - Pure White Cards
    ========================================================================== */
 .cards-grid {
   display: grid;
@@ -499,6 +499,7 @@ button, input, select {
   transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   cursor: pointer;
   position: relative;
+  box-shadow: var(--shadow-sm);
 }
 
 .card-interactive:hover {
@@ -511,7 +512,7 @@ button, input, select {
   position: relative;
   width: 100%;
   height: 200px;
-  background: #14161b;
+  background: #f1f3f6;
   overflow: hidden;
 }
 
@@ -530,20 +531,21 @@ button, input, select {
   position: absolute;
   top: 0.75rem;
   left: 0.75rem;
-  background: rgba(18, 19, 22, 0.85);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: var(--accent-amber);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: var(--accent-terracotta);
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 0.25rem 0.6rem;
   border-radius: var(--radius-sm);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .badge-tag-lens {
-  color: #81b29a;
+  color: var(--accent-sage);
 }
 
 .btn-fav-toggle {
@@ -553,29 +555,30 @@ button, input, select {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(18, 19, 22, 0.75);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: transform 0.2s, background 0.2s;
   z-index: 5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btn-fav-toggle:hover {
   transform: scale(1.15);
-  background: rgba(18, 19, 22, 0.95);
+  background: #ffffff;
 }
 
 .btn-fav-toggle.is-favorited {
-  background: rgba(224, 122, 95, 0.25);
+  background: #ffffff;
   border-color: var(--accent-terracotta);
 }
 
 .card-body {
-  padding: 1rem 1.15rem 1.15rem;
+  padding: 1.1rem 1.15rem 1.15rem;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -605,7 +608,7 @@ button, input, select {
 .card-title {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #111827;
   margin-bottom: 0.4rem;
   line-height: 1.3;
 }
@@ -718,7 +721,7 @@ button, input, select {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: var(--bg-surface);
+  background: #ffffff;
   border: 1px solid var(--border-medium);
   color: var(--text-primary);
   font-size: 0.85rem;
@@ -727,6 +730,7 @@ button, input, select {
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-back:hover {
@@ -772,7 +776,7 @@ button, input, select {
   height: 280px;
   border-radius: var(--radius-md);
   overflow: hidden;
-  background: #14161b;
+  background: #f1f3f6;
   border: 1px solid var(--border-subtle);
 }
 
@@ -791,7 +795,7 @@ button, input, select {
 }
 
 .badge-accent {
-  background: rgba(224, 122, 95, 0.9);
+  background: var(--accent-terracotta);
   color: #ffffff;
   font-size: 0.72rem;
   font-weight: 700;
@@ -800,13 +804,15 @@ button, input, select {
 }
 
 .badge-year {
-  background: rgba(18, 19, 22, 0.85);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(8px);
-  color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #111827;
   font-size: 0.72rem;
   font-weight: 600;
   padding: 0.25rem 0.6rem;
   border-radius: var(--radius-sm);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
 }
 
 .detail-hero-info {
@@ -827,7 +833,7 @@ button, input, select {
   font-size: 1.75rem;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: #111827;
   margin-bottom: 0.6rem;
   line-height: 1.25;
 }
@@ -865,7 +871,7 @@ button, input, select {
 .qs-value {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #111827;
 }
 
 .highlight-gold {
@@ -884,7 +890,7 @@ button, input, select {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: var(--bg-surface-elevated);
+  background: #ffffff;
   border: 1px solid var(--border-medium);
   color: var(--text-primary);
   font-size: 0.88rem;
@@ -893,10 +899,11 @@ button, input, select {
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-fav:hover {
-  background: rgba(224, 122, 95, 0.15);
+  background: rgba(200, 90, 50, 0.08);
   border-color: var(--accent-terracotta);
   color: var(--accent-terracotta);
 }
@@ -913,7 +920,7 @@ button, input, select {
   padding: 0.7rem 1.25rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(224, 122, 95, 0.4);
+  box-shadow: 0 4px 12px rgba(200, 90, 50, 0.3);
 }
 
 .market-price-pill {
@@ -957,7 +964,7 @@ button, input, select {
 .info-card-header h3 {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #111827;
 }
 
 .subtitle-small {
@@ -966,8 +973,8 @@ button, input, select {
 }
 
 .tone-card {
-  background: linear-gradient(135deg, rgba(224, 122, 95, 0.12), rgba(26, 28, 35, 0.95));
-  border-color: rgba(224, 122, 95, 0.3);
+  background: linear-gradient(135deg, rgba(200, 90, 50, 0.08), #ffffff);
+  border-color: rgba(200, 90, 50, 0.25);
 }
 
 .tone-card-body p {
@@ -1126,8 +1133,8 @@ button, input, select {
 .segment-btn.active {
   background: var(--bg-surface-elevated);
   border-color: var(--border-medium);
-  color: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  color: #111827;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .empty-state {
@@ -1147,7 +1154,7 @@ button, input, select {
 .empty-state h3 {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #111827;
   margin-bottom: 0.5rem;
 }
 
@@ -1194,7 +1201,7 @@ button, input, select {
 .guide-title {
   font-size: 1.35rem;
   font-weight: 800;
-  color: #ffffff;
+  color: #111827;
   margin-bottom: 0.4rem;
   line-height: 1.3;
 }
@@ -1211,7 +1218,7 @@ button, input, select {
   border-radius: var(--radius-sm);
   overflow: hidden;
   margin-bottom: 1.2rem;
-  background: #14161b;
+  background: #f1f3f6;
 }
 
 .guide-cover-img {
@@ -1234,7 +1241,7 @@ button, input, select {
 }
 
 .guide-content-body strong {
-  color: #ffffff;
+  color: #111827;
 }
 
 .guide-footer {
@@ -1244,13 +1251,13 @@ button, input, select {
 }
 
 /* ==========================================================================
-   Profile & About View (Ketentuan 5)
+   Profile & About View
    ========================================================================== */
 .profile-hero-card {
   margin-bottom: 1.5rem;
   padding: 1.75rem;
-  border: 1px solid rgba(233, 196, 106, 0.25);
-  background: linear-gradient(135deg, rgba(233, 196, 106, 0.08), rgba(26, 28, 35, 0.95));
+  border: 1px solid rgba(180, 83, 9, 0.2);
+  background: linear-gradient(135deg, rgba(233, 196, 106, 0.12), #ffffff);
 }
 
 .profile-layout {
@@ -1282,7 +1289,7 @@ button, input, select {
   border-radius: 50%;
   padding: 3px;
   background: linear-gradient(135deg, var(--accent-gold), var(--accent-terracotta));
-  box-shadow: 0 4px 16px rgba(233, 196, 106, 0.25);
+  box-shadow: 0 4px 16px rgba(180, 83, 9, 0.18);
 }
 
 .profile-avatar-img {
@@ -1290,7 +1297,7 @@ button, input, select {
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  background: var(--bg-surface);
+  background: #f1f3f6;
 }
 
 .avatar-badge-tag {
@@ -1317,7 +1324,7 @@ button, input, select {
 .profile-name {
   font-size: 1.6rem;
   font-weight: 800;
-  color: #ffffff;
+  color: #111827;
   margin-bottom: 0.75rem;
   letter-spacing: -0.02em;
 }
@@ -1380,7 +1387,7 @@ button, input, select {
 }
 
 .form-input {
-  background: var(--bg-primary);
+  background: #ffffff;
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-sm);
   padding: 0.65rem 0.85rem;
@@ -1438,9 +1445,9 @@ button, input, select {
   gap: 0.4rem;
 }
 
-.text-success { color: #52b788; }
+.text-success { color: #2d6a4f; }
 .text-warning { color: var(--accent-amber); }
-.text-info { color: #48cae4; }
+.text-info { color: #0f766e; }
 
 .dot-status {
   width: 7px;
@@ -1450,12 +1457,12 @@ button, input, select {
 }
 
 .dot-online {
-  box-shadow: 0 0 6px #52b788;
+  box-shadow: 0 0 6px #2d6a4f;
 }
 
 .pwa-install-banner {
-  background: linear-gradient(135deg, rgba(42, 157, 143, 0.15), var(--bg-surface-elevated));
-  border: 1px solid rgba(42, 157, 143, 0.3);
+  background: linear-gradient(135deg, rgba(15, 118, 110, 0.08), #ffffff);
+  border: 1px solid rgba(15, 118, 110, 0.25);
   border-radius: var(--radius-sm);
   padding: 1.25rem;
   display: flex;
@@ -1468,7 +1475,7 @@ button, input, select {
 .install-info h4 {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #111827;
   margin-bottom: 0.25rem;
 }
 
@@ -1499,7 +1506,7 @@ button, input, select {
   font-size: 0.7rem;
   font-weight: 800;
   text-transform: uppercase;
-  background: rgba(224, 122, 95, 0.2);
+  background: rgba(200, 90, 50, 0.12);
   color: var(--accent-terracotta);
   padding: 0.2rem 0.55rem;
   border-radius: var(--radius-sm);
@@ -1508,7 +1515,7 @@ button, input, select {
 
 .comp-content strong {
   font-size: 0.88rem;
-  color: #ffffff;
+  color: #111827;
   display: block;
   margin-bottom: 0.2rem;
 }
@@ -1520,7 +1527,8 @@ button, input, select {
 
 .comp-content code {
   font-family: var(--font-mono);
-  background: var(--bg-primary);
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
   padding: 0.15rem 0.35rem;
   border-radius: 4px;
   color: var(--accent-gold);
@@ -1535,25 +1543,27 @@ button, input, select {
 }
 
 .api-viewer-box {
-  background: var(--bg-primary);
+  background: #1e293b;
   border: 1px solid var(--border-medium);
   border-radius: var(--radius-sm);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .api-viewer-header {
-  background: #191b22;
+  background: #0f172a;
   padding: 0.5rem 0.85rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 0.75rem;
   font-family: var(--font-mono);
+  color: #94a3b8;
 }
 
 .badge-status-ok {
-  color: #52b788;
+  color: #4ade80;
   font-weight: 700;
 }
 
@@ -1562,7 +1572,7 @@ button, input, select {
 }
 
 .badge-status-err {
-  color: var(--accent-crimson);
+  color: #f87171;
 }
 
 .api-json-code {
@@ -1570,7 +1580,7 @@ button, input, select {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   line-height: 1.5;
-  color: #c9d1d9;
+  color: #e2e8f0;
   max-height: 280px;
   overflow: auto;
   white-space: pre-wrap;
@@ -1578,7 +1588,7 @@ button, input, select {
 }
 
 /* ==========================================================================
-   Bottom Navigation Bar (Memenuhi Ketentuan 2)
+   Bottom Navigation Bar (Memenuhi Ketentuan 2) - Clean Light Frosted Bar
    ========================================================================== */
 .bottom-navigation-bar {
   position: fixed;
@@ -1586,10 +1596,11 @@ button, input, select {
   left: 0;
   right: 0;
   height: var(--bottom-nav-height);
-  background: rgba(18, 19, 22, 0.94);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-top: 1px solid var(--border-medium);
+  border-top: 1px solid var(--border-subtle);
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.04);
   z-index: 1000;
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -1637,7 +1648,7 @@ button, input, select {
 }
 
 .bottom-nav-item:hover {
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 .bottom-nav-item.active {
@@ -1649,7 +1660,7 @@ button, input, select {
 }
 
 .bottom-nav-item.active .nav-label {
-  color: #ffffff;
+  color: var(--accent-terracotta);
   font-weight: 700;
 }
 
@@ -1662,7 +1673,7 @@ button, input, select {
   height: 4px;
   border-radius: 50%;
   background: var(--accent-terracotta);
-  box-shadow: 0 0 6px var(--accent-terracotta);
+  box-shadow: 0 0 5px rgba(200, 90, 50, 0.5);
 }
 
 .nav-badge-count {
@@ -1681,7 +1692,7 @@ button, input, select {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid var(--bg-primary);
+  border: 2px solid #ffffff;
 }
 
 /* ==========================================================================
@@ -1708,18 +1719,19 @@ button, input, select {
 }
 
 .btn-primary:hover {
-  background: #d4684d;
-  box-shadow: 0 4px 14px rgba(224, 122, 95, 0.4);
+  background: #b24d27;
+  box-shadow: 0 4px 14px rgba(200, 90, 50, 0.25);
 }
 
 .btn-secondary {
-  background: var(--bg-surface-elevated);
+  background: #ffffff;
   border-color: var(--border-medium);
   color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-secondary:hover {
-  background: #2b2e3b;
+  background: var(--bg-surface-elevated);
   border-color: var(--text-secondary);
 }
 
@@ -1736,11 +1748,11 @@ button, input, select {
 
 .btn-accent {
   background: var(--accent-amber);
-  color: #121316;
+  color: #ffffff;
 }
 
 .btn-accent:hover {
-  background: #f19246;
+  background: #b45309;
 }
 
 .btn-sm {
@@ -1762,13 +1774,12 @@ button, input, select {
 
 .toast {
   pointer-events: auto;
-  background: rgba(26, 28, 35, 0.95);
-  backdrop-filter: blur(12px);
+  background: #ffffff;
   border: 1px solid var(--border-medium);
   border-left: 4px solid var(--accent-terracotta);
   border-radius: var(--radius-sm);
   padding: 0.75rem 1rem;
-  color: #ffffff;
+  color: #111827;
   font-size: 0.85rem;
   font-weight: 600;
   display: flex;
@@ -1827,7 +1838,7 @@ button, input, select {
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
+  border: 3px solid rgba(0, 0, 0, 0.08);
   border-top-color: var(--accent-terracotta);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
