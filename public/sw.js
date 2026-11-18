@@ -3,7 +3,7 @@
  * Provides offline-first caching for static assets & stale-while-revalidate for API
  */
 
-const CACHE_NAME = 'retrocam-v1.1.0';
+const CACHE_NAME = 'retrocam-v3.0.0';
 
 // Assets to pre-cache on service worker installation
 const PRECACHE_ASSETS = [
@@ -104,43 +104,53 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 2. Handling Static Assets (HTML, CSS, JS, Images): Cache-First with Network Fallback
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        // Return from cache, but fetch in background to update cache (stale-while-revalidate)
-        fetch(event.request)
-          .then((networkResponse) => {
-            if (networkResponse && networkResponse.status === 200) {
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(event.request, networkResponse);
-              });
-            }
-          })
-          .catch(() => {
-            /* Ignore background fetch error when offline */
-          });
-        return cachedResponse;
-      }
-
-      // Not in cache, fetch from network
-      return fetch(event.request)
+  // 2. Handling JS, CSS, and HTML: Network-First with Cache Fallback
+  // Ensures code updates are immediately visible on refresh
+  if (
+    event.request.mode === 'navigate' ||
+    requestUrl.pathname.endsWith('.js') ||
+    requestUrl.pathname.endsWith('.css') ||
+    requestUrl.pathname.endsWith('.html') ||
+    requestUrl.pathname === '/'
+  ) {
+    event.respondWith(
+      fetch(event.request)
         .then((networkResponse) => {
-          if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-            return networkResponse;
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
           }
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
           return networkResponse;
         })
-        .catch(() => {
-          // If navigation request fails, return cached index.html
+        .catch(async () => {
+          const cached = await caches.match(event.request);
+          if (cached) return cached;
           if (event.request.mode === 'navigate') {
             return caches.match('/index.html');
           }
+        })
+    );
+    return;
+  }
+
+  // 3. Handling Static Media & Images: Cache-First with Network Fallback
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+      return fetch(event.request).then((networkResponse) => {
+        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+          return networkResponse;
+        }
+        const responseToCache = networkResponse.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseToCache);
         });
+        return networkResponse;
+      });
     })
   );
 });

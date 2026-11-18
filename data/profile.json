@@ -40,15 +40,6 @@
       "description": "Penyimpanan lokal untuk menyimpan kamera dan lensa favorit pengguna secara persisten meski aplikasi ditutup."
     }
   ],
-  "requirementsMet": [
-    "Menggunakan API (Web Service) yang dibuat sendiri sesuai dengan Modul 1",
-    "Memiliki Bottom Navigation Bar responsif (5 navigasi utama)",
-    "Memiliki minimal 5 halaman (Aplikasi memiliki 7 tampilan: Kamera, Detail Kamera, Lensa, Detail Lensa, Koleksi, Panduan, Profil)",
-    "Minimal terdapat 2 halaman utama yang memiliki list dan setiap item dapat diklik untuk menampilkan halaman detail (List Kamera -> Detail Kamera & List Lensa -> Detail Lensa)",
-    "Memiliki 1 halaman Profile/About aplikasi lengkap",
-    "Mendukung instalasi PWA dan kemampuan offline berkat Service Worker",
-    "Dapat di-deploy pada platform hosting gratis seperti Vercel, Netlify, atau Render"
-  ],
   "apiDocumentation": {
     "baseUrl": "/api",
     "endpoints": [

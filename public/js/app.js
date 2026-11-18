@@ -40,6 +40,7 @@ const App = {
         navigator.serviceWorker.register('/sw.js')
           .then((reg) => {
             console.log('[Service Worker] Registered with scope:', reg.scope);
+            reg.update();
           })
           .catch((err) => {
             console.warn('[Service Worker] Registration failed:', err.message);
