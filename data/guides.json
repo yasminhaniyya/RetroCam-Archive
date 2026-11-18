@@ -1,0 +1,45 @@
+[
+  {
+    "id": "guide-01",
+    "title": "CCD vs CMOS: Mengapa Kamera Digicam 2000-an Kembali Viral?",
+    "category": "Sensor Tech",
+    "readingTime": "4 menit baca",
+    "coverUrl": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80",
+    "summary": "Analisis mendalam mengapa sensor CCD era awal 2000-an menghasilkan tone warna yang dinilai lebih mirip film daripada sensor CMOS modern.",
+    "content": [
+      "Banyak fotografer muda dan kreator konten heran mengapa kamera digital saku jadul tahun 2001-2008 (yang sering disebut 'digicam') kini kembali diburu hingga harganya melambung tinggi. Salah satu alasan teknis terbesarnya adalah jenis sensor yang digunakan: **Charge-Coupled Device (CCD)**.",
+      "**1. Perbedaan Mendasar CCD vs CMOS**\nSensor CCD memproses foton cahaya secara serentak (global shutter read) dan memindahkan muatan listrik melalui satu konverter analog-ke-digital tunggal. Sementara sensor CMOS modern memiliki transistor amplifier di setiap piksel individual. Perbedaan sirkuit ini membuat CCD memiliki respons warna yang sangat linear dan filter warna (Color Filter Array) yang tebal, menghasilkan saturasi warna primer yang pekat dan rendering warna kulit hangat alami tanpa perataan digital berlebih.",
+      "**2. Karakteristik Highlight Roll-off dan Noise**\nSensor CMOS modern dirancang untuk rentang dinamis (dynamic range) setinggi mungkin, seringkali menghasilkan foto yang terlalu 'sempurna' dan klinis. Sebaliknya, CCD era 2000-an memiliki highlight roll-off yang lembut dan noise di ISO tinggi yang berupa butiran monokromatik acak (grain), bukan bercak artefak digital berwarna (chrominance blotches).",
+      "**3. Sentuhan Nostalgia Y2K**\nKombinasi sensor CCD dengan lampu kilat (direct pop-up flash) menghasilkan estetika snapshot candid pesta awal milenium yang tidak dapat ditiru oleh filter smartphone buatan software."
+    ]
+  },
+  {
+    "id": "guide-02",
+    "title": "Panduan Memilih Adaptor Lensa Manual Vintage untuk Mirrorless",
+    "category": "Adapter Guide",
+    "readingTime": "5 menit baca",
+    "coverUrl": "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80",
+    "summary": "Cara memasang lensa jadul (M42, Canon FD, Pentax, Leica M) ke kamera Sony E, Fuji X, Nikon Z, atau Micro 4/3 tanpa merusak kamera.",
+    "content": [
+      "Memasang lensa analog tahun 1960-1980 ke kamera mirrorless masa kini adalah salah satu hobi paling memuaskan. Biayanya terjangkau dan Anda mendapatkan karakter optik yang sangat sinematis.",
+      "**1. Memahami Flange Focal Distance (FFD)**\nKamera mirrorless tidak memiliki cermin refleks di depan sensornya, sehingga jarak antara bayonet lensa ke sensor (Flange Distance) sangat pendek (sekitar 16mm - 20mm). Sebaliknya, kamera SLR jadul memiliki FFD panjang (42mm - 45.5mm). Selisih jarak inilah yang diisi oleh adaptor tabung logam tanpa memerlukan elemen kaca tambahan.",
+      "**2. Jenis Mount Vintage Paling Populer:**\n• **M42 (Screw Mount):** Paling universal, ulir 42mm, digunakan oleh Helios, Super-Takumar, Carl Zeiss Jena, Zenit.\n• **Canon FD:** Dudukan bayonet Canon lawas, sangat kaya pilihan lensa prime f/1.4 tajam.\n• **Nikon F (Non-AI/AI):** Dudukan klasik Nikon dari era 1959 hingga era digital.\n• **Olympus OM:** Sangat ringkas, optik Zuiko terkenal tajam dan miniatur.",
+      "**3. Fitur Kamera yang Wajib Diaktifkan:**\nPastikan Anda mengaktifkan opsi **'Shoot without lens'** atau **'Release without lens'** di menu kamera Anda, serta memanfaatkan fitur **Focus Peaking** dan **Focus Magnifier** untuk membantu menentukan titik fokus manual secara presisi."
+    ]
+  },
+  {
+    "id": "guide-03",
+    "title": "Checklist Membeli Kamera Jadul Bekas di Pasar Loak & Marketplace",
+    "category": "Buyer's Guide",
+    "readingTime": "6 menit baca",
+    "coverUrl": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80",
+    "summary": "Langkah-langkah memeriksa sensor mati, lensa jamur, kabel flex error, dan ketersediaan baterai sebelum membayar.",
+    "content": [
+      "Membeli kamera berusia 15-25 tahun memiliki risiko tersendiri. Agar tidak membuang uang untuk membeli 'bangkai kamera', selalu gunakan checklist berikut saat COD atau meminta video uji coba dari penjual:",
+      "**1. Cek Penyakit Sensor CCD (CCD Sensor Failure / Pink Sensor)**\nBeberapa sensor CCD buatan era 2002-2006 (terutama batch Sony CCD) rentan mengalami pelepasan ikatan kawat epoxy dalam sensor, yang menyebabkan foto berubah menjadi bergaris ungu pekat, pink blur, atau gelap total. Mintalah foto langit terang atau dinding putih untuk memastikan sensor bersih dari dead CCD.",
+      "**2. Periksa Mekanisme Lensa Zoom (Lens Error)**\nNyalakan dan matikan kamera berulang kali. Dengarkan apakah motor zoom berbunyi halus atau terdengar gesekan kasar gigi roda plastik yang aus (gears stripped).",
+      "**3. Kompatibilitas Kartu Memori & Baterai**\nBanyak digicam jadul tidak bisa membaca kartu SDHC/SDXC modern di atas 2GB. Perhatikan apakah kamera menggunakan CompactFlash (CF), xD-Picture Card, SmartMedia, atau Memory Stick Duo. Pastikan baterai bawaan tidak kembung atau masih tersedia charger penggantinya.",
+      "**4. Periksa Jamur dan Fogging pada Optik Lensa**\nSorot elemen lensa dari depan dan belakang menggunakan senter smartphone. Hindari lensa yang memiliki bintik jaring laba-laba (jamur optik aktif) atau kabut putih (haze/fogging) karena akan melenyapkan kontras foto."
+    ]
+  }
+]

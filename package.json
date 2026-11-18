@@ -1,0 +1,26 @@
+{
+  "name": "retrocam-archive",
+  "version": "1.0.0",
+  "description": "RetroCam Archive: Katalog Kamera Digital & Lensa Vintage - Tugas Akhir Praktikum Pemrograman Perangkat Bergerak (PWA & Web Service API)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "pwa",
+    "progressive-web-app",
+    "javascript",
+    "retro-cameras",
+    "vintage-lenses",
+    "ccd-sensor",
+    "rest-api",
+    "ppb"
+  ],
+  "author": "Yasmin Haniyya",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

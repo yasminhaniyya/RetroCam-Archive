@@ -1,0 +1,64 @@
+{
+  "appName": "RetroCam Archive",
+  "appSubtitle": "Katalog Kamera Digital & Lensa Vintage",
+  "version": "1.0.0",
+  "academicInfo": {
+    "title": "Tugas Akhir Praktikum Pemrograman Perangkat Bergerak (TA PPB)",
+    "topic": "RetroCam Archive: Katalog Kamera Digital & Lensa",
+    "studentName": "Yasmin Haniyya",
+    "studentNim": "21120121130000",
+    "classGroup": "Shift 1 / Kelompok XX",
+    "studyProgram": "Teknik Komputer / Informatika",
+    "faculty": "Fakultas Teknik",
+    "academicYear": "2024 / 2025"
+  },
+  "appDescription": "RetroCam Archive adalah aplikasi Progressive Web Apps (PWA) berbasis JavaScript modern yang didedikasikan untuk mendokumentasikan kamera digital lawas (khususnya era sensor CCD 2000-an yang legendaris) dan lensa manual vintage. Aplikasi ini memungkinkan pengguna menelusuri katalog, menyaring berdasarkan sensor/mount, melihat spesifikasi teknis mendalam, menyimpan koleksi favorit secara offline, serta mempelajari panduan teknik fotografi retro.",
+  "techStack": [
+    {
+      "name": "JavaScript (Vanilla ES6+)",
+      "badge": "Core Logic",
+      "description": "Menggunakan modular ES6, Fetch API, DOM manipulation dinamis tanpa framework berat untuk performa ultra-cepat."
+    },
+    {
+      "name": "Progressive Web App (PWA)",
+      "badge": "PWA Standard",
+      "description": "Service Worker dengan strategi caching offline-first, Web App Manifest, dapat diinstal (Add to Home Screen) layaknya aplikasi native."
+    },
+    {
+      "name": "RESTful Web Service API",
+      "badge": "Backend Modul 1",
+      "description": "API mandiri dibangun menggunakan Node.js dan Express.js menyediakan endpoint JSON untuk kamera, lensa, panduan, dan data profil."
+    },
+    {
+      "name": "Responsive UI & Bottom Navigation",
+      "badge": "UI/UX Mobile First",
+      "description": "Desain responsif ramah smartphone dan desktop dengan Bottom Navigation Bar, transisi mulus, dan tema vintage industrial elegan."
+    },
+    {
+      "name": "LocalStorage Caching",
+      "badge": "Client Storage",
+      "description": "Penyimpanan lokal untuk menyimpan kamera dan lensa favorit pengguna secara persisten meski aplikasi ditutup."
+    }
+  ],
+  "requirementsMet": [
+    "Menggunakan API (Web Service) yang dibuat sendiri sesuai dengan Modul 1",
+    "Memiliki Bottom Navigation Bar responsif (5 navigasi utama)",
+    "Memiliki minimal 5 halaman (Aplikasi memiliki 7 tampilan: Kamera, Detail Kamera, Lensa, Detail Lensa, Koleksi, Panduan, Profil)",
+    "Minimal terdapat 2 halaman utama yang memiliki list dan setiap item dapat diklik untuk menampilkan halaman detail (List Kamera -> Detail Kamera & List Lensa -> Detail Lensa)",
+    "Memiliki 1 halaman Profile/About aplikasi lengkap",
+    "Mendukung instalasi PWA dan kemampuan offline berkat Service Worker",
+    "Dapat di-deploy pada platform hosting gratis seperti Vercel, Netlify, atau Render"
+  ],
+  "apiDocumentation": {
+    "baseUrl": "/api",
+    "endpoints": [
+      { "method": "GET", "path": "/api/cameras", "desc": "Mengambil seluruh data kamera digital dengan filter search, sensor, brand" },
+      { "method": "GET", "path": "/api/cameras/:id", "desc": "Mengambil detail spesifikasi kamera berdasarkan ID" },
+      { "method": "GET", "path": "/api/lenses", "desc": "Mengambil data lensa manual dengan filter search, mount, brand" },
+      { "method": "GET", "path": "/api/lenses/:id", "desc": "Mengambil detail lensa vintage berdasarkan ID" },
+      { "method": "GET", "path": "/api/guides", "desc": "Mengambil daftar artikel panduan & komparasi sensor CCD vs CMOS" },
+      { "method": "GET", "path": "/api/profile", "desc": "Mengambil data profil mahasiswa dan metadata aplikasi" },
+      { "method": "GET", "path": "/api/stats", "desc": "Mengambil statistik jumlah katalog dan metadata database" }
+    ]
+  }
+}

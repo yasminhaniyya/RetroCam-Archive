@@ -1,0 +1,62 @@
+{
+  "name": "RetroCam Archive: Katalog Kamera Digital & Lensa",
+  "short_name": "RetroCam",
+  "description": "Katalog interaktif kamera digital vintage era CCD 2000-an dan lensa manual klasik untuk pecinta fotografi retro.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#121316",
+  "theme_color": "#1c1d22",
+  "lang": "id-ID",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Katalog Kamera",
+      "short_name": "Kamera",
+      "description": "Buka katalog kamera digital klasik",
+      "url": "/#cameras",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Katalog Lensa",
+      "short_name": "Lensa",
+      "description": "Buka katalog lensa manual vintage",
+      "url": "/#lenses",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Koleksi Saya",
+      "short_name": "Koleksi",
+      "description": "Buka daftar kamera & lensa favorit",
+      "url": "/#favorites",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Profil Mahasiswa",
+      "short_name": "Profil",
+      "description": "Tentang pengembang dan informasi tugas akhir",
+      "url": "/#profile",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
