@@ -79,7 +79,7 @@ const CameraDetailView = {
                 onerror="this.src='/icons/icon-512.png'"
               />
               <div class="detail-img-overlay-badges">
-                <span class="badge-accent">${camera.tag || 'Vintage Icon'}</span>
+                <span class="badge-accent">${camera.category || 'Kamera Digital'}</span>
                 <span class="badge-year">Tahun ${camera.releaseYear}</span>
               </div>
             </div>
@@ -131,10 +131,9 @@ const CameraDetailView = {
         <!-- Color Profile / Film Look Section -->
         <div class="info-card tone-card card-glass">
           <div class="info-card-header">
-            <div class="info-icon">🎨</div>
             <div>
-              <h3>Karakteristik Tonal & Warna Sensor CCD</h3>
-              <p class="subtitle-small">Mengapa kamera ini diburu penggemar tone analog di era sekarang?</p>
+              <h3>Karakteristik Tonal & Warna</h3>
+              <p class="subtitle-small">Karakter visual dan saturasi warna sensor ${camera.sensorType}</p>
             </div>
           </div>
           <div class="tone-card-body">
@@ -145,10 +144,9 @@ const CameraDetailView = {
         <!-- Full Technical Specifications Table -->
         <div class="info-card card-glass">
           <div class="info-card-header">
-            <div class="info-icon">⚙️</div>
             <div>
-              <h3>Spesifikasi Teknis Lengkap</h3>
-              <p class="subtitle-small">Data spesifikasi perangkat keras pabrikan asli</p>
+              <h3>Spesifikasi Teknis</h3>
+              <p class="subtitle-small">Data spesifikasi perangkat keras resmi</p>
             </div>
           </div>
 
@@ -199,10 +197,9 @@ const CameraDetailView = {
         <!-- Description Narrative -->
         <div class="info-card card-glass">
           <div class="info-card-header">
-            <div class="info-icon">📖</div>
             <div>
-              <h3>Latar Belakang & Sejarah Kamera</h3>
-              <p class="subtitle-small">Catatan kuratorial arsip fotografi digital</p>
+              <h3>Deskripsi & Sejarah Produk</h3>
+              <p class="subtitle-small">Catatan kuratorial arsip kamera</p>
             </div>
           </div>
           <div class="narrative-body">
@@ -213,14 +210,14 @@ const CameraDetailView = {
         <!-- Pros & Cons Comparison -->
         <div class="pros-cons-grid">
           <div class="pros-card card-glass">
-            <h4 class="pros-title"><span class="icon-check">✓</span> Kelebihan & Daya Tarik</h4>
+            <h4 class="pros-title">Kelebihan</h4>
             <ul class="pros-list">
               ${camera.pros.map(p => `<li>${p}</li>`).join('')}
             </ul>
           </div>
 
           <div class="cons-card card-glass">
-            <h4 class="cons-title"><span class="icon-warning">!</span> Catatan & Keterbatasan</h4>
+            <h4 class="cons-title">Catatan Penggunaan</h4>
             <ul class="cons-list">
               ${camera.cons.map(c => `<li>${c}</li>`).join('')}
             </ul>

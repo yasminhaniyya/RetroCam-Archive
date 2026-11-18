@@ -40,6 +40,7 @@ const ApiService = {
   async getCameras(filters = {}) {
     const params = new URLSearchParams();
     if (filters.search) params.append('search', filters.search);
+    if (filters.category && filters.category !== 'all') params.append('category', filters.category);
     if (filters.sensor && filters.sensor !== 'all') params.append('sensor', filters.sensor);
     if (filters.brand && filters.brand !== 'all') params.append('brand', filters.brand);
     if (filters.sort) params.append('sort', filters.sort);
@@ -138,6 +139,9 @@ const ApiService = {
     if (filters.search) {
       const q = filters.search.toLowerCase();
       list = list.filter(c => c.name.toLowerCase().includes(q) || c.brand.toLowerCase().includes(q));
+    }
+    if (filters.category && filters.category !== 'all') {
+      list = list.filter(c => (c.category || '').toLowerCase().includes(filters.category.toLowerCase()));
     }
     if (filters.sensor && filters.sensor !== 'all') {
       list = list.filter(c => c.sensorType.toLowerCase().includes(filters.sensor.toLowerCase()));

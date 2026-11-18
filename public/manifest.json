@@ -35,28 +35,48 @@
       "short_name": "Kamera",
       "description": "Buka katalog kamera digital klasik",
       "url": "/#cameras",
-      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Katalog Lensa",
       "short_name": "Lensa",
       "description": "Buka katalog lensa manual vintage",
       "url": "/#lenses",
-      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Koleksi Saya",
       "short_name": "Koleksi",
       "description": "Buka daftar kamera & lensa favorit",
       "url": "/#favorites",
-      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Profil Mahasiswa",
       "short_name": "Profil",
       "description": "Tentang pengembang dan informasi tugas akhir",
       "url": "/#profile",
-      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }

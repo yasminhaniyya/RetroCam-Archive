@@ -6,7 +6,7 @@
     "releaseYear": 2001,
     "sensorType": "CCD",
     "sensorSize": "1/1.8 inch (7.18 x 5.32 mm)",
-    "megapixels": 4.0,
+    "megapixels": 4,
     "maxResolution": "2272 x 1704",
     "lens": "Canon 7.0 - 21.0mm f/2.0 - 2.5 (34 - 102mm equiv)",
     "zoom": "3x Optical Zoom",
@@ -33,7 +33,8 @@
       "Autofokus lambat di kondisi pencahayaan rendah",
       "Ukuran bodi cukup tebal dan berat dibanding saku modern",
       "ISO maksimal hanya 400"
-    ]
+    ],
+    "category": "Kamera prosumer"
   },
   {
     "id": "cam-02",
@@ -69,7 +70,8 @@
       "Menggunakan format kartu memori langka (xD-Picture Card)",
       "Tidak ada mode Aperture/Shutter priority penuh (semi-manual)",
       "Lensa f/2.8 meredup ke f/5.0 di ujung tele"
-    ]
+    ],
+    "category": "Kamera saku"
   },
   {
     "id": "cam-03",
@@ -105,7 +107,8 @@
       "Menggunakan media simpan khusus Sony Memory Stick Pro Duo",
       "Layar LCD 2.0 inch tergolong kecil",
       "Noise tampak jelas jika memotret di ISO 400"
-    ]
+    ],
+    "category": "Kamera saku"
   },
   {
     "id": "cam-04",
@@ -141,7 +144,8 @@
       "Bodi cukup berat untuk ukuran kamera saku",
       "Navigasi menu tergolong kompleks untuk pemula",
       "Kecepatan penulisan file RAW cukup lambat"
-    ]
+    ],
+    "category": "Kamera prosumer"
   },
   {
     "id": "cam-05",
@@ -177,7 +181,8 @@
       "Resolusi 3.34 MP terbilang rendah untuk crop besar",
       "Ukuran bodi cukup panjang saat lensa sejajar",
       "LCD 1.8 inch kurang terlihat jelas di bawah sinar matahari langsung"
-    ]
+    ],
+    "category": "Kamera prosumer"
   },
   {
     "id": "cam-06",
@@ -198,7 +203,7 @@
     "weight": "560 g",
     "estimatedPriceIdr": "Rp 15.000.000 - Rp 25.000.000",
     "tag": "Holy Grail Rangefinder",
-    "rating": 5.0,
+    "rating": 5,
     "imageUrl": "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=800&q=80",
     "summary": "Kamera rangefinder digital pertama di dunia dengan indikator speedometer analog Seiko dan kokangan shutter manual.",
     "description": "Epson R-D1 adalah mahakarya hasil kolaborasi Epson dan Cosina (Voigtlander). Dirilis sebelum Leica M8, kamera ini menyandang gelar kamera digital rangefinder pertama di dunia. Fitur paling magis adalah gauge indikator analog buatan produsen jam Seiko yang menampilkan sisa baterai, frame, dan white balance dengan jarum mekanis, serta tuas kokang manual untuk me-reset shutter elektronis.",
@@ -213,7 +218,8 @@
       "Harga di pasar barang antik sangat tinggi (kolektor item)",
       "Hanya mendukung kartu SD lama (maksimal 2GB non-SDHC)",
       "Tidak ada fitur autofocus sama sekali"
-    ]
+    ],
+    "category": "Kamera rangefinder"
   },
   {
     "id": "cam-07",
@@ -249,7 +255,8 @@
       "Lensa fixed 28mm (tidak bisa zoom bagi yang terbiasa zoom)",
       "Noise warna kentara di ISO 400 ke atas pada foto berwarna",
       "Layar LCD cepat menguras baterai"
-    ]
+    ],
+    "category": "Kamera saku"
   },
   {
     "id": "cam-08",
@@ -258,7 +265,7 @@
     "releaseYear": 2004,
     "sensorType": "CCD",
     "sensorSize": "2/3 inch (8.8 x 6.6 mm)",
-    "megapixels": 5.0,
+    "megapixels": 5,
     "maxResolution": "2560 x 1920",
     "lens": "Leica DC Vario-Summicron 7.0 - 22.5mm f/2.0 - 2.4 (28 - 90mm equiv)",
     "zoom": "3.2x Optical Zoom",
@@ -285,7 +292,8 @@
       "EVF (Electronic Viewfinder) resolusi rendah khas teknologi 2004",
       "Ukuran bodi cukup besar menyerupai rangefinder berat",
       "Waktu simpan file RAW lambat (sekitar 5-6 detik per foto)"
-    ]
+    ],
+    "category": "Kamera prosumer"
   },
   {
     "id": "cam-09",
@@ -294,7 +302,7 @@
     "releaseYear": 2003,
     "sensorType": "CCD",
     "sensorSize": "1/2.5 inch",
-    "megapixels": 4.0,
+    "megapixels": 4,
     "maxResolution": "2304 x 1728",
     "lens": "Schneider-Kreuznach Variogon 38 - 380mm equiv f/2.8 - 3.7",
     "zoom": "10x Optical Superzoom",
@@ -321,7 +329,8 @@
       "Tidak ada image stabilizer optis pada zoom 380mm",
       "Format penyimpanan SD hanya mendukung kapasitas di bawah 2GB",
       "Noise terlihat jelas pada ISO 400"
-    ]
+    ],
+    "category": "Kamera prosumer"
   },
   {
     "id": "cam-10",
@@ -357,6 +366,7 @@
       "Layar LCD sangat mini (1.6 inch)",
       "Kapasitas baterai terbatas karena ukuran bodi yang ekstra tipis",
       "Kontrol manual sangat minim (hampir sepenuhnya otomatis)"
-    ]
+    ],
+    "category": "Kamera saku"
   }
 ]

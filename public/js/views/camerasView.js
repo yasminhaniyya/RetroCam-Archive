@@ -1,5 +1,6 @@
 /**
  * RetroCam Archive - Cameras List View (Halaman 1)
+ * Desain Katalog Otentik (Gaya Neokyo / Map Camera)
  */
 
 const CamerasView = {
@@ -8,26 +9,41 @@ const CamerasView = {
     loading: true,
     error: null,
     search: '',
-    sensor: 'all',
+    categoryTab: 'type', // 'type' | 'brand'
+    category: 'all',
     brand: 'all',
+    sensor: 'all',
     sort: 'year-desc'
   },
+
+  // Category definitions with clean photo thumbnails
+  categoryTypes: [
+    { id: 'all', name: 'Semua jenis', img: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=300&q=80' },
+    { id: 'Kamera saku', name: 'Kamera saku', img: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80' },
+    { id: 'Kamera prosumer', name: 'Kamera prosumer', img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=300&q=80' },
+    { id: 'Kamera rangefinder', name: 'Rangefinder digital', img: 'https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=300&q=80' }
+  ],
+
+  categoryBrands: [
+    { id: 'all', name: 'Semua merek', img: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=300&q=80' },
+    { id: 'Canon', name: 'Canon', img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=300&q=80' },
+    { id: 'Fujifilm', name: 'Fujifilm', img: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80' },
+    { id: 'Sony', name: 'Sony', img: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=300&q=80' },
+    { id: 'Nikon', name: 'Nikon', img: 'https://images.unsplash.com/photo-1495707902641-75cac588d2e9?auto=format&fit=crop&w=300&q=80' },
+    { id: 'Olympus', name: 'Olympus', img: 'https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?auto=format&fit=crop&w=300&q=80' },
+    { id: 'Leica', name: 'Leica', img: 'https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?auto=format&fit=crop&w=300&q=80' },
+    { id: 'Ricoh', name: 'Ricoh', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80' },
+    { id: 'Pentax', name: 'Pentax', img: 'https://images.unsplash.com/photo-1452780212940-6f5c0d14d848?auto=format&fit=crop&w=300&q=80' },
+    { id: 'Kodak', name: 'Kodak', img: 'https://images.unsplash.com/photo-1516724562728-afc824a36e84?auto=format&fit=crop&w=300&q=80' }
+  ],
 
   async render() {
     return `
       <section class="page-container page-cameras animate-fade-in">
-        <!-- Hero Header -->
-        <header class="section-hero">
-          <div class="hero-badge"><span class="badge-dot"></span> Era Sensor CCD 2000-an</div>
-          <h1 class="hero-title">Katalog Kamera Digital Klasik</h1>
-          <p class="hero-subtitle">
-            Eksplorasi kamera saku dan prosumer legendaris dengan karakter warna hangat, highlight filmis, dan nostalgia estetika awal milenium.
-          </p>
-        </header>
 
-        <!-- Search & Filter Controls -->
-        <div class="filter-panel card-glass">
-          <div class="search-box">
+        <!-- Search Bar (Top Clean Marketplace Search) -->
+        <div class="catalog-top-search">
+          <div class="search-input-wrapper">
             <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -35,67 +51,108 @@ const CamerasView = {
             <input 
               type="text" 
               id="camera-search-input" 
-              class="input-search" 
-              placeholder="Cari kamera (misal: G2, FinePix, CCD, Canon)..." 
+              class="input-catalog-search" 
+              placeholder="Cari kamera berdasarkan nama, seri, atau merek..." 
               value="${this.state.search}"
             />
             ${this.state.search ? `<button id="btn-clear-camera-search" class="btn-clear">&times;</button>` : ''}
           </div>
+        </div>
 
-          <!-- Brand Chips -->
-          <div class="filter-row">
-            <span class="filter-label">Merek:</span>
-            <div class="chips-scroll" id="brand-chips">
-              ${['all', 'Canon', 'Fujifilm', 'Sony', 'Olympus', 'Nikon', 'Ricoh', 'Leica', 'Pentax', 'Kodak'].map(b => `
-                <button class="chip ${this.state.brand.toLowerCase() === b.toLowerCase() ? 'active' : ''}" data-brand="${b}">
-                  ${b === 'all' ? 'Semua Merek' : b}
-                </button>
-              `).join('')}
-            </div>
+        <!-- Section Kategori (Sesuai Contoh Gambar Neokyo) -->
+        <div class="neokyo-category-section">
+          <h2 class="neokyo-category-title">Kategori</h2>
+
+          <div class="neokyo-category-tabs">
+            <button 
+              class="neokyo-tab-btn ${this.state.categoryTab === 'type' ? 'active' : ''}" 
+              id="tab-cat-type" 
+              data-tab="type"
+            >
+              Berdasarkan jenis kamera
+            </button>
+            <button 
+              class="neokyo-tab-btn ${this.state.categoryTab === 'brand' ? 'active' : ''}" 
+              id="tab-cat-brand" 
+              data-tab="brand"
+            >
+              Berdasarkan merek
+            </button>
           </div>
 
-          <!-- Sensor & Sort Row -->
-          <div class="filter-meta-row">
-            <div class="select-group">
+          <!-- Circular items row -->
+          <div class="neokyo-category-grid" id="neokyo-category-items">
+            ${this.renderCategoryCircles()}
+          </div>
+        </div>
+
+        <!-- Catalog Toolbar: Filter Sensor & Sorting -->
+        <div class="catalog-toolbar">
+          <div class="toolbar-left">
+            <span class="toolbar-result-count" id="camera-results-count">
+              Memuat katalog kamera...
+            </span>
+          </div>
+
+          <div class="toolbar-right">
+            <div class="toolbar-select-wrap">
               <label for="sensor-select">Sensor:</label>
-              <select id="sensor-select" class="custom-select">
-                <option value="all" ${this.state.sensor === 'all' ? 'selected' : ''}>Semua Tipe Sensor</option>
+              <select id="sensor-select" class="clean-select">
+                <option value="all" ${this.state.sensor === 'all' ? 'selected' : ''}>Semua Sensor</option>
                 <option value="CCD" ${this.state.sensor === 'CCD' ? 'selected' : ''}>Standard CCD</option>
-                <option value="Super CCD" ${this.state.sensor === 'Super CCD' ? 'selected' : ''}>Fujifilm Super CCD</option>
+                <option value="Super CCD" ${this.state.sensor === 'Super CCD' ? 'selected' : ''}>Super CCD</option>
               </select>
             </div>
 
-            <div class="select-group">
-              <label for="sort-select">Urutkan:</label>
-              <select id="sort-select" class="custom-select">
+            <div class="toolbar-select-wrap">
+              <label for="sort-select">Urutan:</label>
+              <select id="sort-select" class="clean-select">
                 <option value="year-desc" ${this.state.sort === 'year-desc' ? 'selected' : ''}>Tahun Terbaru</option>
                 <option value="year-asc" ${this.state.sort === 'year-asc' ? 'selected' : ''}>Tahun Terlama</option>
                 <option value="mp-desc" ${this.state.sort === 'mp-desc' ? 'selected' : ''}>Megapixel Tertinggi</option>
-                <option value="rating-desc" ${this.state.sort === 'rating-desc' ? 'selected' : ''}>Rating Tertinggi</option>
               </select>
             </div>
           </div>
         </div>
 
-        <!-- Result Status Counter -->
-        <div class="list-meta-header">
-          <div class="results-count" id="camera-results-count">
-            Memuat arsip kamera...
-          </div>
-          <div class="api-source-badge">
-            <span class="dot-live"></span> Web Service Modul 1
+        <!-- Product Cards Grid (Clean Store / Archive Style) -->
+        <div id="camera-cards-grid" class="clean-products-grid">
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Memuat daftar kamera...</p>
           </div>
         </div>
 
-        <!-- Camera Cards Grid -->
-        <div id="camera-cards-grid" class="cards-grid">
-          <div class="loading-state">
-            <div class="spinner"></div>
-            <p>Mengambil data dari API REST Web Service...</p>
-          </div>
-        </div>
       </section>
     `;
+  },
+
+  renderCategoryCircles() {
+    if (this.state.categoryTab === 'type') {
+      return this.categoryTypes.map(item => {
+        const isActive = (this.state.category === item.id) || (item.id === 'all' && this.state.category === 'all');
+        return `
+          <div class="neokyo-circle-item ${isActive ? 'active' : ''}" data-cat-type="${item.id}">
+            <div class="neokyo-circle-thumb">
+              <img src="${item.img}" alt="${item.name}" loading="lazy" />
+            </div>
+            <span class="neokyo-circle-label">${item.name}</span>
+          </div>
+        `;
+      }).join('');
+    } else {
+      return this.categoryBrands.map(item => {
+        const isActive = (this.state.brand === item.id) || (item.id === 'all' && this.state.brand === 'all');
+        return `
+          <div class="neokyo-circle-item ${isActive ? 'active' : ''}" data-cat-brand="${item.id}">
+            <div class="neokyo-circle-thumb">
+              <img src="${item.img}" alt="${item.name}" loading="lazy" />
+            </div>
+            <span class="neokyo-circle-label">${item.name}</span>
+          </div>
+        `;
+      }).join('');
+    }
   },
 
   async afterRender() {
@@ -104,6 +161,7 @@ const CamerasView = {
   },
 
   bindEvents() {
+    // Search
     const searchInput = document.getElementById('camera-search-input');
     if (searchInput) {
       let debounceTimer;
@@ -126,16 +184,40 @@ const CamerasView = {
       });
     }
 
-    const brandChips = document.querySelectorAll('#brand-chips .chip');
-    brandChips.forEach(chip => {
-      chip.addEventListener('click', () => {
-        brandChips.forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        this.state.brand = chip.getAttribute('data-brand');
+    // Category Tabs: "Berdasarkan jenis kamera" vs "Berdasarkan merek"
+    const tabTypeBtn = document.getElementById('tab-cat-type');
+    const tabBrandBtn = document.getElementById('tab-cat-brand');
+    const catContainer = document.getElementById('neokyo-category-items');
+
+    if (tabTypeBtn && tabBrandBtn) {
+      tabTypeBtn.addEventListener('click', () => {
+        tabTypeBtn.classList.add('active');
+        tabBrandBtn.classList.remove('active');
+        this.state.categoryTab = 'type';
+        this.state.brand = 'all'; // reset brand filter
+        if (catContainer) {
+          catContainer.innerHTML = this.renderCategoryCircles();
+          this.bindCategoryCircleClicks();
+        }
         this.loadData();
       });
-    });
 
+      tabBrandBtn.addEventListener('click', () => {
+        tabBrandBtn.classList.add('active');
+        tabTypeBtn.classList.remove('active');
+        this.state.categoryTab = 'brand';
+        this.state.category = 'all'; // reset type filter
+        if (catContainer) {
+          catContainer.innerHTML = this.renderCategoryCircles();
+          this.bindCategoryCircleClicks();
+        }
+        this.loadData();
+      });
+    }
+
+    this.bindCategoryCircleClicks();
+
+    // Toolbar select
     const sensorSelect = document.getElementById('sensor-select');
     if (sensorSelect) {
       sensorSelect.addEventListener('change', (e) => {
@@ -153,6 +235,25 @@ const CamerasView = {
     }
   },
 
+  bindCategoryCircleClicks() {
+    const items = document.querySelectorAll('.neokyo-circle-item');
+    items.forEach(item => {
+      item.addEventListener('click', () => {
+        items.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+
+        if (this.state.categoryTab === 'type') {
+          const type = item.getAttribute('data-cat-type');
+          this.state.category = type;
+        } else {
+          const brand = item.getAttribute('data-cat-brand');
+          this.state.brand = brand;
+        }
+        this.loadData();
+      });
+    });
+  },
+
   async loadData() {
     const grid = document.getElementById('camera-cards-grid');
     const counter = document.getElementById('camera-results-count');
@@ -161,101 +262,96 @@ const CamerasView = {
     grid.innerHTML = `
       <div class="loading-state">
         <div class="spinner"></div>
-        <p>Memuat kamera digital...</p>
+        <p>Memuat katalog...</p>
       </div>
     `;
 
     try {
       const cameras = await ApiService.getCameras({
         search: this.state.search,
-        sensor: this.state.sensor,
+        category: this.state.category,
         brand: this.state.brand,
+        sensor: this.state.sensor,
         sort: this.state.sort
       });
 
       this.state.cameras = cameras;
 
       if (counter) {
-        counter.innerHTML = `Menampilkan <strong>${cameras.length}</strong> kamera retro`;
+        counter.innerHTML = `Menampilkan <strong>${cameras.length}</strong> produk`;
       }
 
       if (!cameras || cameras.length === 0) {
         grid.innerHTML = `
-          <div class="empty-state card-glass">
-            <div class="empty-icon">📷</div>
-            <h3>Kamera Tidak Ditemukan</h3>
-            <p>Tidak ada kamera yang cocok dengan kata kunci atau filter yang dipilih.</p>
-            <button class="btn btn-primary" id="btn-reset-camera-filter">Reset Filter</button>
+          <div class="empty-state-clean col-span-full">
+            <p>Tidak ada kamera yang sesuai dengan pilihan kategori.</p>
+            <button class="btn-clean-reset" id="btn-reset-cat">Tampilkan Semua Kamera</button>
           </div>
         `;
-        const resetBtn = document.getElementById('btn-reset-camera-filter');
+        const resetBtn = document.getElementById('btn-reset-cat');
         if (resetBtn) {
           resetBtn.addEventListener('click', () => {
             this.state.search = '';
+            this.state.category = 'all';
             this.state.brand = 'all';
             this.state.sensor = 'all';
-            const input = document.getElementById('camera-search-input');
-            if (input) input.value = '';
+            const catContainer = document.getElementById('neokyo-category-items');
+            if (catContainer) {
+              catContainer.innerHTML = this.renderCategoryCircles();
+              this.bindCategoryCircleClicks();
+            }
             this.loadData();
           });
         }
         return;
       }
 
+      // Render Clean, Realistic Store Product Cards
       grid.innerHTML = cameras.map(cam => {
         const isFav = StorageService.isCameraFavorite(cam.id);
         return `
-          <article class="camera-card card-interactive" data-id="${cam.id}">
-            <div class="card-media-wrapper">
+          <article class="clean-product-card" data-id="${cam.id}">
+            <div class="card-thumb-box">
               <img 
                 src="${cam.imageUrl}" 
                 alt="${cam.name}" 
-                class="card-img" 
+                class="card-thumb-img" 
                 loading="lazy"
                 onerror="this.src='/icons/icon-512.png'"
               />
-              <span class="card-badge-tag">${cam.tag || 'Vintage'}</span>
               <button 
-                class="btn-fav-toggle ${isFav ? 'is-favorited' : ''}" 
+                class="card-wishlist-btn ${isFav ? 'is-active' : ''}" 
                 data-fav-id="${cam.id}" 
                 title="${isFav ? 'Hapus dari favorit' : 'Simpan ke favorit'}"
               >
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="${isFav ? 'var(--accent-terracotta)' : 'none'}" stroke="${isFav ? 'var(--accent-terracotta)' : '#374151'}" stroke-width="2">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="${isFav ? '#c85a32' : 'none'}" stroke="${isFav ? '#c85a32' : '#6b7280'}" stroke-width="2">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                 </svg>
               </button>
             </div>
 
-            <div class="card-body">
-              <div class="card-meta-top">
-                <span class="camera-brand">${cam.brand}</span>
-                <span class="camera-year">${cam.releaseYear}</span>
+            <div class="card-detail-box">
+              <div class="card-brand-row">
+                <span class="card-brand-label">${cam.brand}</span>
+                <span class="card-year-label">${cam.releaseYear}</span>
               </div>
               
-              <h2 class="card-title">${cam.name}</h2>
-              <p class="card-summary">${cam.summary}</p>
+              <h3 class="card-product-name">${cam.name}</h3>
 
-              <div class="spec-pill-group">
-                <span class="spec-pill sensor-pill">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
-                  </svg>
-                  ${cam.sensorType}
-                </span>
-                <span class="spec-pill mp-pill">${cam.megapixels} MP</span>
-                <span class="spec-pill rating-pill">★ ${cam.rating}</span>
+              <div class="card-specs-line">
+                <span>${cam.megapixels} MP</span>
+                <span class="sep">&middot;</span>
+                <span>${cam.sensorType}</span>
+                <span class="sep">&middot;</span>
+                <span>${cam.category || 'Kamera saku'}</span>
               </div>
 
-              <div class="card-footer">
-                <div class="price-estimate">
-                  <span class="price-label">Perkiraan Pasar:</span>
-                  <span class="price-value">${cam.estimatedPriceIdr}</span>
+              <div class="card-price-row">
+                <div class="price-box">
+                  <span class="price-title">Estimasi Pasar</span>
+                  <span class="price-amount">${cam.estimatedPriceIdr}</span>
                 </div>
-                <div class="card-arrow-btn" title="Buka Detail">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </div>
+                <span class="view-detail-text">Detail &rarr;</span>
               </div>
             </div>
           </article>
@@ -263,33 +359,30 @@ const CamerasView = {
       }).join('');
 
       // Attach Card Clicks to Detail Navigation (Ketentuan 4)
-      grid.querySelectorAll('.camera-card').forEach(card => {
+      grid.querySelectorAll('.clean-product-card').forEach(card => {
         card.addEventListener('click', (e) => {
-          // If clicked the favorite heart button, don't open detail
-          if (e.target.closest('.btn-fav-toggle')) {
-            return;
-          }
+          if (e.target.closest('.card-wishlist-btn')) return;
           const id = card.getAttribute('data-id');
           window.location.hash = `#camera/${id}`;
         });
       });
 
       // Attach Favorite Toggle Buttons
-      grid.querySelectorAll('.btn-fav-toggle').forEach(btn => {
+      grid.querySelectorAll('.card-wishlist-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           const id = btn.getAttribute('data-fav-id');
           const cam = this.state.cameras.find(c => c.id === id);
           if (cam) {
             const isAdded = StorageService.toggleFavoriteCamera(cam);
-            btn.classList.toggle('is-favorited', isAdded);
+            btn.classList.toggle('is-active', isAdded);
             const svg = btn.querySelector('svg');
             if (svg) {
               svg.setAttribute('fill', isAdded ? '#c85a32' : 'none');
-              svg.setAttribute('stroke', isAdded ? '#c85a32' : '#374151');
+              svg.setAttribute('stroke', isAdded ? '#c85a32' : '#6b7280');
             }
             if (window.App && window.App.showToast) {
-              window.App.showToast(isAdded ? `📷 Ditambahkan ke Favorit: ${cam.name}` : `Dihapus dari Favorit: ${cam.name}`);
+              window.App.showToast(isAdded ? `Ditambahkan ke Favorit: ${cam.name}` : `Dihapus dari Favorit: ${cam.name}`);
             }
           }
         });
@@ -297,9 +390,9 @@ const CamerasView = {
 
     } catch (err) {
       grid.innerHTML = `
-        <div class="error-state card-glass">
-          <p>Gagal memuat data kamera: ${err.message}</p>
-          <button class="btn btn-primary" onclick="CamerasView.loadData()">Coba Lagi</button>
+        <div class="empty-state-clean col-span-full">
+          <p>Gagal memuat data: ${err.message}</p>
+          <button class="btn-clean-reset" onclick="CamerasView.loadData()">Coba Lagi</button>
         </div>
       `;
     }

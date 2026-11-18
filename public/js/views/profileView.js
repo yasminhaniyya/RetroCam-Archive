@@ -182,72 +182,18 @@ const ProfileView = {
           </div>
         </div>
 
-        <!-- Application Overview & Academic Requirements Compliance -->
+        <!-- About RetroCam Archive -->
         <div class="info-card card-glass">
           <div class="info-card-header">
-            <div class="info-icon">📋</div>
             <div>
-              <h3>Ketentuan Tugas Akhir PPB yang Terpenuhi</h3>
-              <p class="subtitle-small">Seluruh 7 butir persyaratan tugas akhir telah diimplementasikan penuh</p>
+              <h3>Tentang RetroCam Archive</h3>
+              <p class="subtitle-small">Proyek kurasi kamera digital klasik era CCD dan lensa vintage</p>
             </div>
           </div>
-
-          <div class="compliance-list">
-            <div class="compliance-item">
-              <span class="comp-badge">Syarat 1</span>
-              <div class="comp-content">
-                <strong>Menggunakan API (Web Service) yang dibuat sendiri sesuai dengan Modul 1</strong>
-                <p>Menggunakan Express REST API dengan endpoint <code>/api/cameras</code>, <code>/api/lenses</code>, <code>/api/profile</code>, <code>/api/stats</code> yang menyajikan data secara mandiri.</p>
-              </div>
-            </div>
-
-            <div class="compliance-item">
-              <span class="comp-badge">Syarat 2</span>
-              <div class="comp-content">
-                <strong>Memiliki Bottom Navigation Bar</strong>
-                <p>Tersedia Bottom Navigation Bar responsif di bagian bawah layar dengan 5 navigasi utama (Kamera, Lensa, Koleksi, Panduan, Profil) dengan active indicator.</p>
-              </div>
-            </div>
-
-            <div class="compliance-item">
-              <span class="comp-badge">Syarat 3</span>
-              <div class="comp-content">
-                <strong>Memiliki minimal 5 halaman</strong>
-                <p>Aplikasi memiliki 7 halaman fungsional: 1. Katalog Kamera, 2. Detail Kamera, 3. Katalog Lensa, 4. Detail Lensa, 5. Koleksi/Favorit, 6. Panduan & Tips, 7. Profil/About.</p>
-              </div>
-            </div>
-
-            <div class="compliance-item">
-              <span class="comp-badge">Syarat 4</span>
-              <div class="comp-content">
-                <strong>Minimal 2 halaman utama yang memiliki list dan setiap item dapat diklik ke detail</strong>
-                <p>Halaman List Kamera & List Lensa dapat diklik setiap itemnya untuk membuka halaman detail lengkap dengan spesifikasi teknis dan tombol simpan favorit.</p>
-              </div>
-            </div>
-
-            <div class="compliance-item">
-              <span class="comp-badge">Syarat 5</span>
-              <div class="comp-content">
-                <strong>Memiliki 1 halaman Profile/About aplikasi</strong>
-                <p>Halaman ini menyajikan profil praktikan, informasi tugas akhir, identitas aplikasi, dan status PWA secara transparan.</p>
-              </div>
-            </div>
-
-            <div class="compliance-item">
-              <span class="comp-badge">Syarat 6 & 7</span>
-              <div class="comp-content">
-                <strong>Source Code di GitHub & Judul Unik</strong>
-                <p>Judul terverifikasi: <em>"RetroCam Archive: Katalog Kamera Digital & Lensa"</em>, siap diunggah ke repository GitHub dengan panduan deploy lengkap.</p>
-              </div>
-            </div>
-
-            <div class="compliance-item">
-              <span class="comp-badge">Khusus PWA</span>
-              <div class="comp-content">
-                <strong>Deploy menggunakan Free Hosting</strong>
-                <p>Telah dikonfigurasi dengan file <code>vercel.json</code> untuk deploy 1-klik gratis di Vercel, serta kompatibel dengan Netlify dan Render.</p>
-              </div>
-            </div>
+          <div class="narrative-body">
+            <p>
+              RetroCam Archive adalah platform arsip interaktif yang mengkurasi kamera digital klasik—khususnya era sensor CCD awal tahun 2000-an—dan lensa manual legendaris. Dilengkapi spesifikasi teknis mendalam, karakter optik, panduan adaptor, dan kemampuan akses offline berbasis Progressive Web Apps (PWA).
+            </p>
           </div>
         </div>
 

@@ -79,7 +79,7 @@ const LensDetailView = {
                 onerror="this.src='/icons/icon-512.png'"
               />
               <div class="detail-img-overlay-badges">
-                <span class="badge-accent badge-amber">${lens.tag || 'Vintage Glass'}</span>
+                <span class="badge-accent">${lens.mount}</span>
                 <span class="badge-year">Tahun ${lens.releaseYear}</span>
               </div>
             </div>
@@ -131,10 +131,9 @@ const LensDetailView = {
         <!-- Bokeh & Optical Character Section -->
         <div class="info-card tone-card card-glass">
           <div class="info-card-header">
-            <div class="info-icon">✨</div>
             <div>
               <h3>Karakter Bokeh & Render Optik</h3>
-              <p class="subtitle-small">Kekhasan visual yang membedakan lensa ini dari lensa pabrikan modern</p>
+              <p class="subtitle-small">Karakteristik visual dan render optik khas</p>
             </div>
           </div>
           <div class="tone-card-body">
@@ -145,10 +144,9 @@ const LensDetailView = {
         <!-- Full Technical Specifications Table -->
         <div class="info-card card-glass">
           <div class="info-card-header">
-            <div class="info-icon">📐</div>
             <div>
-              <h3>Spesifikasi Fisik & Formula Optik</h3>
-              <p class="subtitle-small">Data teknis mekanik dan arsitektur elemen kaca</p>
+              <h3>Spesifikasi Fisik & Optik</h3>
+              <p class="subtitle-small">Data teknis mekanik dan elemen lensa</p>
             </div>
           </div>
 
@@ -199,16 +197,15 @@ const LensDetailView = {
         <!-- Mirrorless Adapter Guide -->
         <div class="info-card card-glass">
           <div class="info-card-header">
-            <div class="info-icon">🔌</div>
             <div>
-              <h3>Panduan Memasang ke Kamera Modern (Adapter Guide)</h3>
-              <p class="subtitle-small">Rekomendasi adaptor untuk bodi digital Sony, Fujifilm, Canon, Nikon, & M4/3</p>
+              <h3>Panduan Adaptor Kamera Digital</h3>
+              <p class="subtitle-small">Rekomendasi adaptor untuk bodi Sony E, Fujifilm X, Canon RF, Nikon Z, dan M4/3</p>
             </div>
           </div>
           <div class="narrative-body">
             <p><strong>Rekomendasi Adapter:</strong> ${lens.adapterAdvice}</p>
             <p class="mt-2 text-muted">
-              Tips: Pasang adaptor jenis dummy metal tanpa optik kaca untuk menjaga 100% ketajaman dan karakter asli lensa. Pastikan opsi 'Release Shutter without Lens' di menu kamera Anda sudah diaktifkan.
+              Gunakan adaptor jenis dummy metal tanpa elemen optik tambahan untuk mempertahankan karakter dan ketajaman asli lensa. Pastikan opsi 'Release Shutter without Lens' di menu kamera Anda sudah diaktifkan.
             </p>
           </div>
         </div>
@@ -216,10 +213,9 @@ const LensDetailView = {
         <!-- Narrative History -->
         <div class="info-card card-glass">
           <div class="info-card-header">
-            <div class="info-icon">📜</div>
             <div>
-              <h3>Sejarah & Filosofi Lensa</h3>
-              <p class="subtitle-small">Kisah asal-usul dari pabrik legendaris</p>
+              <h3>Sejarah & Ulasan Lensa</h3>
+              <p class="subtitle-small">Catatan kuratorial lensa vintage</p>
             </div>
           </div>
           <div class="narrative-body">
@@ -230,14 +226,14 @@ const LensDetailView = {
         <!-- Pros & Cons Comparison -->
         <div class="pros-cons-grid">
           <div class="pros-card card-glass">
-            <h4 class="pros-title"><span class="icon-check">✓</span> Kelebihan Utama</h4>
+            <h4 class="pros-title">Kelebihan</h4>
             <ul class="pros-list">
               ${lens.pros.map(p => `<li>${p}</li>`).join('')}
             </ul>
           </div>
 
           <div class="cons-card card-glass">
-            <h4 class="cons-title"><span class="icon-warning">!</span> Keterbatasan Mekanis</h4>
+            <h4 class="cons-title">Catatan Penggunaan</h4>
             <ul class="cons-list">
               ${lens.cons.map(c => `<li>${c}</li>`).join('')}
             </ul>

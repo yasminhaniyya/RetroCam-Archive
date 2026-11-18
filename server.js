@@ -60,10 +60,10 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// 2. Get Camera List (supports search, sensor filter, brand filter, sorting)
+// 2. Get Camera List (supports search, category filter, sensor filter, brand filter, sorting)
 app.get('/api/cameras', (req, res) => {
   let results = [...camerasData];
-  const { search, sensor, brand, sort } = req.query;
+  const { search, category, sensor, brand, sort } = req.query;
 
   if (search) {
     const q = search.toLowerCase();
@@ -72,8 +72,12 @@ app.get('/api/cameras', (req, res) => {
       c.brand.toLowerCase().includes(q) ||
       c.sensorType.toLowerCase().includes(q) ||
       c.summary.toLowerCase().includes(q) ||
-      (c.tag && c.tag.toLowerCase().includes(q))
+      (c.category && c.category.toLowerCase().includes(q))
     );
+  }
+
+  if (category && category !== 'all') {
+    results = results.filter(c => c.category && c.category.toLowerCase().includes(category.toLowerCase()));
   }
 
   if (sensor && sensor !== 'all') {

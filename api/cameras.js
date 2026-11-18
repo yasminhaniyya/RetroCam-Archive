@@ -7,7 +7,7 @@ module.exports = (req, res) => {
     const raw = fs.readFileSync(filePath, 'utf-8');
     let cameras = JSON.parse(raw);
 
-    const { id, search, sensor, brand, sort } = req.query;
+    const { id, search, category, sensor, brand, sort } = req.query;
 
     if (id) {
       const single = cameras.find(c => c.id === id);
@@ -24,8 +24,12 @@ module.exports = (req, res) => {
         c.brand.toLowerCase().includes(q) ||
         c.sensorType.toLowerCase().includes(q) ||
         c.summary.toLowerCase().includes(q) ||
-        (c.tag && c.tag.toLowerCase().includes(q))
+        (c.category && c.category.toLowerCase().includes(q))
       );
+    }
+
+    if (category && category !== 'all') {
+      cameras = cameras.filter(c => c.category && c.category.toLowerCase().includes(category.toLowerCase()));
     }
 
     if (sensor && sensor !== 'all') {
