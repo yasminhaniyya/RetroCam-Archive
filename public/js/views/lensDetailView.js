@@ -79,13 +79,13 @@ const LensDetailView = {
                 onerror="this.src='/icons/icon-512.png'"
               />
               <div class="detail-img-overlay-badges">
-                <span class="badge-accent">${lens.mount}</span>
+                <span class="badge-accent">${lens.tag || lens.mount}</span>
                 <span class="badge-year">Tahun ${lens.releaseYear}</span>
               </div>
             </div>
 
             <div class="detail-hero-info">
-              <div class="detail-meta-brand">${lens.brand} &bull; Manual Optic Series</div>
+              <div class="detail-meta-brand">${lens.brand} &bull; ${lens.category || 'Kamera Lensa'}</div>
               <h1 class="detail-title">${lens.name}</h1>
               <p class="detail-summary">${lens.summary}</p>
 
@@ -184,38 +184,43 @@ const LensDetailView = {
               <span class="spec-v">${lens.weight}</span>
             </div>
             <div class="spec-cell">
-              <span class="spec-k">Tahun Produksi</span>
+              <span class="spec-k">Tahun Rilis</span>
               <span class="spec-v">${lens.releaseYear}</span>
             </div>
             <div class="spec-cell">
-              <span class="spec-k">Negara Asal</span>
+              <span class="spec-k">Merek / Produsen</span>
               <span class="spec-v">${lens.brand}</span>
             </div>
           </div>
         </div>
 
-        <!-- Mirrorless Adapter Guide -->
+        <!-- Mount Compatibility Info -->
         <div class="info-card card-glass">
           <div class="info-card-header">
             <div>
-              <h3>Panduan Adaptor Kamera Digital</h3>
-              <p class="subtitle-small">Rekomendasi adaptor untuk bodi Sony E, Fujifilm X, Canon RF, Nikon Z, dan M4/3</p>
+              <h3>Dukungan Mount & Kompatibilitas Bodi</h3>
+              <p class="subtitle-small">Kesesuaian sistem kamera dan ekosistem lensa</p>
             </div>
           </div>
           <div class="narrative-body">
-            <p><strong>Rekomendasi Adapter:</strong> ${lens.adapterAdvice}</p>
+            <p><strong>Dudukan Lensa:</strong> ${lens.mount}</p>
             <p class="mt-2 text-muted">
-              Gunakan adaptor jenis dummy metal tanpa elemen optik tambahan untuk mempertahankan karakter dan ketajaman asli lensa. Pastikan opsi 'Release Shutter without Lens' di menu kamera Anda sudah diaktifkan.
+              ${lens.mount.includes('Sony') ? 'Dapat dipasang langsung pada seluruh kamera Sony Alpha Mirrorless (Full-Frame FE maupun APS-C E-mount). Mendukung penuh autofokus Hybrid Phase Detection, Eye AF real-time, dan stabilisasi sensor IBIS.' :
+                lens.mount.includes('Canon') ? 'Dirancang langsung untuk ekosistem Canon EOS R system (full-frame & APS-C RF). Kompatibel penuh dengan Dual Pixel CMOS AF II dan integrasi kontrol cincin lens ring.' :
+                lens.mount.includes('Nikon') ? 'Dirancang optimal untuk kamera mirrorless Nikon Z series berdiameter bayonet 55mm. Mendukung penuh AF pendeteksi subjek cerdas dan sinkronisasi VR optik.' :
+                lens.mount.includes('Fujifilm') ? 'Dirancang presisi untuk kamera mirrorless Fujifilm X-mount sensor APS-C X-Trans. Mendukung simulasi film Fujifilm, aperture ring fisik, dan AF berkecepatan tinggi.' :
+                lens.mount.includes('Micro Four Thirds') ? 'Kompatibel penuh dengan seluruh sistem kamera Micro Four Thirds (OM SYSTEM, Olympus, dan Panasonic Lumix G series).' :
+                'Dirancang untuk ekosistem L-Mount Alliance (kompatibel penuh dengan Panasonic Lumix S series, Leica SL, dan Sigma fp).'}
             </p>
           </div>
         </div>
 
-        <!-- Narrative History -->
+        <!-- Narrative Overview -->
         <div class="info-card card-glass">
           <div class="info-card-header">
             <div>
-              <h3>Sejarah & Ulasan Lensa</h3>
-              <p class="subtitle-small">Catatan kuratorial lensa vintage</p>
+              <h3>Ulasan & Keunggulan Lensa</h3>
+              <p class="subtitle-small">Catatan kuratorial katalog Yodobashi Camera</p>
             </div>
           </div>
           <div class="narrative-body">
@@ -243,7 +248,7 @@ const LensDetailView = {
         <!-- Bottom Action CTA -->
         <div class="detail-footer-cta">
           <a href="#lenses" class="btn btn-secondary">&larr; Lihat Lensa Lainnya</a>
-          <a href="#guides" class="btn btn-outline">Baca Panduan Adapter Lensa &rarr;</a>
+          <a href="#guides" class="btn btn-outline">Baca Panduan & Tips Fotografi &rarr;</a>
         </div>
       `;
 

@@ -7,7 +7,7 @@ module.exports = (req, res) => {
     const raw = fs.readFileSync(filePath, 'utf-8');
     let lenses = JSON.parse(raw);
 
-    const { id, search, mount, sort } = req.query;
+    const { id, search, category, mount, brand, sort } = req.query;
 
     if (id) {
       const single = lenses.find(l => l.id === id);
@@ -24,12 +24,21 @@ module.exports = (req, res) => {
         l.brand.toLowerCase().includes(q) ||
         l.mount.toLowerCase().includes(q) ||
         l.summary.toLowerCase().includes(q) ||
+        (l.category && l.category.toLowerCase().includes(q)) ||
         (l.tag && l.tag.toLowerCase().includes(q))
       );
     }
 
+    if (category && category !== 'all') {
+      lenses = lenses.filter(l => l.category && l.category.toLowerCase().includes(category.toLowerCase()));
+    }
+
     if (mount && mount !== 'all') {
       lenses = lenses.filter(l => l.mount.toLowerCase().includes(mount.toLowerCase()));
+    }
+
+    if (brand && brand !== 'all') {
+      lenses = lenses.filter(l => l.brand.toLowerCase().includes(brand.toLowerCase()));
     }
 
     if (sort === 'year-asc') {

@@ -120,10 +120,10 @@ app.get('/api/cameras/:id', (req, res) => {
   });
 });
 
-// 4. Get Lenses List (supports search, mount filter, sorting)
+// 4. Get Lenses List (supports search, category filter, mount filter, brand filter, sorting)
 app.get('/api/lenses', (req, res) => {
   let results = [...lensesData];
-  const { search, mount, sort } = req.query;
+  const { search, category, mount, brand, sort } = req.query;
 
   if (search) {
     const q = search.toLowerCase();
@@ -132,12 +132,21 @@ app.get('/api/lenses', (req, res) => {
       l.brand.toLowerCase().includes(q) ||
       l.mount.toLowerCase().includes(q) ||
       l.summary.toLowerCase().includes(q) ||
+      (l.category && l.category.toLowerCase().includes(q)) ||
       (l.tag && l.tag.toLowerCase().includes(q))
     );
   }
 
+  if (category && category !== 'all') {
+    results = results.filter(l => l.category && l.category.toLowerCase().includes(category.toLowerCase()));
+  }
+
   if (mount && mount !== 'all') {
     results = results.filter(l => l.mount.toLowerCase().includes(mount.toLowerCase()));
+  }
+
+  if (brand && brand !== 'all') {
+    results = results.filter(l => l.brand.toLowerCase().includes(brand.toLowerCase()));
   }
 
   if (sort === 'year-asc') {

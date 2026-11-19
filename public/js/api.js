@@ -70,7 +70,9 @@ const ApiService = {
   async getLenses(filters = {}) {
     const params = new URLSearchParams();
     if (filters.search) params.append('search', filters.search);
+    if (filters.category && filters.category !== 'all') params.append('category', filters.category);
     if (filters.mount && filters.mount !== 'all') params.append('mount', filters.mount);
+    if (filters.brand && filters.brand !== 'all') params.append('brand', filters.brand);
     if (filters.sort) params.append('sort', filters.sort);
 
     const qs = params.toString() ? `?${params.toString()}` : '';
@@ -156,10 +158,21 @@ const ApiService = {
     let list = window.__OFFLINE_LENSES_BACKUP__ || [];
     if (filters.search) {
       const q = filters.search.toLowerCase();
-      list = list.filter(l => l.name.toLowerCase().includes(q) || l.brand.toLowerCase().includes(q));
+      list = list.filter(l => 
+        l.name.toLowerCase().includes(q) || 
+        l.brand.toLowerCase().includes(q) ||
+        l.mount.toLowerCase().includes(q) ||
+        (l.category && l.category.toLowerCase().includes(q))
+      );
+    }
+    if (filters.category && filters.category !== 'all') {
+      list = list.filter(l => (l.category || '').toLowerCase().includes(filters.category.toLowerCase()));
     }
     if (filters.mount && filters.mount !== 'all') {
       list = list.filter(l => l.mount.toLowerCase().includes(filters.mount.toLowerCase()));
+    }
+    if (filters.brand && filters.brand !== 'all') {
+      list = list.filter(l => l.brand.toLowerCase().includes(filters.brand.toLowerCase()));
     }
     return list;
   }

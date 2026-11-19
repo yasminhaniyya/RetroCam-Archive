@@ -166,12 +166,12 @@ const ProfileView = {
 
             <div class="status-metric-cell">
               <span class="metric-label">Kamera Terkatalog</span>
-              <span class="metric-value highlight-gold">${stats?.totalCameras || 10} Kamera</span>
+              <span class="metric-value highlight-gold">${stats?.totalCameras || 55} Kamera</span>
             </div>
 
             <div class="status-metric-cell">
               <span class="metric-label">Lensa Terkatalog</span>
-              <span class="metric-value highlight-gold">${stats?.totalLenses || 8} Lensa</span>
+              <span class="metric-value highlight-gold">${stats?.totalLenses || 52} Lensa</span>
             </div>
           </div>
 

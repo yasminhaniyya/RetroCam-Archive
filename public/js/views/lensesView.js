@@ -1,6 +1,6 @@
 /**
  * RetroCam Archive - Lenses List View (Halaman 3)
- * Desain Katalog Otentik Lensa Manual (Gaya Neokyo / Map Camera)
+ * Desain Katalog Otentik Lensa Kamera Yodobashi (Gaya Neokyo / Map Camera)
  */
 
 const LensesView = {
@@ -9,33 +9,35 @@ const LensesView = {
     loading: true,
     error: null,
     search: '',
-    categoryTab: 'focal', // 'focal' | 'mount'
-    focalType: 'all',
+    categoryTab: 'type', // 'type' | 'mount'
+    category: 'all',
     mount: 'all',
+    brand: 'all',
     sort: 'year-desc'
   },
 
-  categoryFocal: [
-    { id: 'all', name: 'Semua lensa', img: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=300&q=80' },
-    { id: '50mm', name: 'Lensa 50mm', img: 'https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=300&q=80' },
-    { id: '85mm', name: 'Lensa Portrait 85mm', img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=300&q=80' },
-    { id: '45mm', name: 'Lensa Pancake', img: 'https://images.unsplash.com/photo-1495707902641-75cac588d2e9?auto=format&fit=crop&w=300&q=80' }
+  categoryTypes: [
+    { id: 'all', name: 'Semua jenis', img: '/images/lenses/lens-zoom-01.jpg' },
+    { id: 'Lensa zoom standar', name: 'Zoom standar', img: '/images/lenses/lens-zoom-01.jpg' },
+    { id: 'Lensa prime / fix', name: 'Prime / fix', img: '/images/lenses/lens-prime-01.jpg' },
+    { id: 'Lensa telephoto', name: 'Telephoto zoom', img: '/images/lenses/lens-tele-01.jpg' }
   ],
 
   categoryMounts: [
-    { id: 'all', name: 'Semua mount', img: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=300&q=80' },
-    { id: 'M42', name: 'M42 Screw', img: 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Canon FD', name: 'Canon FD', img: 'https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Nikon F', name: 'Nikon F', img: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Olympus OM', name: 'Olympus OM', img: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Minolta', name: 'Minolta MD', img: 'https://images.unsplash.com/photo-1495707902641-75cac588d2e9?auto=format&fit=crop&w=300&q=80' }
+    { id: 'all', name: 'Semua mount', img: '/images/lenses/lens-zoom-01.jpg' },
+    { id: 'Sony E', name: 'Sony E-mount', img: '/images/lenses/lens-zoom-01.jpg' },
+    { id: 'Canon RF', name: 'Canon RF', img: '/images/lenses/lens-zoom-04.jpg' },
+    { id: 'Nikon Z', name: 'Nikon Z', img: '/images/lenses/lens-zoom-06.jpg' },
+    { id: 'Fujifilm X', name: 'Fujifilm X', img: '/images/lenses/lens-zoom-10.jpg' },
+    { id: 'Micro Four Thirds', name: 'Micro 4/3', img: '/images/lenses/lens-zoom-15.jpg' },
+    { id: 'L-mount', name: 'L-mount', img: '/images/lenses/lens-zoom-16.jpg' }
   ],
 
   async render() {
     return `
       <section class="page-container page-lenses animate-fade-in">
 
-        <!-- Search Bar -->
+        <!-- Search Bar (Top Clean Marketplace Search) -->
         <div class="catalog-top-search">
           <div class="search-input-wrapper">
             <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -46,7 +48,7 @@ const LensesView = {
               type="text" 
               id="lens-search-input" 
               class="input-catalog-search" 
-              placeholder="Cari lensa manual berdasarkan nama, bukaan, atau mount..." 
+              placeholder="Cari lensa berdasarkan nama, fokal, bukaan, atau mount..." 
               value="${this.state.search}"
             />
             ${this.state.search ? `<button id="btn-clear-lens-search" class="btn-clear">&times;</button>` : ''}
@@ -59,11 +61,11 @@ const LensesView = {
 
           <div class="neokyo-category-tabs">
             <button 
-              class="neokyo-tab-btn ${this.state.categoryTab === 'focal' ? 'active' : ''}" 
-              id="tab-lens-focal" 
-              data-tab="focal"
+              class="neokyo-tab-btn ${this.state.categoryTab === 'type' ? 'active' : ''}" 
+              id="tab-lens-type" 
+              data-tab="type"
             >
-              Berdasarkan fokal lensa
+              Berdasarkan jenis lensa
             </button>
             <button 
               class="neokyo-tab-btn ${this.state.categoryTab === 'mount' ? 'active' : ''}" 
@@ -80,7 +82,7 @@ const LensesView = {
           </div>
         </div>
 
-        <!-- Toolbar Sort -->
+        <!-- Catalog Toolbar: Filter Mount & Sorting -->
         <div class="catalog-toolbar">
           <div class="toolbar-left">
             <span class="toolbar-result-count" id="lens-results-count">
@@ -89,6 +91,19 @@ const LensesView = {
           </div>
 
           <div class="toolbar-right">
+            <div class="toolbar-select-wrap">
+              <label for="lens-mount-select">Dudukan:</label>
+              <select id="lens-mount-select" class="clean-select">
+                <option value="all" ${this.state.mount === 'all' ? 'selected' : ''}>Semua Mount</option>
+                <option value="Sony E" ${this.state.mount === 'Sony E' ? 'selected' : ''}>Sony E-mount</option>
+                <option value="Canon RF" ${this.state.mount === 'Canon RF' ? 'selected' : ''}>Canon RF</option>
+                <option value="Nikon Z" ${this.state.mount === 'Nikon Z' ? 'selected' : ''}>Nikon Z</option>
+                <option value="Fujifilm X" ${this.state.mount === 'Fujifilm X' ? 'selected' : ''}>Fujifilm X</option>
+                <option value="Micro Four Thirds" ${this.state.mount === 'Micro Four Thirds' ? 'selected' : ''}>Micro 4/3</option>
+                <option value="L-mount" ${this.state.mount === 'L-mount' ? 'selected' : ''}>L-mount</option>
+              </select>
+            </div>
+
             <div class="toolbar-select-wrap">
               <label for="lens-sort-select">Urutan:</label>
               <select id="lens-sort-select" class="clean-select">
@@ -113,11 +128,11 @@ const LensesView = {
   },
 
   renderCategoryCircles() {
-    if (this.state.categoryTab === 'focal') {
-      return this.categoryFocal.map(item => {
-        const isActive = (this.state.focalType === item.id) || (item.id === 'all' && this.state.focalType === 'all');
+    if (this.state.categoryTab === 'type') {
+      return this.categoryTypes.map(item => {
+        const isActive = (this.state.category === item.id) || (item.id === 'all' && this.state.category === 'all');
         return `
-          <div class="neokyo-circle-item ${isActive ? 'active' : ''}" data-lens-focal="${item.id}">
+          <div class="neokyo-circle-item ${isActive ? 'active' : ''}" data-lens-type="${item.id}">
             <div class="neokyo-circle-thumb">
               <img src="${item.img}" alt="${item.name}" loading="lazy" />
             </div>
@@ -168,17 +183,19 @@ const LensesView = {
       });
     }
 
-    // Tabs
-    const tabFocal = document.getElementById('tab-lens-focal');
+    // Tabs switch: Type vs Mount
+    const tabType = document.getElementById('tab-lens-type');
     const tabMount = document.getElementById('tab-lens-mount');
     const container = document.getElementById('neokyo-lens-category-items');
 
-    if (tabFocal && tabMount) {
-      tabFocal.addEventListener('click', () => {
-        tabFocal.classList.add('active');
+    if (tabType && tabMount) {
+      tabType.addEventListener('click', () => {
+        tabType.classList.add('active');
         tabMount.classList.remove('active');
-        this.state.categoryTab = 'focal';
+        this.state.categoryTab = 'type';
         this.state.mount = 'all';
+        const mountSelect = document.getElementById('lens-mount-select');
+        if (mountSelect) mountSelect.value = 'all';
         if (container) {
           container.innerHTML = this.renderCategoryCircles();
           this.bindCategoryCircleClicks();
@@ -188,9 +205,9 @@ const LensesView = {
 
       tabMount.addEventListener('click', () => {
         tabMount.classList.add('active');
-        tabFocal.classList.remove('active');
+        tabType.classList.remove('active');
         this.state.categoryTab = 'mount';
-        this.state.focalType = 'all';
+        this.state.category = 'all';
         if (container) {
           container.innerHTML = this.renderCategoryCircles();
           this.bindCategoryCircleClicks();
@@ -201,6 +218,23 @@ const LensesView = {
 
     this.bindCategoryCircleClicks();
 
+    // Mount filter dropdown
+    const mountSelect = document.getElementById('lens-mount-select');
+    if (mountSelect) {
+      mountSelect.addEventListener('change', (e) => {
+        this.state.mount = e.target.value;
+        if (this.state.categoryTab === 'mount') {
+          const container = document.getElementById('neokyo-lens-category-items');
+          if (container) {
+            container.innerHTML = this.renderCategoryCircles();
+            this.bindCategoryCircleClicks();
+          }
+        }
+        this.loadData();
+      });
+    }
+
+    // Sorting dropdown
     const sortSelect = document.getElementById('lens-sort-select');
     if (sortSelect) {
       sortSelect.addEventListener('change', (e) => {
@@ -217,10 +251,12 @@ const LensesView = {
         items.forEach(i => i.classList.remove('active'));
         item.classList.add('active');
 
-        if (this.state.categoryTab === 'focal') {
-          this.state.focalType = item.getAttribute('data-lens-focal');
+        if (this.state.categoryTab === 'type') {
+          this.state.category = item.getAttribute('data-lens-type');
         } else {
           this.state.mount = item.getAttribute('data-lens-mount');
+          const mountSelect = document.getElementById('lens-mount-select');
+          if (mountSelect) mountSelect.value = this.state.mount;
         }
         this.loadData();
       });
@@ -240,16 +276,13 @@ const LensesView = {
     `;
 
     try {
-      let lenses = await ApiService.getLenses({
+      const lenses = await ApiService.getLenses({
         search: this.state.search,
+        category: this.state.category,
         mount: this.state.mount,
+        brand: this.state.brand,
         sort: this.state.sort
       });
-
-      // Filter by focal length if selected
-      if (this.state.focalType && this.state.focalType !== 'all') {
-        lenses = lenses.filter(l => (l.focalLength || '').includes(this.state.focalType));
-      }
 
       this.state.lenses = lenses;
 
@@ -260,7 +293,7 @@ const LensesView = {
       if (!lenses || lenses.length === 0) {
         grid.innerHTML = `
           <div class="empty-state-clean col-span-full">
-            <p>Tidak ada lensa yang sesuai dengan pilihan kategori.</p>
+            <p>Tidak ada lensa yang sesuai dengan filter atau kata kunci pencarian.</p>
             <button class="btn-clean-reset" id="btn-reset-lens-cat">Tampilkan Semua Lensa</button>
           </div>
         `;
@@ -268,8 +301,13 @@ const LensesView = {
         if (resetBtn) {
           resetBtn.addEventListener('click', () => {
             this.state.search = '';
+            this.state.category = 'all';
             this.state.mount = 'all';
-            this.state.focalType = 'all';
+            this.state.brand = 'all';
+            const searchInput = document.getElementById('lens-search-input');
+            if (searchInput) searchInput.value = '';
+            const mountSelect = document.getElementById('lens-mount-select');
+            if (mountSelect) mountSelect.value = 'all';
             const container = document.getElementById('neokyo-lens-category-items');
             if (container) {
               container.innerHTML = this.renderCategoryCircles();
@@ -281,6 +319,7 @@ const LensesView = {
         return;
       }
 
+      // Render Clean, Realistic Store Product Cards
       grid.innerHTML = lenses.map(lens => {
         const isFav = StorageService.isLensFavorite(lens.id);
         return `
@@ -306,7 +345,7 @@ const LensesView = {
 
             <div class="card-detail-box">
               <div class="card-brand-row">
-                <span class="card-brand-label">${lens.brand}</span>
+                <span class="card-brand-label">${lens.brand} &bull; ${lens.category}</span>
                 <span class="card-year-label">${lens.releaseYear}</span>
               </div>
               
