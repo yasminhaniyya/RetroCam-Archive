@@ -120,7 +120,7 @@ const CameraDetailView = {
                 </button>
 
                 <div class="market-price-pill">
-                  <span class="market-price-label">Estimasi Harga Bekas:</span>
+                  <span class="market-price-label">Harga Pasar:</span>
                   <strong class="market-price-amt">${camera.estimatedPriceIdr}</strong>
                 </div>
               </div>

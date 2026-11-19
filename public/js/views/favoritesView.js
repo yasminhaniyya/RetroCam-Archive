@@ -148,7 +148,7 @@ const FavoritesView = {
 
             <div class="card-price-row">
               <div class="price-box">
-                <span class="price-title">Estimasi Pasar</span>
+                <span class="price-title">Harga</span>
                 <span class="price-amount">${item.estimatedPriceIdr}</span>
               </div>
               <span class="view-detail-text">Detail &rarr;</span>
