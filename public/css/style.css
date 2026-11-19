@@ -11,11 +11,11 @@
   
   --border-subtle: #e5e7eb;
   --border-medium: #d1d5db;
-  --border-accent: rgba(200, 90, 50, 0.25);
+  --border-accent: rgba(2, 132, 199, 0.25);
 
-  --accent-terracotta: #c85a32;
-  --accent-amber: #d97706;
-  --accent-gold: #b45309;
+  --accent-terracotta: #0284c7;
+  --accent-amber: #38bdf8;
+  --accent-gold: #0369a1;
   --accent-sage: #2d6a4f;
   --accent-teal: #0f766e;
   --accent-crimson: #be123c;
@@ -180,9 +180,9 @@ button, input, select {
 }
 
 .status-pill.offline {
-  background: rgba(200, 90, 50, 0.1);
+  background: rgba(2, 132, 199, 0.1);
   color: var(--accent-terracotta);
-  border-color: rgba(200, 90, 50, 0.25);
+  border-color: rgba(2, 132, 199, 0.25);
 }
 
 .status-dot {
@@ -226,17 +226,17 @@ button, input, select {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--accent-terracotta);
-  background: rgba(200, 90, 50, 0.1);
+  background: rgba(2, 132, 199, 0.1);
   padding: 0.3rem 0.75rem;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(200, 90, 50, 0.25);
+  border: 1px solid rgba(2, 132, 199, 0.25);
   margin-bottom: 0.6rem;
 }
 
 .badge-amber {
   color: var(--accent-amber);
-  background: rgba(217, 119, 6, 0.1);
-  border-color: rgba(217, 119, 6, 0.25);
+  background: rgba(2, 132, 199, 0.1);
+  border-color: rgba(2, 132, 199, 0.25);
 }
 
 .badge-rose {
@@ -253,8 +253,8 @@ button, input, select {
 
 .badge-gold {
   color: var(--accent-gold);
-  background: rgba(180, 83, 9, 0.1);
-  border-color: rgba(180, 83, 9, 0.25);
+  background: rgba(3, 105, 161, 0.1);
+  border-color: rgba(3, 105, 161, 0.25);
 }
 
 .badge-dot {
@@ -590,7 +590,7 @@ button, input, select {
 
 .card-wishlist-btn.is-active {
   border-color: var(--accent-terracotta);
-  background: #fff5f2;
+  background: #f0f9ff;
 }
 
 .card-detail-box {
@@ -750,7 +750,7 @@ button, input, select {
 
 .input-search:focus {
   border-color: var(--accent-terracotta);
-  box-shadow: 0 0 0 3px rgba(200, 90, 50, 0.15);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
 }
 
 .btn-clear {
@@ -819,7 +819,7 @@ button, input, select {
   background: var(--accent-terracotta);
   border-color: var(--accent-terracotta);
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(200, 90, 50, 0.25);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
 }
 
 .filter-meta-row {
@@ -1326,7 +1326,7 @@ button, input, select {
 }
 
 .btn-fav:hover {
-  background: rgba(200, 90, 50, 0.08);
+  background: rgba(2, 132, 199, 0.08);
   border-color: var(--accent-terracotta);
   color: var(--accent-terracotta);
 }
@@ -1343,7 +1343,7 @@ button, input, select {
   padding: 0.7rem 1.25rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(200, 90, 50, 0.3);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
 }
 
 .market-price-pill {
@@ -1396,8 +1396,8 @@ button, input, select {
 }
 
 .tone-card {
-  background: linear-gradient(135deg, rgba(200, 90, 50, 0.08), #ffffff);
-  border-color: rgba(200, 90, 50, 0.25);
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.08), #ffffff);
+  border-color: rgba(2, 132, 199, 0.25);
 }
 
 .tone-card-body p {
@@ -1679,8 +1679,8 @@ button, input, select {
 .profile-hero-card {
   margin-bottom: 1.5rem;
   padding: 1.75rem;
-  border: 1px solid rgba(180, 83, 9, 0.2);
-  background: linear-gradient(135deg, rgba(233, 196, 106, 0.12), #ffffff);
+  border: 1px solid rgba(3, 105, 161, 0.2);
+  background: linear-gradient(135deg, rgba(224, 242, 254, 0.7), #ffffff);
 }
 
 .profile-layout {
@@ -1712,7 +1712,7 @@ button, input, select {
   border-radius: 50%;
   padding: 3px;
   background: linear-gradient(135deg, var(--accent-gold), var(--accent-terracotta));
-  box-shadow: 0 4px 16px rgba(180, 83, 9, 0.18);
+  box-shadow: 0 4px 16px rgba(3, 105, 161, 0.18);
 }
 
 .profile-avatar-img {
@@ -1846,7 +1846,7 @@ button, input, select {
   flex-direction: column;
   gap: 0.75rem;
   padding: 1rem;
-  background: #fdfaf6;
+  background: #f0f9ff;
   border: 1px dashed var(--border-medium);
   border-radius: var(--radius-md);
   margin-bottom: 0.5rem;
@@ -2050,7 +2050,7 @@ button, input, select {
   font-size: 0.7rem;
   font-weight: 800;
   text-transform: uppercase;
-  background: rgba(200, 90, 50, 0.12);
+  background: rgba(2, 132, 199, 0.12);
   color: var(--accent-terracotta);
   padding: 0.2rem 0.55rem;
   border-radius: var(--radius-sm);
@@ -2217,7 +2217,7 @@ button, input, select {
   height: 4px;
   border-radius: 50%;
   background: var(--accent-terracotta);
-  box-shadow: 0 0 5px rgba(200, 90, 50, 0.5);
+  box-shadow: 0 0 5px rgba(2, 132, 199, 0.5);
 }
 
 .nav-badge-count {
@@ -2263,8 +2263,8 @@ button, input, select {
 }
 
 .btn-primary:hover {
-  background: #b24d27;
-  box-shadow: 0 4px 14px rgba(200, 90, 50, 0.25);
+  background: #0369a1;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
 }
 
 .btn-secondary {
@@ -2296,7 +2296,7 @@ button, input, select {
 }
 
 .btn-accent:hover {
-  background: #b45309;
+  background: #0369a1;
 }
 
 .btn-sm {

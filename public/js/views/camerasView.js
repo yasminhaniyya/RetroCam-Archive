@@ -328,7 +328,7 @@ const CamerasView = {
                 data-fav-id="${cam.id}" 
                 title="${isFav ? 'Hapus dari favorit' : 'Simpan ke favorit'}"
               >
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="${isFav ? '#c85a32' : 'none'}" stroke="${isFav ? '#c85a32' : '#6b7280'}" stroke-width="2">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="${isFav ? '#0284c7' : 'none'}" stroke="${isFav ? '#0284c7' : '#6b7280'}" stroke-width="2">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                 </svg>
               </button>
@@ -382,8 +382,8 @@ const CamerasView = {
             btn.classList.toggle('is-active', isAdded);
             const svg = btn.querySelector('svg');
             if (svg) {
-              svg.setAttribute('fill', isAdded ? '#c85a32' : 'none');
-              svg.setAttribute('stroke', isAdded ? '#c85a32' : '#6b7280');
+              svg.setAttribute('fill', isAdded ? '#0284c7' : 'none');
+              svg.setAttribute('stroke', isAdded ? '#0284c7' : '#6b7280');
             }
             if (window.App && window.App.showToast) {
               window.App.showToast(isAdded ? `Ditambahkan ke Favorit: ${cam.name}` : `Dihapus dari Favorit: ${cam.name}`);
