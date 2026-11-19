@@ -18,23 +18,25 @@ const CamerasView = {
 
   // Category definitions with clean photo thumbnails
   categoryTypes: [
-    { id: 'all', name: 'Semua jenis', img: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Kamera saku', name: 'Kamera saku', img: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Kamera prosumer', name: 'Kamera prosumer', img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Kamera rangefinder', name: 'Rangefinder digital', img: 'https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=300&q=80' }
+    { id: 'all', name: 'Semua jenis', img: '/images/cameras/cam-hib-11.jpg' },
+    { id: 'Kamera saku', name: 'Kamera saku', img: '/images/cameras/cam-saku-01.jpg' },
+    { id: 'Kamera prosumer', name: 'Kamera prosumer', img: '/images/cameras/cam-pro-08.jpg' },
+    { id: 'Kamera hibrida', name: 'Kamera hibrida', img: '/images/cameras/cam-hib-01.jpg' }
   ],
 
   categoryBrands: [
-    { id: 'all', name: 'Semua merek', img: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Canon', name: 'Canon', img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Fujifilm', name: 'Fujifilm', img: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Sony', name: 'Sony', img: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Nikon', name: 'Nikon', img: 'https://images.unsplash.com/photo-1495707902641-75cac588d2e9?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Olympus', name: 'Olympus', img: 'https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Leica', name: 'Leica', img: 'https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Ricoh', name: 'Ricoh', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Pentax', name: 'Pentax', img: 'https://images.unsplash.com/photo-1452780212940-6f5c0d14d848?auto=format&fit=crop&w=300&q=80' },
-    { id: 'Kodak', name: 'Kodak', img: 'https://images.unsplash.com/photo-1516724562728-afc824a36e84?auto=format&fit=crop&w=300&q=80' }
+    { id: 'all', name: 'Semua merek', img: '/images/cameras/cam-hib-11.jpg' },
+    { id: 'Sony', name: 'Sony', img: '/images/cameras/cam-hib-01.jpg' },
+    { id: 'Canon', name: 'Canon', img: '/images/cameras/cam-pro-04.jpg' },
+    { id: 'Fujifilm', name: 'Fujifilm', img: '/images/cameras/cam-pro-08.jpg' },
+    { id: 'Nikon', name: 'Nikon', img: '/images/cameras/cam-hib-12.jpg' },
+    { id: 'Olympus', name: 'Olympus', img: '/images/cameras/cam-saku-11.jpg' },
+    { id: 'Panasonic', name: 'Panasonic', img: '/images/cameras/cam-saku-13.jpg' },
+    { id: 'Ricoh', name: 'Ricoh', img: '/images/cameras/cam-saku-01.jpg' },
+    { id: 'Leica', name: 'Leica', img: '/images/cameras/cam-pro-15.jpg' },
+    { id: 'Kodak', name: 'Kodak', img: '/images/cameras/cam-saku-15.jpg' },
+    { id: 'Pentax', name: 'Pentax', img: '/images/cameras/cam-saku-18.jpg' },
+    { id: 'Casio', name: 'Casio', img: '/images/cameras/cam-saku-19.jpg' }
   ],
 
   async render() {
@@ -99,8 +101,10 @@ const CamerasView = {
               <label for="sensor-select">Sensor:</label>
               <select id="sensor-select" class="clean-select">
                 <option value="all" ${this.state.sensor === 'all' ? 'selected' : ''}>Semua Sensor</option>
-                <option value="CCD" ${this.state.sensor === 'CCD' ? 'selected' : ''}>Standard CCD</option>
-                <option value="Super CCD" ${this.state.sensor === 'Super CCD' ? 'selected' : ''}>Super CCD</option>
+                <option value="CCD" ${this.state.sensor === 'CCD' ? 'selected' : ''}>Sensor CCD</option>
+                <option value="CMOS" ${this.state.sensor === 'CMOS' ? 'selected' : ''}>Sensor CMOS</option>
+                <option value="BSI" ${this.state.sensor === 'BSI' ? 'selected' : ''}>BSI / Stacked CMOS</option>
+                <option value="X-Trans" ${this.state.sensor === 'X-Trans' ? 'selected' : ''}>Fujifilm X-Trans</option>
               </select>
             </div>
 
