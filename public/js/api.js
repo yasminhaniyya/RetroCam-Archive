@@ -125,6 +125,23 @@ const ApiService = {
     }
   },
 
+  // Update profile on backend
+  async updateProfile(profileData) {
+    try {
+      const res = await this.request('/profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(profileData)
+      });
+      return res.data;
+    } catch (e) {
+      console.warn('Backend updateProfile unreachable, saved locally in StorageService:', e);
+      return null;
+    }
+  },
+
   // Get stats
   async getStats() {
     try {

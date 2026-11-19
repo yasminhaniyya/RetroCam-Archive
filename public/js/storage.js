@@ -98,6 +98,15 @@ const StorageService = {
     } catch (e) {
       console.error('Error saving profile:', e);
     }
+  },
+
+  clearSavedProfile() {
+    try {
+      localStorage.removeItem(STORAGE_KEYS.STUDENT_PROFILE);
+      window.dispatchEvent(new CustomEvent('profileUpdated', { detail: null }));
+    } catch (e) {
+      console.error('Error clearing profile:', e);
+    }
   }
 };
 

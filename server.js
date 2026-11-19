@@ -13,7 +13,8 @@ const PORT = process.env.PORT || 3000;
 
 // Enable CORS and JSON parsing
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Helper function to safely read JSON data
 function loadData(fileName) {
@@ -202,12 +203,58 @@ app.get('/api/guides/:id', (req, res) => {
   });
 });
 
-// 7. Get Profile & Academic Information (Syarat Halaman Profile/About)
+// 7. Get & Update Profile & Academic Information (Syarat Halaman Profile/About)
 app.get('/api/profile', (req, res) => {
   res.json({
     status: 'success',
     data: profileData
   });
+});
+
+app.post('/api/profile', (req, res) => {
+  try {
+    const body = req.body || {};
+    const academicUpdates = body.academicInfo ? body.academicInfo : body;
+
+    profileData.academicInfo = {
+      ...profileData.academicInfo,
+      ...academicUpdates
+    };
+
+    const filePath = path.join(__dirname, 'data', 'profile.json');
+    fs.writeFileSync(filePath, JSON.stringify(profileData, null, 2), 'utf-8');
+
+    res.json({
+      status: 'success',
+      message: 'Profil mahasiswa berhasil diperbarui.',
+      data: profileData
+    });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+app.put('/api/profile', (req, res) => {
+  try {
+    const body = req.body || {};
+    const academicUpdates = body.academicInfo ? body.academicInfo : body;
+
+    profileData.academicInfo = {
+      ...profileData.academicInfo,
+      ...academicUpdates
+    };
+
+    const filePath = path.join(__dirname, 'data', 'profile.json');
+    fs.writeFileSync(filePath, JSON.stringify(profileData, null, 2), 'utf-8');
+
+    res.json({
+      status: 'success',
+      message: 'Profil mahasiswa berhasil diperbarui.',
+      data: profileData
+    });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
 });
 
 // 8. Get Database Aggregate Statistics

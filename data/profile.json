@@ -10,7 +10,10 @@
     "classGroup": "Shift 1 / Kelompok XX",
     "studyProgram": "Teknik Komputer / Informatika",
     "faculty": "Fakultas Teknik",
-    "academicYear": "2024 / 2025"
+    "academicYear": "2024 / 2025",
+    "email": "praktikan@example.edu",
+    "bio": "Praktikan pengembang aplikasi RetroCam Archive. Penggemar fotografi kamera digital era CCD dan eksplorasi lensa manual.",
+    "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
   },
   "appDescription": "RetroCam Archive adalah aplikasi Progressive Web Apps (PWA) berbasis JavaScript modern yang didedikasikan untuk mendokumentasikan kamera digital lawas (khususnya era sensor CCD 2000-an yang legendaris) dan lensa manual vintage. Aplikasi ini memungkinkan pengguna menelusuri katalog, menyaring berdasarkan sensor/mount, melihat spesifikasi teknis mendalam, menyimpan koleksi favorit secara offline, serta mempelajari panduan teknik fotografi retro.",
   "techStack": [
@@ -43,13 +46,41 @@
   "apiDocumentation": {
     "baseUrl": "/api",
     "endpoints": [
-      { "method": "GET", "path": "/api/cameras", "desc": "Mengambil seluruh data kamera digital dengan filter search, sensor, brand" },
-      { "method": "GET", "path": "/api/cameras/:id", "desc": "Mengambil detail spesifikasi kamera berdasarkan ID" },
-      { "method": "GET", "path": "/api/lenses", "desc": "Mengambil data lensa manual dengan filter search, mount, brand" },
-      { "method": "GET", "path": "/api/lenses/:id", "desc": "Mengambil detail lensa vintage berdasarkan ID" },
-      { "method": "GET", "path": "/api/guides", "desc": "Mengambil daftar artikel panduan & komparasi sensor CCD vs CMOS" },
-      { "method": "GET", "path": "/api/profile", "desc": "Mengambil data profil mahasiswa dan metadata aplikasi" },
-      { "method": "GET", "path": "/api/stats", "desc": "Mengambil statistik jumlah katalog dan metadata database" }
+      {
+        "method": "GET",
+        "path": "/api/cameras",
+        "desc": "Mengambil seluruh data kamera digital dengan filter search, sensor, brand"
+      },
+      {
+        "method": "GET",
+        "path": "/api/cameras/:id",
+        "desc": "Mengambil detail spesifikasi kamera berdasarkan ID"
+      },
+      {
+        "method": "GET",
+        "path": "/api/lenses",
+        "desc": "Mengambil data lensa manual dengan filter search, mount, brand"
+      },
+      {
+        "method": "GET",
+        "path": "/api/lenses/:id",
+        "desc": "Mengambil detail lensa vintage berdasarkan ID"
+      },
+      {
+        "method": "GET",
+        "path": "/api/guides",
+        "desc": "Mengambil daftar artikel panduan & komparasi sensor CCD vs CMOS"
+      },
+      {
+        "method": "GET",
+        "path": "/api/profile",
+        "desc": "Mengambil data profil mahasiswa dan metadata aplikasi"
+      },
+      {
+        "method": "GET",
+        "path": "/api/stats",
+        "desc": "Mengambil statistik jumlah katalog dan metadata database"
+      }
     ]
   }
 }
