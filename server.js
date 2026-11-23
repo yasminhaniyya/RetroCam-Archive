@@ -1,3 +1,4 @@
+
 /**
  * RetroCam Archive - Custom REST Web Service API (Modul 1)
  * Built with Node.js & Express
@@ -34,6 +35,29 @@ let lensesData = loadData('lenses.json');
 let guidesData = loadData('guides.json');
 let profileData = loadData('profile.json');
 
+// Supabase Cloud PostgreSQL Database Configuration
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://pvwsllkimmscfyqshass.supabase.co';
+const SUPABASE_KEY = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2d3NsbGtpbW1zY2Z5cXNoYXNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU0NDIwNTYsImV4cCI6MjExMTAxODA1Nn0._e9KPNnMzIwTyDT9ZKREHI0HtVfD7X06mnMcg6sVjm4';
+
+// Helper function to query Supabase REST API with local fallback
+async function fetchFromSupabase(table) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) return data;
+    }
+  } catch (err) {
+    // gracefully fallback to local cache
+  }
+  return null;
+}
+
 // ==========================================
 // API ROUTES (Web Service Sesuai Modul 1)
 // ==========================================
@@ -44,6 +68,8 @@ app.get('/api', (req, res) => {
     status: 'success',
     name: 'RetroCam Archive API',
     version: '1.0.0',
+    database: 'Supabase Cloud Database (PostgreSQL)',
+    supabaseProjectUrl: SUPABASE_URL,
     description: 'Custom Web Service REST API for Retro Digital Cameras and Vintage Lenses Catalog',
     endpoints: [
       { method: 'GET', path: '/api/cameras', description: 'List all digital cameras (filters: search, sensor, brand, sort)' },
@@ -58,17 +84,23 @@ app.get('/api', (req, res) => {
 });
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'ok',
+    database: 'Supabase PostgreSQL',
+    supabaseUrl: SUPABASE_URL,
+    timestamp: new Date().toISOString()
+  });
 });
 
 // 2. Get Camera List (supports search, category filter, sensor filter, brand filter, sorting)
-app.get('/api/cameras', (req, res) => {
-  let results = [...camerasData];
+app.get('/api/cameras', async (req, res) => {
+  const supabaseCameras = await fetchFromSupabase('cameras');
+  let results = [...(supabaseCameras || camerasData)];
   const { search, category, sensor, brand, sort } = req.query;
 
   if (search) {
     const q = search.toLowerCase();
-    results = results.filter(c => 
+    results = results.filter(c =>
       c.name.toLowerCase().includes(q) ||
       c.brand.toLowerCase().includes(q) ||
       c.sensorType.toLowerCase().includes(q) ||
@@ -163,6 +195,18 @@ app.post('/api/cameras', (req, res) => {
     console.warn('File write notice:', err.message);
   }
 
+  // Sinkronisasi otomatis ke Supabase Cloud PostgreSQL
+  fetch(`${SUPABASE_URL}/rest/v1/cameras`, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'resolution=merge-duplicates'
+    },
+    body: JSON.stringify(newCamera)
+  }).catch(e => console.warn('Supabase sync notice:', e.message));
+
   res.status(201).json({
     status: 'success',
     message: 'Kamera baru berhasil ditambahkan ke katalog.',
@@ -185,6 +229,18 @@ app.put('/api/cameras/:id', (req, res) => {
   } catch (err) {
     console.warn('File write notice:', err.message);
   }
+
+  // Sinkronisasi update ke Supabase Cloud PostgreSQL
+  fetch(`${SUPABASE_URL}/rest/v1/cameras?id=eq.${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(camerasData[idx])
+  }).catch(e => console.warn('Supabase update notice:', e.message));
+
   res.status(200).json({
     status: 'success',
     message: 'Kamera berhasil diperbarui.',
@@ -193,13 +249,14 @@ app.put('/api/cameras/:id', (req, res) => {
 });
 
 // 4. Get Lenses List (supports search, category filter, mount filter, brand filter, sorting)
-app.get('/api/lenses', (req, res) => {
-  let results = [...lensesData];
+app.get('/api/lenses', async (req, res) => {
+  const supabaseLenses = await fetchFromSupabase('lenses');
+  let results = [...(supabaseLenses || lensesData)];
   const { search, category, mount, brand, sort } = req.query;
 
   if (search) {
     const q = search.toLowerCase();
-    results = results.filter(l => 
+    results = results.filter(l =>
       l.name.toLowerCase().includes(q) ||
       l.brand.toLowerCase().includes(q) ||
       l.mount.toLowerCase().includes(q) ||
@@ -294,6 +351,18 @@ app.post('/api/lenses', (req, res) => {
     console.warn('File write notice:', err.message);
   }
 
+  // Sinkronisasi otomatis ke Supabase Cloud PostgreSQL
+  fetch(`${SUPABASE_URL}/rest/v1/lenses`, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'resolution=merge-duplicates'
+    },
+    body: JSON.stringify(newLens)
+  }).catch(e => console.warn('Supabase lens sync notice:', e.message));
+
   res.status(201).json({
     status: 'success',
     message: 'Lensa baru berhasil ditambahkan ke katalog.',
@@ -316,6 +385,18 @@ app.put('/api/lenses/:id', (req, res) => {
   } catch (err) {
     console.warn('File write notice:', err.message);
   }
+
+  // Sinkronisasi update ke Supabase Cloud PostgreSQL
+  fetch(`${SUPABASE_URL}/rest/v1/lenses?id=eq.${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(lensesData[idx])
+  }).catch(e => console.warn('Supabase lens patch notice:', e.message));
+
   res.status(200).json({
     status: 'success',
     message: 'Lensa berhasil diperbarui.',

@@ -1,11 +1,32 @@
 const path = require('path');
 const fs = require('fs');
 
-module.exports = (req, res) => {
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://pvwsllkimmscfyqshass.supabase.co';
+const SUPABASE_KEY = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2d3NsbGtpbW1zY2Z5cXNoYXNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU0NDIwNTYsImV4cCI6MjExMTAxODA1Nn0._e9KPNnMzIwTyDT9ZKREHI0HtVfD7X06mnMcg6sVjm4';
+
+async function fetchFromSupabase() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/cameras?select=*`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) return data;
+    }
+  } catch (err) {}
+  return null;
+}
+
+module.exports = async (req, res) => {
   try {
     const filePath = path.join(process.cwd(), 'data', 'cameras.json');
     const raw = fs.readFileSync(filePath, 'utf-8');
-    let cameras = JSON.parse(raw);
+    let localCameras = JSON.parse(raw);
+    const supabaseCameras = await fetchFromSupabase();
+    let cameras = supabaseCameras || localCameras;
 
     // POST: Tambah Kamera Baru (Admin)
     if (req.method === 'POST') {
@@ -42,11 +63,21 @@ module.exports = (req, res) => {
 
       cameras.unshift(newCamera);
 
+      // Sinkronisasi ke Supabase
+      fetch(`${SUPABASE_URL}/rest/v1/cameras`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify(newCamera)
+      }).catch(() => {});
+
       try {
         fs.writeFileSync(filePath, JSON.stringify(cameras, null, 2), 'utf-8');
-      } catch (err) {
-        // Read-only filesystem handled gracefully
-      }
+      } catch (err) {}
 
       return res.status(201).json({
         status: 'success',
@@ -64,6 +95,18 @@ module.exports = (req, res) => {
         return res.status(404).json({ status: 'error', message: 'Kamera tidak ditemukan' });
       }
       cameras[idx] = { ...cameras[idx], ...body, id: targetId };
+
+      // Sinkronisasi ke Supabase
+      fetch(`${SUPABASE_URL}/rest/v1/cameras?id=eq.${encodeURIComponent(targetId)}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(cameras[idx])
+      }).catch(() => {});
+
       try {
         fs.writeFileSync(filePath, JSON.stringify(cameras, null, 2), 'utf-8');
       } catch (err) {}
