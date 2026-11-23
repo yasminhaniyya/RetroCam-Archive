@@ -55,6 +55,18 @@ const LensesView = {
           </div>
         </div>
 
+        <!-- Admin Bar: Akses Tambah Lensa -->
+        ${StorageService.isAdmin() ? `
+          <div class="admin-catalog-banner">
+            <div class="admin-banner-content">
+              <span>🛡️ <strong>Mode Admin:</strong> Anda memiliki akses mengelola dan menambah lensa ke katalog.</span>
+              <button type="button" class="btn btn-sm btn-primary" onclick="window.openAddLensModal()">
+                ➕ Tambah Lensa Baru
+              </button>
+            </div>
+          </div>
+        ` : ''}
+
         <!-- Section Kategori Lensa (Gaya Neokyo) -->
         <div class="neokyo-category-section">
           <h2 class="neokyo-category-title">Kategori Lensa</h2>

@@ -9,13 +9,12 @@ module.exports = (req, res) => {
 
     if (req.method === 'POST' || req.method === 'PUT') {
       const body = req.body || {};
-      const updates = body.userInfo ? body.userInfo : (body.academicInfo ? body.academicInfo : body);
+      const updates = body.userInfo || body.academicInfo || body;
 
       profile.userInfo = {
         ...(profile.userInfo || {}),
         ...updates
       };
-
       if (profile.academicInfo) {
         profile.academicInfo = {
           ...profile.academicInfo,

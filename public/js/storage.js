@@ -97,6 +97,52 @@ const StorageService = {
     return !!this.getAuthUser();
   },
 
+  isAdmin() {
+    const user = this.getAuthUser();
+    return !!(user && (user.role === 'admin' || user.email === 'admin@retrocam.id'));
+  },
+
+  // --- CUSTOM ADMIN ADDED CAMERAS & LENSES (Offline Persistence) ---
+  getCustomCameras() {
+    try {
+      const data = localStorage.getItem('retrocam_custom_cameras');
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      return [];
+    }
+  },
+
+  addCustomCamera(camera) {
+    try {
+      const list = this.getCustomCameras();
+      list.unshift(camera);
+      localStorage.setItem('retrocam_custom_cameras', JSON.stringify(list));
+      window.dispatchEvent(new CustomEvent('catalogUpdated', { detail: { type: 'camera', item: camera } }));
+    } catch (e) {
+      console.error('Error saving custom camera:', e);
+    }
+  },
+
+  getCustomLenses() {
+    try {
+      const data = localStorage.getItem('retrocam_custom_lenses');
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      return [];
+    }
+  },
+
+  addCustomLens(lens) {
+    try {
+      const list = this.getCustomLenses();
+      list.unshift(lens);
+      localStorage.setItem('retrocam_custom_lenses', JSON.stringify(list));
+      window.dispatchEvent(new CustomEvent('catalogUpdated', { detail: { type: 'lens', item: lens } }));
+    } catch (e) {
+      console.error('Error saving custom lens:', e);
+    }
+  },
+
   login(user) {
     try {
       localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));

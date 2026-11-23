@@ -61,6 +61,18 @@ const CamerasView = {
           </div>
         </div>
 
+        <!-- Admin Bar: Akses Tambah Kamera -->
+        ${StorageService.isAdmin() ? `
+          <div class="admin-catalog-banner">
+            <div class="admin-banner-content">
+              <span>🛡️ <strong>Mode Admin:</strong> Anda memiliki akses mengelola dan menambah kamera ke katalog.</span>
+              <button type="button" class="btn btn-sm btn-primary" onclick="window.openAddCameraModal()">
+                ➕ Tambah Kamera Baru
+              </button>
+            </div>
+          </div>
+        ` : ''}
+
         <!-- Section Kategori (Sesuai Contoh Gambar Neokyo) -->
         <div class="neokyo-category-section">
           <h2 class="neokyo-category-title">Kategori</h2>

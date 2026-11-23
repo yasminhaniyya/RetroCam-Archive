@@ -46,13 +46,23 @@ const ApiService = {
     if (filters.sort) params.append('sort', filters.sort);
 
     const qs = params.toString() ? `?${params.toString()}` : '';
+    let results = [];
     try {
       const res = await this.request(`/cameras${qs}`);
-      return res.data || [];
+      results = res.data || [];
     } catch (e) {
       // Fallback for static demo environments
-      return this.getLocalFilteredCameras(filters);
+      results = this.getLocalFilteredCameras(filters);
     }
+
+    // Merge custom cameras added locally if not already present
+    const custom = StorageService.getCustomCameras ? StorageService.getCustomCameras() : [];
+    if (custom.length > 0) {
+      const existingIds = new Set(results.map(c => c.id));
+      const toAdd = custom.filter(c => !existingIds.has(c.id));
+      results = [...toAdd, ...results];
+    }
+    return results;
   },
 
   // Get camera detail by ID
@@ -76,12 +86,22 @@ const ApiService = {
     if (filters.sort) params.append('sort', filters.sort);
 
     const qs = params.toString() ? `?${params.toString()}` : '';
+    let results = [];
     try {
       const res = await this.request(`/lenses${qs}`);
-      return res.data || [];
+      results = res.data || [];
     } catch (e) {
-      return this.getLocalFilteredLenses(filters);
+      results = this.getLocalFilteredLenses(filters);
     }
+
+    // Merge custom lenses added locally if not already present
+    const custom = StorageService.getCustomLenses ? StorageService.getCustomLenses() : [];
+    if (custom.length > 0) {
+      const existingIds = new Set(results.map(l => l.id));
+      const toAdd = custom.filter(l => !existingIds.has(l.id));
+      results = [...toAdd, ...results];
+    }
+    return results;
   },
 
   // Get lens detail by ID
@@ -122,6 +142,44 @@ const ApiService = {
       return res.data;
     } catch (e) {
       return null;
+    }
+  },
+
+  // Add new camera (Admin)
+  async addCamera(cameraData) {
+    try {
+      const res = await this.request('/cameras', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(cameraData)
+      });
+      StorageService.addCustomCamera(res.data || cameraData);
+      return res.data || cameraData;
+    } catch (e) {
+      console.warn('Backend addCamera unreachable, saving locally in StorageService:', e);
+      StorageService.addCustomCamera(cameraData);
+      return cameraData;
+    }
+  },
+
+  // Add new lens (Admin)
+  async addLens(lensData) {
+    try {
+      const res = await this.request('/lenses', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(lensData)
+      });
+      StorageService.addCustomLens(res.data || lensData);
+      return res.data || lensData;
+    } catch (e) {
+      console.warn('Backend addLens unreachable, saving locally in StorageService:', e);
+      StorageService.addCustomLens(lensData);
+      return lensData;
     }
   },
 

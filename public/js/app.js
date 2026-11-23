@@ -24,6 +24,7 @@ const App = {
     this.initNetworkListeners();
     this.initBottomNav();
     this.updateFavoritesBadge();
+    this.initAdminModals();
 
     // Listen to hash change for SPA navigation
     window.addEventListener('hashchange', () => this.handleRoute());
@@ -218,6 +219,132 @@ const App = {
       toast.classList.add('animate-toast-out');
       setTimeout(() => toast.remove(), 300);
     }, duration);
+  },
+
+  // 8. Admin Modals Management (Tambah Kamera & Lensa)
+  initAdminModals() {
+    const modalCam = document.getElementById('modal-add-camera');
+    const closeCamBtn = document.getElementById('btn-close-modal-cam');
+    const cancelCamBtn = document.getElementById('btn-cancel-modal-cam');
+    const formCam = document.getElementById('form-admin-add-camera');
+
+    window.openAddCameraModal = () => {
+      if (modalCam) {
+        modalCam.classList.remove('is-hidden');
+      }
+    };
+
+    window.closeAddCameraModal = () => {
+      if (modalCam) modalCam.classList.add('is-hidden');
+    };
+
+    if (closeCamBtn) closeCamBtn.onclick = window.closeAddCameraModal;
+    if (cancelCamBtn) cancelCamBtn.onclick = window.closeAddCameraModal;
+
+    if (formCam) {
+      formCam.onsubmit = async (e) => {
+        e.preventDefault();
+        const submitBtn = document.getElementById('btn-submit-add-cam');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Menyimpan...';
+        }
+
+        try {
+          const newCam = {
+            name: document.getElementById('add-cam-name').value.trim(),
+            brand: document.getElementById('add-cam-brand').value,
+            category: document.getElementById('add-cam-category').value,
+            sensorType: document.getElementById('add-cam-sensor').value,
+            megapixels: parseFloat(document.getElementById('add-cam-mp').value) || 12.0,
+            releaseYear: parseInt(document.getElementById('add-cam-year').value) || 2008,
+            priceYen: document.getElementById('add-cam-price').value.trim() || '¥45,000',
+            imageUrl: document.getElementById('add-cam-img').value.trim() || '/images/cameras/cam-pocket-01.jpg',
+            summary: document.getElementById('add-cam-summary').value.trim()
+          };
+
+          await ApiService.addCamera(newCam);
+          window.closeAddCameraModal();
+          formCam.reset();
+          App.showToast(`Kamera "${newCam.name}" berhasil ditambahkan ke katalog!`);
+
+          if (window.location.hash.startsWith('#camera') && window.CamerasView && window.CamerasView.loadCamerasData) {
+            window.CamerasView.loadCamerasData();
+          } else if (window.location.hash === '#profile' && window.ProfileView && window.ProfileView.loadProfileData) {
+            window.ProfileView.loadProfileData();
+          }
+        } catch (err) {
+          App.showToast(`Gagal menambahkan kamera: ${err.message}`);
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Simpan Kamera ke Katalog';
+          }
+        }
+      };
+    }
+
+    const modalLens = document.getElementById('modal-add-lens');
+    const closeLensBtn = document.getElementById('btn-close-modal-lens');
+    const cancelLensBtn = document.getElementById('btn-cancel-modal-lens');
+    const formLens = document.getElementById('form-admin-add-lens');
+
+    window.openAddLensModal = () => {
+      if (modalLens) {
+        modalLens.classList.remove('is-hidden');
+      }
+    };
+
+    window.closeAddLensModal = () => {
+      if (modalLens) modalLens.classList.add('is-hidden');
+    };
+
+    if (closeLensBtn) closeLensBtn.onclick = window.closeAddLensModal;
+    if (cancelLensBtn) cancelLensBtn.onclick = window.closeAddLensModal;
+
+    if (formLens) {
+      formLens.onsubmit = async (e) => {
+        e.preventDefault();
+        const submitBtn = document.getElementById('btn-submit-add-lens');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Menyimpan...';
+        }
+
+        try {
+          const newLens = {
+            name: document.getElementById('add-lens-name').value.trim(),
+            brand: document.getElementById('add-lens-brand').value,
+            category: document.getElementById('add-lens-category').value,
+            mount: document.getElementById('add-lens-mount').value,
+            focalLength: document.getElementById('add-lens-focal').value.trim() || '50mm',
+            maxAperture: document.getElementById('add-lens-aperture').value.trim() || 'f/1.8',
+            releaseYear: parseInt(document.getElementById('add-lens-year').value) || 2020,
+            priceYen: document.getElementById('add-lens-price').value.trim() || '¥38,000',
+            imageUrl: document.getElementById('add-lens-img').value.trim() || '/images/lenses/lens-prime-01.jpg',
+            summary: document.getElementById('add-lens-summary').value.trim()
+          };
+
+          await ApiService.addLens(newLens);
+          window.closeAddLensModal();
+          formLens.reset();
+          App.showToast(`Lensa "${newLens.name}" berhasil ditambahkan ke katalog!`);
+
+          if (window.location.hash.startsWith('#lens') && window.LensesView && window.LensesView.loadLensesData) {
+            window.LensesView.loadLensesData();
+          } else if (window.location.hash === '#profile' && window.ProfileView && window.ProfileView.loadProfileData) {
+            window.ProfileView.loadProfileData();
+          }
+        } catch (err) {
+          App.showToast(`Gagal menambahkan lensa: ${err.message}`);
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Simpan Lensa ke Katalog';
+          }
+        }
+      };
+    }
   }
 };
 

@@ -274,9 +274,12 @@ const ProfileView = {
 
             <!-- Quick Demo Login Button -->
             <div class="auth-quick-demo">
-              <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem;">Coba akun demo e-commerce:</p>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.6rem;">Pilih mode login demo cepat:</p>
               <button type="button" id="btn-quick-demo-login" class="btn-demo-quick">
-                ⚡ Masuk Cepat sebagai Yasmin Haniyya
+                ⚡ Masuk sebagai Member (Yasmin Haniyya)
+              </button>
+              <button type="button" id="btn-quick-admin-login" class="btn-demo-quick btn-demo-admin">
+                🛡️ Masuk sebagai Admin (Kelola & Tambah Katalog)
               </button>
             </div>
           </div>
@@ -296,15 +299,17 @@ const ProfileView = {
 
       const authUser = StorageService.getAuthUser() || {};
       const customProfile = StorageService.getSavedProfile() || {};
+      const isAdmin = StorageService.isAdmin();
+
       const user = {
-        name: customProfile.name || authUser.name || profile?.userInfo?.name || 'Yasmin Haniyya',
-        email: customProfile.email || authUser.email || profile?.userInfo?.email || 'yasminhaniyyaa@gmail.com',
-        phone: customProfile.phone || authUser.phone || profile?.userInfo?.phone || '+62 812-3456-7890',
-        city: customProfile.city || authUser.city || profile?.userInfo?.city || 'Semarang, Jawa Tengah',
-        memberTier: customProfile.memberTier || authUser.memberTier || profile?.userInfo?.memberTier || 'Gold Member',
-        joinDate: customProfile.joinDate || authUser.joinDate || profile?.userInfo?.joinDate || 'Januari 2024',
-        bio: customProfile.bio || authUser.bio || profile?.userInfo?.bio || 'Pecinta fotografi kamera digital era CCD dan eksplorasi lensa manual vintage.',
-        avatarUrl: customProfile.avatarUrl || authUser.avatarUrl || profile?.userInfo?.avatarUrl || profile?.academicInfo?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'
+        name: isAdmin ? (customProfile.name || authUser.name || 'Administrator RetroCam') : (customProfile.name || authUser.name || profile?.userInfo?.name || 'Yasmin Haniyya'),
+        email: customProfile.email || authUser.email || (isAdmin ? 'admin@retrocam.id' : (profile?.userInfo?.email || 'yasminhaniyyaa@gmail.com')),
+        phone: customProfile.phone || authUser.phone || (isAdmin ? '+62 811-9876-5432' : (profile?.userInfo?.phone || '+62 812-3456-7890')),
+        city: customProfile.city || authUser.city || (isAdmin ? 'Semarang / Jakarta' : (profile?.userInfo?.city || 'Semarang, Jawa Tengah')),
+        memberTier: isAdmin ? 'Administrator' : (customProfile.memberTier || authUser.memberTier || profile?.userInfo?.memberTier || 'Gold Member'),
+        joinDate: customProfile.joinDate || authUser.joinDate || (isAdmin ? 'Sistem Katalog 2024' : (profile?.userInfo?.joinDate || 'Januari 2024')),
+        bio: customProfile.bio || authUser.bio || (isAdmin ? 'Pengelola arsip katalog kamera digital dan lensa vintage RetroCam Archive.' : (profile?.userInfo?.bio || 'Pecinta fotografi kamera digital era CCD dan eksplorasi lensa manual vintage.')),
+        avatarUrl: customProfile.avatarUrl || authUser.avatarUrl || (isAdmin ? '/images/app-logo.png' : (profile?.userInfo?.avatarUrl || profile?.academicInfo?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'))
       };
 
       this.currentAvatarData = user.avatarUrl;
@@ -329,8 +334,8 @@ const ProfileView = {
             </div>
 
             <div class="profile-details">
-              <div class="ecommerce-badge">
-                <span>👑 ${user.memberTier}</span> • <span>Terverifikasi</span>
+              <div class="ecommerce-badge ${isAdmin ? 'admin-badge' : ''}">
+                <span>${isAdmin ? '🛡️ Administrator' : `👑 ${user.memberTier}`}</span> • <span>${isAdmin ? 'Kelola Katalog' : 'Terverifikasi'}</span>
               </div>
               <h2 class="profile-name" id="display-user-name">${user.name}</h2>
 
@@ -358,7 +363,15 @@ const ProfileView = {
               </div>
 
               <div class="profile-action-btn-row" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                <button class="btn btn-primary" id="btn-edit-student-profile">
+                ${isAdmin ? `
+                  <button type="button" class="btn btn-primary" id="btn-profile-add-camera" style="background: linear-gradient(135deg, #0284c7, #0369a1);">
+                    ➕ Tambah Kamera Baru
+                  </button>
+                  <button type="button" class="btn btn-primary" id="btn-profile-add-lens" style="background: linear-gradient(135deg, #0284c7, #0369a1);">
+                    ➕ Tambah Lensa Baru
+                  </button>
+                ` : ''}
+                <button class="btn ${isAdmin ? 'btn-secondary' : 'btn-primary'}" id="btn-edit-student-profile">
                   <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
@@ -378,36 +391,67 @@ const ProfileView = {
           </div>
         </div>
 
-        <!-- E-Commerce Activity Summary -->
+        <!-- E-Commerce / Admin Activity Summary -->
         <div class="ecommerce-dashboard-grid">
-          <a href="#favorites" class="ecommerce-dash-card">
-            <div class="ecommerce-dash-icon">❤️</div>
-            <div>
-              <div class="ecommerce-dash-title">Wishlist Favorit</div>
-              <div class="ecommerce-dash-value">${totalFavCount} Item Tersimpan</div>
+          ${isAdmin ? `
+            <div class="ecommerce-dash-card" style="cursor: pointer;" onclick="window.openAddCameraModal && window.openAddCameraModal()">
+              <div class="ecommerce-dash-icon">📸</div>
+              <div>
+                <div class="ecommerce-dash-title">Kelola Kamera</div>
+                <div class="ecommerce-dash-value" style="color: #0284c7;">+ Tambah Kamera Baru</div>
+              </div>
             </div>
-          </a>
-          <div class="ecommerce-dash-card" onclick="alert('Pesanan Saya: 2 transaksi kamera sebelumnya berstatus selesai & telah diterima.')">
-            <div class="ecommerce-dash-icon">🛒</div>
-            <div>
-              <div class="ecommerce-dash-title">Pesanan Saya</div>
-              <div class="ecommerce-dash-value">2 Pesanan Selesai</div>
+            <div class="ecommerce-dash-card" style="cursor: pointer;" onclick="window.openAddLensModal && window.openAddLensModal()">
+              <div class="ecommerce-dash-icon">🔍</div>
+              <div>
+                <div class="ecommerce-dash-title">Kelola Lensa</div>
+                <div class="ecommerce-dash-value" style="color: #0284c7;">+ Tambah Lensa Baru</div>
+              </div>
             </div>
-          </div>
-          <div class="ecommerce-dash-card" onclick="alert('Voucher Aktif: Diskon 10% untuk pembelian kamera retro dan gratis ongkir se-Jawa!')">
-            <div class="ecommerce-dash-icon">🎟️</div>
-            <div>
-              <div class="ecommerce-dash-title">Voucher Diskon</div>
-              <div class="ecommerce-dash-value">3 Kupon Aktif</div>
+            <a href="#favorites" class="ecommerce-dash-card">
+              <div class="ecommerce-dash-icon">❤️</div>
+              <div>
+                <div class="ecommerce-dash-title">Wishlist Favorit</div>
+                <div class="ecommerce-dash-value">${totalFavCount} Item Tersimpan</div>
+              </div>
+            </a>
+            <div class="ecommerce-dash-card" onclick="alert('Role: Administrator RetroCam. Anda memiliki akses penuh menambah katalog kamera dan lensa.')">
+              <div class="ecommerce-dash-icon">🛡️</div>
+              <div>
+                <div class="ecommerce-dash-title">Hak Akses Admin</div>
+                <div class="ecommerce-dash-value" style="color: #10b981;">Akses Penuh Aktif</div>
+              </div>
             </div>
-          </div>
-          <div class="ecommerce-dash-card" onclick="alert('Poin Loyalitas: Anda memiliki 1.250 Poin yang dapat ditukar voucher diskon.')">
-            <div class="ecommerce-dash-icon">⭐</div>
-            <div>
-              <div class="ecommerce-dash-title">Poin Reward</div>
-              <div class="ecommerce-dash-value">1.250 Poin</div>
+          ` : `
+            <a href="#favorites" class="ecommerce-dash-card">
+              <div class="ecommerce-dash-icon">❤️</div>
+              <div>
+                <div class="ecommerce-dash-title">Wishlist Favorit</div>
+                <div class="ecommerce-dash-value">${totalFavCount} Item Tersimpan</div>
+              </div>
+            </a>
+            <div class="ecommerce-dash-card" onclick="alert('Pesanan Saya: 2 transaksi kamera sebelumnya berstatus selesai & telah diterima.')">
+              <div class="ecommerce-dash-icon">🛒</div>
+              <div>
+                <div class="ecommerce-dash-title">Pesanan Saya</div>
+                <div class="ecommerce-dash-value">2 Pesanan Selesai</div>
+              </div>
             </div>
-          </div>
+            <div class="ecommerce-dash-card" onclick="alert('Voucher Aktif: Diskon 10% untuk pembelian kamera retro dan gratis ongkir se-Jawa!')">
+              <div class="ecommerce-dash-icon">🎟️</div>
+              <div>
+                <div class="ecommerce-dash-title">Voucher Diskon</div>
+                <div class="ecommerce-dash-value">3 Kupon Aktif</div>
+              </div>
+            </div>
+            <div class="ecommerce-dash-card" onclick="alert('Poin Loyalitas: Anda memiliki 1.250 Poin yang dapat ditukar voucher diskon.')">
+              <div class="ecommerce-dash-icon">⭐</div>
+              <div>
+                <div class="ecommerce-dash-title">Poin Reward</div>
+                <div class="ecommerce-dash-value">1.250 Poin</div>
+              </div>
+            </div>
+          `}
         </div>
 
         <!-- Edit Profile Form Container -->
@@ -512,6 +556,7 @@ const ProfileView = {
     const formLogin = document.getElementById('form-auth-login');
     const formRegister = document.getElementById('form-auth-register');
     const quickDemoBtn = document.getElementById('btn-quick-demo-login');
+    const quickAdminBtn = document.getElementById('btn-quick-admin-login');
 
     // Switch Tabs
     if (tabLogin && tabRegister && formLogin && formRegister) {
@@ -535,15 +580,17 @@ const ProfileView = {
       formLogin.onsubmit = (e) => {
         e.preventDefault();
         const email = document.getElementById('login-email').value.trim();
+        const isAdminEmail = email.toLowerCase().includes('admin');
         const demoUser = {
-          name: profile?.userInfo?.name || 'Yasmin Haniyya',
-          email: email || 'yasminhaniyyaa@gmail.com',
+          name: isAdminEmail ? 'Administrator RetroCam' : (profile?.userInfo?.name || 'Yasmin Haniyya'),
+          email: email || (isAdminEmail ? 'admin@retrocam.id' : 'yasminhaniyyaa@gmail.com'),
+          role: isAdminEmail ? 'admin' : 'member',
           phone: profile?.userInfo?.phone || '+62 812-3456-7890',
           city: profile?.userInfo?.city || 'Semarang, Jawa Tengah',
-          memberTier: 'Gold Member',
+          memberTier: isAdminEmail ? 'Administrator' : 'Gold Member',
           joinDate: 'Januari 2024',
-          bio: profile?.userInfo?.bio || 'Pecinta fotografi kamera digital era CCD dan eksplorasi lensa manual.',
-          avatarUrl: profile?.userInfo?.avatarUrl || profile?.academicInfo?.avatarUrl
+          bio: isAdminEmail ? 'Pengelola arsip katalog kamera digital dan lensa vintage RetroCam Archive.' : (profile?.userInfo?.bio || 'Pecinta fotografi kamera digital era CCD dan eksplorasi lensa manual.'),
+          avatarUrl: isAdminEmail ? '/images/app-logo.png' : (profile?.userInfo?.avatarUrl || profile?.academicInfo?.avatarUrl)
         };
 
         StorageService.login(demoUser);
@@ -554,12 +601,13 @@ const ProfileView = {
       };
     }
 
-    // Quick Demo Login Button
+    // Quick Demo Login Button (Member)
     if (quickDemoBtn) {
       quickDemoBtn.onclick = () => {
         const demoUser = {
           name: profile?.userInfo?.name || 'Yasmin Haniyya',
           email: 'yasminhaniyyaa@gmail.com',
+          role: 'member',
           phone: profile?.userInfo?.phone || '+62 812-3456-7890',
           city: profile?.userInfo?.city || 'Semarang, Jawa Tengah',
           memberTier: 'Gold Member',
@@ -576,6 +624,29 @@ const ProfileView = {
       };
     }
 
+    // Quick Demo Admin Login Button
+    if (quickAdminBtn) {
+      quickAdminBtn.onclick = () => {
+        const adminUser = {
+          name: 'Administrator RetroCam',
+          email: 'admin@retrocam.id',
+          role: 'admin',
+          phone: '+62 811-9876-5432',
+          city: 'Semarang, Jawa Tengah',
+          memberTier: 'Administrator',
+          joinDate: 'Sistem Katalog 2024',
+          bio: 'Pengelola arsip katalog kamera digital dan lensa vintage RetroCam Archive.',
+          avatarUrl: '/images/app-logo.png'
+        };
+
+        StorageService.login(adminUser);
+        if (window.App && window.App.showToast) {
+          window.App.showToast('Login berhasil sebagai Administrator! Akses kelola & tambah katalog aktif.');
+        }
+        this.loadProfileData();
+      };
+    }
+
     // Submit Register
     if (formRegister) {
       formRegister.onsubmit = (e) => {
@@ -583,6 +654,7 @@ const ProfileView = {
         const newUser = {
           name: document.getElementById('reg-name').value.trim() || 'Yasmin Haniyya',
           email: document.getElementById('reg-email').value.trim() || 'yasminhaniyyaa@gmail.com',
+          role: 'member',
           phone: document.getElementById('reg-phone').value.trim() || '+62 812-3456-7890',
           city: document.getElementById('reg-city').value.trim() || 'Semarang, Jawa Tengah',
           memberTier: 'Member Baru',
@@ -630,6 +702,20 @@ const ProfileView = {
     const urlInput = document.getElementById('input-edit-avatar-url');
     const previewImg = document.getElementById('edit-avatar-preview-img');
     const btnOpenCropperManual = document.getElementById('btn-open-cropper-manual');
+    const btnProfileAddCamera = document.getElementById('btn-profile-add-camera');
+    const btnProfileAddLens = document.getElementById('btn-profile-add-lens');
+
+    // Admin Action Buttons
+    if (btnProfileAddCamera) {
+      btnProfileAddCamera.onclick = () => {
+        if (window.openAddCameraModal) window.openAddCameraModal();
+      };
+    }
+    if (btnProfileAddLens) {
+      btnProfileAddLens.onclick = () => {
+        if (window.openAddLensModal) window.openAddLensModal();
+      };
+    }
 
     // Buka / Tutup Form Edit
     if (editBtn && editBox) {

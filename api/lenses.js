@@ -7,6 +7,55 @@ module.exports = (req, res) => {
     const raw = fs.readFileSync(filePath, 'utf-8');
     let lenses = JSON.parse(raw);
 
+    // POST: Tambah Lensa Baru (Admin)
+    if (req.method === 'POST') {
+      const body = req.body || {};
+      if (!body.name || !body.brand) {
+        return res.status(400).json({ status: 'error', message: 'Nama dan merek lensa wajib diisi' });
+      }
+
+      const newId = body.id || `lens-${Date.now()}`;
+      const newLens = {
+        id: newId,
+        name: body.name,
+        brand: body.brand,
+        category: body.category || 'Lensa Prime',
+        mount: body.mount || 'Sony E-mount',
+        focalLength: body.focalLength || '50mm',
+        maxAperture: body.maxAperture || 'f/1.8',
+        releaseYear: parseInt(body.releaseYear) || new Date().getFullYear(),
+        priceYen: body.priceYen || '¥38,000',
+        rating: parseFloat(body.rating) || 4.8,
+        imageUrl: body.imageUrl || '/images/lenses/lens-prime-01.jpg',
+        summary: body.summary || body.name,
+        description: body.description || `${body.name} dikurasi dan ditambahkan ke katalog RetroCam Archive.`,
+        specs: body.specs || {
+          focalLength: body.focalLength || '50mm',
+          maxAperture: body.maxAperture || 'f/1.8',
+          minAperture: body.minAperture || 'f/22',
+          mount: body.mount || 'Sony E-mount',
+          filterThread: body.filterThread || '49mm'
+        },
+        bokehCharacter: body.bokehCharacter || 'Bokeh melingkar dengan degradasi fokus halus.',
+        pros: Array.isArray(body.pros) ? body.pros : [body.summary || 'Kualitas optik tajam'],
+        cons: Array.isArray(body.cons) ? body.cons : ['Fokus manual']
+      };
+
+      lenses.unshift(newLens);
+
+      try {
+        fs.writeFileSync(filePath, JSON.stringify(lenses, null, 2), 'utf-8');
+      } catch (err) {
+        // Read-only filesystem handled gracefully
+      }
+
+      return res.status(201).json({
+        status: 'success',
+        message: 'Lensa baru berhasil ditambahkan ke katalog.',
+        data: newLens
+      });
+    }
+
     const { id, search, category, mount, brand, sort } = req.query;
 
     if (id) {

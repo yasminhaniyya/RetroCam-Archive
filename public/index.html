@@ -13,15 +13,15 @@
   <meta name="apple-mobile-web-app-title" content="RetroCam" />
   
   <!-- Favicon & Icons -->
-  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png?v=3.7.0" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png?v=3.7.0" />
-  <link rel="icon" type="image/png" sizes="64x64" href="/icons/favicon.png?v=3.7.0" />
-  <link rel="icon" type="image/x-icon" href="/favicon.ico?v=3.7.0" />
-  <link rel="shortcut icon" href="/favicon.ico?v=3.7.0" />
-  <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png?v=3.7.0" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png?v=3.8.0" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png?v=3.8.0" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/icons/favicon.png?v=3.8.0" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico?v=3.8.0" />
+  <link rel="shortcut icon" href="/favicon.ico?v=3.8.0" />
+  <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png?v=3.8.0" />
   
   <!-- Web App Manifest -->
-  <link rel="manifest" href="/manifest.json?v=3.7.0" />
+  <link rel="manifest" href="/manifest.json?v=3.8.0" />
 
   <!-- Fonts: Plus Jakarta Sans for UI + JetBrains Mono for Technical Specs -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +29,7 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="/css/style.css?v=3.7.0" />
+  <link rel="stylesheet" href="/css/style.css?v=3.8.0" />
 </head>
 <body>
 
@@ -38,7 +38,7 @@
     <div class="header-container">
       <a href="#cameras" class="brand-logo" aria-label="Beranda RetroCam">
         <div class="logo-mark">
-          <img src="/images/app-logo.png?v=3.7.0" alt="RetroCam Logo" class="brand-logo-img" />
+          <img src="/images/app-logo.png?v=3.8.0" alt="RetroCam Logo" class="brand-logo-img" />
         </div>
         <div class="brand-text">
           <span class="brand-title">RetroCam <em>Archive</em></span>
@@ -129,17 +129,171 @@
   <!-- Toast Notification Container -->
   <div id="toast-container" class="toast-wrapper" aria-live="polite"></div>
 
+  <!-- Modal Tambah Kamera (Admin) -->
+  <div id="modal-add-camera" class="modal-backdrop is-hidden" role="dialog" aria-modal="true" aria-labelledby="title-modal-add-cam">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="title-modal-add-cam">➕ Tambah Kamera Baru ke Katalog</h3>
+        <button type="button" class="btn-clear" id="btn-close-modal-cam">&times;</button>
+      </div>
+      <form id="form-admin-add-camera" class="modal-body edit-form-grid">
+        <div class="form-group col-span-full">
+          <label for="add-cam-name">Nama Kamera:</label>
+          <input type="text" id="add-cam-name" class="form-input" placeholder="contoh: Canon PowerShot G9 X Mark II" required />
+        </div>
+        <div class="form-group">
+          <label for="add-cam-brand">Merek Kamera:</label>
+          <select id="add-cam-brand" class="form-input" required>
+            <option value="Canon">Canon</option>
+            <option value="Sony">Sony</option>
+            <option value="Fujifilm">Fujifilm</option>
+            <option value="Nikon">Nikon</option>
+            <option value="Olympus">Olympus</option>
+            <option value="Panasonic">Panasonic</option>
+            <option value="Ricoh">Ricoh</option>
+            <option value="Leica">Leica</option>
+            <option value="Kodak">Kodak</option>
+            <option value="Casio">Casio</option>
+            <option value="Pentax">Pentax</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="add-cam-category">Kategori Kamera:</label>
+          <select id="add-cam-category" class="form-input" required>
+            <option value="Kamera saku">Kamera saku</option>
+            <option value="Kamera hibrida">Kamera hibrida</option>
+            <option value="Kamera prosumer">Kamera prosumer</option>
+            <option value="Kamera refleks">Kamera refleks</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="add-cam-sensor">Tipe Sensor:</label>
+          <select id="add-cam-sensor" class="form-input" required>
+            <option value="CCD">CCD (Classic Retro)</option>
+            <option value="Super HAD CCD">Super HAD CCD</option>
+            <option value="CMOS">CMOS</option>
+            <option value="BSI-CMOS">BSI-CMOS</option>
+            <option value="X-Trans CMOS">X-Trans CMOS</option>
+            <option value="Live MOS">Live MOS</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="add-cam-mp">Resolusi (Megapixels):</label>
+          <input type="number" id="add-cam-mp" class="form-input" step="0.1" placeholder="contoh: 12.1" value="12.0" required />
+        </div>
+        <div class="form-group">
+          <label for="add-cam-year">Tahun Rilis:</label>
+          <input type="number" id="add-cam-year" class="form-input" placeholder="contoh: 2008" value="2008" required />
+        </div>
+        <div class="form-group">
+          <label for="add-cam-price">Estimasi Harga (Yen):</label>
+          <input type="text" id="add-cam-price" class="form-input" placeholder="contoh: ¥45,000" value="¥45,000" required />
+        </div>
+        <div class="form-group col-span-full">
+          <label for="add-cam-img">URL Gambar Kamera:</label>
+          <input type="text" id="add-cam-img" class="form-input" placeholder="/images/cameras/cam-pocket-01.jpg atau https://..." value="/images/cameras/cam-pocket-01.jpg" />
+        </div>
+        <div class="form-group col-span-full">
+          <label for="add-cam-summary">Ringkasan Singkat:</label>
+          <input type="text" id="add-cam-summary" class="form-input" placeholder="Deskripsi singkat mengenai karakteristik kamera" required />
+        </div>
+        <div class="modal-footer col-span-full">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-modal-cam">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-add-cam">Simpan Kamera ke Katalog</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Tambah Lensa (Admin) -->
+  <div id="modal-add-lens" class="modal-backdrop is-hidden" role="dialog" aria-modal="true" aria-labelledby="title-modal-add-lens">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="title-modal-add-lens">➕ Tambah Lensa Baru ke Katalog</h3>
+        <button type="button" class="btn-clear" id="btn-close-modal-lens">&times;</button>
+      </div>
+      <form id="form-admin-add-lens" class="modal-body edit-form-grid">
+        <div class="form-group col-span-full">
+          <label for="add-lens-name">Nama Lensa:</label>
+          <input type="text" id="add-lens-name" class="form-input" placeholder="contoh: Sony FE 50mm F1.8" required />
+        </div>
+        <div class="form-group">
+          <label for="add-lens-brand">Merek Lensa:</label>
+          <select id="add-lens-brand" class="form-input" required>
+            <option value="Sony">Sony</option>
+            <option value="Canon">Canon</option>
+            <option value="Nikon">Nikon</option>
+            <option value="Fujifilm">Fujifilm</option>
+            <option value="Sigma">Sigma</option>
+            <option value="Tamron">Tamron</option>
+            <option value="Olympus">Olympus</option>
+            <option value="Panasonic">Panasonic</option>
+            <option value="Zeiss">Zeiss</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="add-lens-category">Kategori Lensa:</label>
+          <select id="add-lens-category" class="form-input" required>
+            <option value="Lensa Prime">Lensa Prime</option>
+            <option value="Lensa Zoom Standar">Lensa Zoom Standar</option>
+            <option value="Lensa Telephoto">Lensa Telephoto</option>
+            <option value="Lensa Makro">Lensa Makro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="add-lens-mount">Dudukan Mount:</label>
+          <select id="add-lens-mount" class="form-input" required>
+            <option value="Sony E-mount">Sony E-mount</option>
+            <option value="Canon RF">Canon RF</option>
+            <option value="Nikon Z">Nikon Z</option>
+            <option value="Fuji X">Fuji X</option>
+            <option value="Micro Four Thirds">Micro Four Thirds</option>
+            <option value="M42 Screw">M42 Screw</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="add-lens-focal">Focal Length:</label>
+          <input type="text" id="add-lens-focal" class="form-input" placeholder="contoh: 50mm atau 24-70mm" value="50mm" required />
+        </div>
+        <div class="form-group">
+          <label for="add-lens-aperture">Bukaan Maksimum (Aperture):</label>
+          <input type="text" id="add-lens-aperture" class="form-input" placeholder="contoh: f/1.8 atau f/2.8" value="f/1.8" required />
+        </div>
+        <div class="form-group">
+          <label for="add-lens-year">Tahun Rilis:</label>
+          <input type="number" id="add-lens-year" class="form-input" placeholder="contoh: 2020" value="2020" required />
+        </div>
+        <div class="form-group">
+          <label for="add-lens-price">Estimasi Harga (Yen):</label>
+          <input type="text" id="add-lens-price" class="form-input" placeholder="contoh: ¥38,000" value="¥38,000" required />
+        </div>
+        <div class="form-group col-span-full">
+          <label for="add-lens-img">URL Gambar Lensa:</label>
+          <input type="text" id="add-lens-img" class="form-input" placeholder="/images/lenses/lens-prime-01.jpg atau https://..." value="/images/lenses/lens-prime-01.jpg" />
+        </div>
+        <div class="form-group col-span-full">
+          <label for="add-lens-summary">Ringkasan Singkat:</label>
+          <input type="text" id="add-lens-summary" class="form-input" placeholder="Karakteristik optik dan keunggulan lensa" required />
+        </div>
+        <div class="modal-footer col-span-full">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-modal-lens">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-add-lens">Simpan Lensa ke Katalog</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- JavaScript Modules & Views -->
-  <script src="/js/fallbackData.js?v=3.7.0"></script>
-  <script src="/js/storage.js?v=3.7.0"></script>
-  <script src="/js/api.js?v=3.7.0"></script>
-  <script src="/js/views/camerasView.js?v=3.7.0"></script>
-  <script src="/js/views/cameraDetailView.js?v=3.7.0"></script>
-  <script src="/js/views/lensesView.js?v=3.7.0"></script>
-  <script src="/js/views/lensDetailView.js?v=3.7.0"></script>
-  <script src="/js/views/favoritesView.js?v=3.7.0"></script>
-  <script src="/js/views/guideView.js?v=3.7.0"></script>
-  <script src="/js/views/profileView.js?v=3.7.0"></script>
-  <script src="/js/app.js?v=3.7.0"></script>
+  <script src="/js/fallbackData.js?v=3.8.0"></script>
+  <script src="/js/storage.js?v=3.8.0"></script>
+  <script src="/js/api.js?v=3.8.0"></script>
+  <script src="/js/views/camerasView.js?v=3.8.0"></script>
+  <script src="/js/views/cameraDetailView.js?v=3.8.0"></script>
+  <script src="/js/views/lensesView.js?v=3.8.0"></script>
+  <script src="/js/views/lensDetailView.js?v=3.8.0"></script>
+  <script src="/js/views/favoritesView.js?v=3.8.0"></script>
+  <script src="/js/views/guideView.js?v=3.8.0"></script>
+  <script src="/js/views/profileView.js?v=3.8.0"></script>
+  <script src="/js/app.js?v=3.8.0"></script>
 </body>
 </html>

@@ -121,6 +121,55 @@ app.get('/api/cameras/:id', (req, res) => {
   });
 });
 
+// POST: Add New Camera (Admin Web Service)
+app.post('/api/cameras', (req, res) => {
+  const body = req.body || {};
+  if (!body.name || !body.brand) {
+    return res.status(400).json({ status: 'error', message: 'Nama dan merek kamera wajib diisi' });
+  }
+
+  const newId = body.id || `cam-${Date.now()}`;
+  const newCamera = {
+    id: newId,
+    name: body.name,
+    brand: body.brand,
+    category: body.category || 'Kamera saku',
+    releaseYear: parseInt(body.releaseYear) || new Date().getFullYear(),
+    sensorType: body.sensorType || 'CCD',
+    megapixels: parseFloat(body.megapixels) || 12.0,
+    priceYen: body.priceYen || '¥45,000',
+    rating: parseFloat(body.rating) || 4.8,
+    imageUrl: body.imageUrl || '/images/cameras/cam-pocket-01.jpg',
+    summary: body.summary || body.name,
+    description: body.description || `${body.name} dikurasi dan ditambahkan ke katalog RetroCam Archive.`,
+    specs: body.specs || {
+      sensor: body.sensorType || 'CCD',
+      lens: body.lensSpec || 'Built-in Zoom',
+      isoRange: body.isoRange || 'ISO 80 - 1600',
+      storage: 'SD / SDHC',
+      battery: 'Rechargeable Li-Ion'
+    },
+    colorProfile: body.colorProfile || 'Karakteristik tone warna klasik dengan saturasi kontras alami.',
+    pros: Array.isArray(body.pros) ? body.pros : [body.summary || 'Kualitas optik prima'],
+    cons: Array.isArray(body.cons) ? body.cons : ['Kamera vintage edisi pilihan']
+  };
+
+  camerasData.unshift(newCamera);
+
+  try {
+    const filePath = path.join(__dirname, 'data', 'cameras.json');
+    fs.writeFileSync(filePath, JSON.stringify(camerasData, null, 2), 'utf-8');
+  } catch (err) {
+    console.warn('File write notice:', err.message);
+  }
+
+  res.status(201).json({
+    status: 'success',
+    message: 'Kamera baru berhasil ditambahkan ke katalog.',
+    data: newCamera
+  });
+});
+
 // 4. Get Lenses List (supports search, category filter, mount filter, brand filter, sorting)
 app.get('/api/lenses', (req, res) => {
   let results = [...lensesData];
@@ -180,6 +229,56 @@ app.get('/api/lenses/:id', (req, res) => {
   });
 });
 
+// POST: Add New Lens (Admin Web Service)
+app.post('/api/lenses', (req, res) => {
+  const body = req.body || {};
+  if (!body.name || !body.brand) {
+    return res.status(400).json({ status: 'error', message: 'Nama dan merek lensa wajib diisi' });
+  }
+
+  const newId = body.id || `lens-${Date.now()}`;
+  const newLens = {
+    id: newId,
+    name: body.name,
+    brand: body.brand,
+    category: body.category || 'Lensa Prime',
+    mount: body.mount || 'Sony E-mount',
+    focalLength: body.focalLength || '50mm',
+    maxAperture: body.maxAperture || 'f/1.8',
+    releaseYear: parseInt(body.releaseYear) || new Date().getFullYear(),
+    priceYen: body.priceYen || '¥38,000',
+    rating: parseFloat(body.rating) || 4.8,
+    imageUrl: body.imageUrl || '/images/lenses/lens-prime-01.jpg',
+    summary: body.summary || body.name,
+    description: body.description || `${body.name} dikurasi dan ditambahkan ke katalog RetroCam Archive.`,
+    specs: body.specs || {
+      focalLength: body.focalLength || '50mm',
+      maxAperture: body.maxAperture || 'f/1.8',
+      minAperture: body.minAperture || 'f/22',
+      mount: body.mount || 'Sony E-mount',
+      filterThread: body.filterThread || '49mm'
+    },
+    bokehCharacter: body.bokehCharacter || 'Bokeh melingkar dengan degradasi fokus halus.',
+    pros: Array.isArray(body.pros) ? body.pros : [body.summary || 'Kualitas optik tajam'],
+    cons: Array.isArray(body.cons) ? body.cons : ['Fokus manual']
+  };
+
+  lensesData.unshift(newLens);
+
+  try {
+    const filePath = path.join(__dirname, 'data', 'lenses.json');
+    fs.writeFileSync(filePath, JSON.stringify(lensesData, null, 2), 'utf-8');
+  } catch (err) {
+    console.warn('File write notice:', err.message);
+  }
+
+  res.status(201).json({
+    status: 'success',
+    message: 'Lensa baru berhasil ditambahkan ke katalog.',
+    data: newLens
+  });
+});
+
 // 6. Get Guides & Tips
 app.get('/api/guides', (req, res) => {
   res.json({
@@ -214,19 +313,25 @@ app.get('/api/profile', (req, res) => {
 app.post('/api/profile', (req, res) => {
   try {
     const body = req.body || {};
-    const academicUpdates = body.academicInfo ? body.academicInfo : body;
+    const updates = body.userInfo || body.academicInfo || body;
 
-    profileData.academicInfo = {
-      ...profileData.academicInfo,
-      ...academicUpdates
+    profileData.userInfo = {
+      ...(profileData.userInfo || {}),
+      ...updates
     };
+    if (profileData.academicInfo) {
+      profileData.academicInfo = {
+        ...profileData.academicInfo,
+        ...updates
+      };
+    }
 
     const filePath = path.join(__dirname, 'data', 'profile.json');
     fs.writeFileSync(filePath, JSON.stringify(profileData, null, 2), 'utf-8');
 
     res.json({
       status: 'success',
-      message: 'Profil mahasiswa berhasil diperbarui.',
+      message: 'Profil berhasil diperbarui.',
       data: profileData
     });
   } catch (err) {
@@ -237,19 +342,25 @@ app.post('/api/profile', (req, res) => {
 app.put('/api/profile', (req, res) => {
   try {
     const body = req.body || {};
-    const academicUpdates = body.academicInfo ? body.academicInfo : body;
+    const updates = body.userInfo || body.academicInfo || body;
 
-    profileData.academicInfo = {
-      ...profileData.academicInfo,
-      ...academicUpdates
+    profileData.userInfo = {
+      ...(profileData.userInfo || {}),
+      ...updates
     };
+    if (profileData.academicInfo) {
+      profileData.academicInfo = {
+        ...profileData.academicInfo,
+        ...updates
+      };
+    }
 
     const filePath = path.join(__dirname, 'data', 'profile.json');
     fs.writeFileSync(filePath, JSON.stringify(profileData, null, 2), 'utf-8');
 
     res.json({
       status: 'success',
-      message: 'Profil mahasiswa berhasil diperbarui.',
+      message: 'Profil berhasil diperbarui.',
       data: profileData
     });
   } catch (err) {
