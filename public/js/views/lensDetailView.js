@@ -119,6 +119,12 @@ const LensDetailView = {
                   <span id="lens-fav-btn-text">${isFav ? 'Tersimpan di Koleksi Saya' : 'Simpan ke Koleksi Saya'}</span>
                 </button>
 
+                ${StorageService.isAdmin() ? `
+                  <button id="btn-admin-edit-lens-detail" class="btn btn-secondary" style="border-color: #0284c7; color: #0284c7; font-weight: 600;">
+                    ✏️ Edit Data Lensa
+                  </button>
+                ` : ''}
+
                 <div class="market-price-pill">
                   <span class="market-price-label">Harga Pasar:</span>
                   <strong class="market-price-amt">${lens.estimatedPriceIdr}</strong>
@@ -271,6 +277,16 @@ const LensDetailView = {
             window.App.showToast(added ? `🔍 ${lens.name} ditambahkan ke koleksi!` : `Dihapus dari koleksi.`);
           }
         });
+      }
+
+      // Admin Edit Button in Detail View
+      const editDetailBtn = document.getElementById('btn-admin-edit-lens-detail');
+      if (editDetailBtn) {
+        editDetailBtn.onclick = () => {
+          if (window.openEditLensModal) {
+            window.openEditLensModal(lens);
+          }
+        };
       }
 
     } catch (err) {

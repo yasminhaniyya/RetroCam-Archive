@@ -170,6 +170,28 @@ app.post('/api/cameras', (req, res) => {
   });
 });
 
+// PUT: Update Camera (Admin Web Service)
+app.put('/api/cameras/:id', (req, res) => {
+  const body = req.body || {};
+  const id = req.params.id;
+  const idx = camerasData.findIndex(c => c.id === id);
+  if (idx === -1) {
+    return res.status(404).json({ status: 'error', message: 'Kamera tidak ditemukan' });
+  }
+  camerasData[idx] = { ...camerasData[idx], ...body, id };
+  try {
+    const filePath = path.join(__dirname, 'data', 'cameras.json');
+    fs.writeFileSync(filePath, JSON.stringify(camerasData, null, 2), 'utf-8');
+  } catch (err) {
+    console.warn('File write notice:', err.message);
+  }
+  res.status(200).json({
+    status: 'success',
+    message: 'Kamera berhasil diperbarui.',
+    data: camerasData[idx]
+  });
+});
+
 // 4. Get Lenses List (supports search, category filter, mount filter, brand filter, sorting)
 app.get('/api/lenses', (req, res) => {
   let results = [...lensesData];
@@ -276,6 +298,28 @@ app.post('/api/lenses', (req, res) => {
     status: 'success',
     message: 'Lensa baru berhasil ditambahkan ke katalog.',
     data: newLens
+  });
+});
+
+// PUT: Update Lens (Admin Web Service)
+app.put('/api/lenses/:id', (req, res) => {
+  const body = req.body || {};
+  const id = req.params.id;
+  const idx = lensesData.findIndex(l => l.id === id);
+  if (idx === -1) {
+    return res.status(404).json({ status: 'error', message: 'Lensa tidak ditemukan' });
+  }
+  lensesData[idx] = { ...lensesData[idx], ...body, id };
+  try {
+    const filePath = path.join(__dirname, 'data', 'lenses.json');
+    fs.writeFileSync(filePath, JSON.stringify(lensesData, null, 2), 'utf-8');
+  } catch (err) {
+    console.warn('File write notice:', err.message);
+  }
+  res.status(200).json({
+    status: 'success',
+    message: 'Lensa berhasil diperbarui.',
+    data: lensesData[idx]
   });
 });
 

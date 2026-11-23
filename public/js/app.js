@@ -22,6 +22,7 @@ const App = {
     this.registerServiceWorker();
     this.initPWAInstallPrompt();
     this.initNetworkListeners();
+    this.initHeaderControls();
     this.initBottomNav();
     this.updateFavoritesBadge();
     this.initAdminModals();
@@ -96,6 +97,55 @@ const App = {
     });
 
     updateOnlineStatus();
+  },
+
+  // 3b. Header Controls: Install App & Login Button
+  initHeaderControls() {
+    const installBtnHeader = document.getElementById('btn-header-install');
+    const loginBtnHeader = document.getElementById('btn-header-login');
+    const loginTextHeader = document.getElementById('header-login-text');
+
+    this.updateHeaderAuthState = () => {
+      const isAdmin = StorageService.isAdmin();
+      if (loginTextHeader) {
+        loginTextHeader.textContent = isAdmin ? 'Keluar Admin' : 'Login';
+      }
+      if (loginBtnHeader) {
+        loginBtnHeader.title = isAdmin ? 'Klik untuk keluar dari mode administrator' : 'Masuk sebagai Administrator';
+      }
+    };
+
+    if (installBtnHeader) {
+      installBtnHeader.onclick = () => {
+        if (window.deferredPWAInstallPrompt) {
+          window.deferredPWAInstallPrompt.prompt();
+          window.deferredPWAInstallPrompt.userChoice.then(() => {
+            window.deferredPWAInstallPrompt = null;
+          });
+        } else {
+          alert('Fitur Pasang Aplikasi (PWA): Buka menu browser Anda (ikon titik tiga di Chrome / ikon Bagikan di Safari iOS), lalu pilih "Tambahkan ke Layar Utama" (Install App).');
+        }
+      };
+    }
+
+    if (loginBtnHeader) {
+      loginBtnHeader.onclick = () => {
+        if (StorageService.isAdmin()) {
+          StorageService.logout();
+          this.showToast('Keluar dari Mode Administrator.');
+          this.updateHeaderAuthState();
+          this.handleRoute();
+        } else {
+          window.openAdminLoginModal();
+        }
+      };
+    }
+
+    this.updateHeaderAuthState();
+    window.addEventListener('authChanged', () => {
+      this.updateHeaderAuthState();
+      this.updateFavoritesBadge();
+    });
   },
 
   // 4. Client-side Router
@@ -381,17 +431,118 @@ const App = {
 
         StorageService.login(adminUser);
         window.closeAdminLoginModal();
-        App.showToast('Login berhasil sebagai Administrator! Akses tambah kamera & lensa aktif.');
+        App.showToast('Login berhasil sebagai Administrator! Akses tambah & edit katalog aktif.');
 
-        if (window.ProfileView && window.ProfileView.loadProfileData) {
-          window.ProfileView.loadProfileData();
-        }
-        if (window.location.hash.startsWith('#camera') && window.CamerasView && window.CamerasView.loadCamerasData) {
-          window.CamerasView.loadCamerasData();
-        }
-        if (window.location.hash.startsWith('#lens') && window.LensesView && window.LensesView.loadLensesData) {
-          window.LensesView.loadLensesData();
-        }
+        if (App.updateHeaderAuthState) App.updateHeaderAuthState();
+        App.handleRoute();
+      };
+    }
+
+    // Modal Edit Kamera (Khusus Administrator)
+    const modalEditCam = document.getElementById('modal-edit-camera');
+    const closeEditCamBtn = document.getElementById('btn-close-modal-edit-camera');
+    const cancelEditCamBtn = document.getElementById('btn-cancel-modal-edit-camera');
+    const formEditCam = document.getElementById('form-modal-edit-camera');
+
+    window.openEditCameraModal = (cam) => {
+      if (!modalEditCam || !cam) return;
+      document.getElementById('edit-camera-id').value = cam.id || '';
+      document.getElementById('edit-camera-name').value = cam.name || '';
+      document.getElementById('edit-camera-brand').value = cam.brand || '';
+      document.getElementById('edit-camera-category').value = cam.category || 'Kamera saku';
+      document.getElementById('edit-camera-year').value = cam.releaseYear || 2005;
+      document.getElementById('edit-camera-sensor').value = cam.sensorType || 'CCD';
+      document.getElementById('edit-camera-mp').value = cam.megapixels || 12.0;
+      document.getElementById('edit-camera-price').value = cam.estimatedPriceIdr || 'Rp 1.250.000';
+      document.getElementById('edit-camera-rating').value = cam.rating || 4.8;
+      document.getElementById('edit-camera-img').value = cam.imageUrl || '';
+      document.getElementById('edit-camera-summary').value = cam.summary || cam.colorProfile || '';
+      modalEditCam.classList.remove('is-hidden');
+    };
+
+    window.closeEditCameraModal = () => {
+      if (modalEditCam) modalEditCam.classList.add('is-hidden');
+    };
+
+    if (closeEditCamBtn) closeEditCamBtn.onclick = window.closeEditCameraModal;
+    if (cancelEditCamBtn) cancelEditCamBtn.onclick = window.closeEditCameraModal;
+
+    if (formEditCam) {
+      formEditCam.onsubmit = async (e) => {
+        e.preventDefault();
+        const updated = {
+          id: document.getElementById('edit-camera-id').value,
+          name: document.getElementById('edit-camera-name').value.trim(),
+          brand: document.getElementById('edit-camera-brand').value.trim(),
+          category: document.getElementById('edit-camera-category').value,
+          releaseYear: parseInt(document.getElementById('edit-camera-year').value) || 2005,
+          sensorType: document.getElementById('edit-camera-sensor').value,
+          megapixels: parseFloat(document.getElementById('edit-camera-mp').value) || 12.0,
+          estimatedPriceIdr: document.getElementById('edit-camera-price').value.trim(),
+          rating: parseFloat(document.getElementById('edit-camera-rating').value) || 4.8,
+          imageUrl: document.getElementById('edit-camera-img').value.trim() || '/icons/icon-512.png',
+          summary: document.getElementById('edit-camera-summary').value.trim()
+        };
+
+        await ApiService.updateCamera(updated);
+        window.closeEditCameraModal();
+        App.showToast(`Kamera "${updated.name}" berhasil diperbarui!`);
+
+        App.handleRoute();
+      };
+    }
+
+    // Modal Edit Lensa (Khusus Administrator)
+    const modalEditLens = document.getElementById('modal-edit-lens');
+    const closeEditLensBtn = document.getElementById('btn-close-modal-edit-lens');
+    const cancelEditLensBtn = document.getElementById('btn-cancel-modal-edit-lens');
+    const formEditLens = document.getElementById('form-modal-edit-lens');
+
+    window.openEditLensModal = (lens) => {
+      if (!modalEditLens || !lens) return;
+      document.getElementById('edit-lens-id').value = lens.id || '';
+      document.getElementById('edit-lens-name').value = lens.name || '';
+      document.getElementById('edit-lens-brand').value = lens.brand || '';
+      document.getElementById('edit-lens-category').value = lens.category || 'Lensa Prime';
+      document.getElementById('edit-lens-mount').value = lens.mount || 'Sony E-mount';
+      document.getElementById('edit-lens-focal').value = lens.focalLength || '50mm';
+      document.getElementById('edit-lens-aperture').value = lens.maxAperture || 'f/1.8';
+      document.getElementById('edit-lens-year').value = lens.releaseYear || 2020;
+      document.getElementById('edit-lens-price').value = lens.estimatedPriceIdr || lens.priceYen || '¥38,000';
+      document.getElementById('edit-lens-img').value = lens.imageUrl || '';
+      document.getElementById('edit-lens-summary').value = lens.summary || lens.bokehCharacter || '';
+      modalEditLens.classList.remove('is-hidden');
+    };
+
+    window.closeEditLensModal = () => {
+      if (modalEditLens) modalEditLens.classList.add('is-hidden');
+    };
+
+    if (closeEditLensBtn) closeEditLensBtn.onclick = window.closeEditLensModal;
+    if (cancelEditLensBtn) cancelEditLensBtn.onclick = window.closeEditLensModal;
+
+    if (formEditLens) {
+      formEditLens.onsubmit = async (e) => {
+        e.preventDefault();
+        const updated = {
+          id: document.getElementById('edit-lens-id').value,
+          name: document.getElementById('edit-lens-name').value.trim(),
+          brand: document.getElementById('edit-lens-brand').value.trim(),
+          category: document.getElementById('edit-lens-category').value,
+          mount: document.getElementById('edit-lens-mount').value.trim(),
+          focalLength: document.getElementById('edit-lens-focal').value.trim(),
+          maxAperture: document.getElementById('edit-lens-aperture').value.trim(),
+          releaseYear: parseInt(document.getElementById('edit-lens-year').value) || 2020,
+          estimatedPriceIdr: document.getElementById('edit-lens-price').value.trim(),
+          imageUrl: document.getElementById('edit-lens-img').value.trim() || '/icons/icon-512.png',
+          summary: document.getElementById('edit-lens-summary').value.trim()
+        };
+
+        await ApiService.updateLens(updated);
+        window.closeEditLensModal();
+        App.showToast(`Lensa "${updated.name}" berhasil diperbarui!`);
+
+        App.handleRoute();
       };
     }
   }

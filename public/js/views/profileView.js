@@ -185,6 +185,76 @@ const ProfileView = {
       const isAdmin = StorageService.isAdmin();
       const customProfile = StorageService.getSavedProfile() || {};
 
+      // Jika dalam Mode Admin: Tampilkan Profil Administrator
+      if (isAdmin) {
+        if (heroTitle) heroTitle.textContent = 'Profil Administrator';
+        if (heroSubtitle) {
+          heroSubtitle.textContent = 'Mode Pengelola Aktif: Anda memiliki akses penuh menambah dan mengedit katalog kamera & lensa.';
+        }
+
+        container.innerHTML = `
+          <!-- Administrator Profile Card -->
+          <div class="profile-hero-card card-glass">
+            <div class="profile-layout">
+              <div class="profile-avatar-box">
+                <div class="avatar-ring" style="background: linear-gradient(135deg, #0284c7, #0369a1);">
+                  <img 
+                    src="/images/app-logo.png" 
+                    alt="Logo Admin" 
+                    class="profile-avatar-img"
+                    id="profile-avatar-display"
+                  />
+                </div>
+              </div>
+
+              <div class="profile-details">
+                <div class="admin-badge" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.25rem 0.65rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd;">
+                  <span>🛡️ Mode Administrator Aktif</span>
+                </div>
+                <h2 class="profile-name">Administrator RetroCam</h2>
+
+                <div class="profile-meta-list">
+                  <div class="profile-meta-item">
+                    <span class="meta-k">Peran Akun:</span>
+                    <strong class="meta-v">Pengelola Arsip & Katalog</strong>
+                  </div>
+                  <div class="profile-meta-item">
+                    <span class="meta-k">Email Admin:</span>
+                    <span class="meta-v">admin@retrocam.id</span>
+                  </div>
+                  <div class="profile-meta-item">
+                    <span class="meta-k">Hak Akses:</span>
+                    <span class="meta-v">Tambah & Edit Seluruh Katalog Kamera dan Lensa</span>
+                  </div>
+                  <div class="profile-meta-item">
+                    <span class="meta-k">Status Sesi:</span>
+                    <span class="meta-v" style="color: #10b981; font-weight: 600;">🟢 Online (Akses Penuh Terbuka)</span>
+                  </div>
+                </div>
+
+                <div class="profile-action-btn-row" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+                  <button type="button" class="btn btn-primary" id="btn-profile-add-camera" style="background: linear-gradient(135deg, #0284c7, #0369a1); border: none; border-radius: 8px; padding: 0.55rem 1rem; font-weight: 600;">
+                    ➕ Tambah Kamera Baru
+                  </button>
+                  <button type="button" class="btn btn-primary" id="btn-profile-add-lens" style="background: linear-gradient(135deg, #0284c7, #0369a1); border: none; border-radius: 8px; padding: 0.55rem 1rem; font-weight: 600;">
+                    ➕ Tambah Lensa Baru
+                  </button>
+                  <button type="button" class="btn btn-secondary" id="btn-logout-admin" style="border-color: #ef4444; color: #ef4444; font-weight: 600;">
+                    🚪 Keluar Mode Admin
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          ${this.renderAboutAndStatusSection(isOnline, stats)}
+        `;
+
+        this.bindAdminProfileEvents();
+        return;
+      }
+
+      // Jika User Biasa: Tampilkan Profil Mahasiswa (Sesuai Screenshot Pengguna)
       if (heroTitle) heroTitle.textContent = 'Profil';
       if (heroSubtitle) {
         heroSubtitle.textContent = 'Informasi profil pengguna aplikasi.';
@@ -205,16 +275,6 @@ const ProfileView = {
       container.innerHTML = `
         <!-- Profile Hero Card (Sesuai Screenshot Pengguna) -->
         <div class="profile-hero-card card-glass">
-          <!-- Tombol Login Abu-Abu di Kanan Atas Tanpa Shape (Hover Ditunjuk) -->
-          <button 
-            type="button" 
-            id="btn-profile-login-link" 
-            class="text-login-link" 
-            title="${isAdmin ? 'Klik untuk keluar dari mode administrator' : 'Klik untuk masuk sebagai admin'}"
-          >
-            ${isAdmin ? 'Mode Admin (Keluar)' : 'Login'}
-          </button>
-
           <div class="profile-layout">
             <div class="profile-avatar-box">
               <div class="avatar-ring">
@@ -258,14 +318,6 @@ const ProfileView = {
                   </svg>
                   Edit Data Profil
                 </button>
-                ${isAdmin ? `
-                  <button type="button" class="btn btn-primary" id="btn-profile-add-camera" style="background: linear-gradient(135deg, #0284c7, #0369a1); border: none; border-radius: 8px; padding: 0.55rem 1rem; font-weight: 600;">
-                    ➕ Tambah Kamera
-                  </button>
-                  <button type="button" class="btn btn-primary" id="btn-profile-add-lens" style="background: linear-gradient(135deg, #0284c7, #0369a1); border: none; border-radius: 8px; padding: 0.55rem 1rem; font-weight: 600;">
-                    ➕ Tambah Lensa
-                  </button>
-                ` : ''}
               </div>
             </div>
           </div>
@@ -366,54 +418,63 @@ const ProfileView = {
     }
   },
 
-  // Event handler interaksi halaman profil
+  // Event handler khusus untuk Profil Administrator
+  bindAdminProfileEvents() {
+    const btnAddCam = document.getElementById('btn-profile-add-camera');
+    const btnAddLens = document.getElementById('btn-profile-add-lens');
+    const btnLogout = document.getElementById('btn-logout-admin');
+    const installBtn = document.getElementById('btn-install-pwa');
+
+    if (btnAddCam) {
+      btnAddCam.onclick = () => {
+        if (window.openAddCameraModal) window.openAddCameraModal();
+      };
+    }
+    if (btnAddLens) {
+      btnAddLens.onclick = () => {
+        if (window.openAddLensModal) window.openAddLensModal();
+      };
+    }
+    if (btnLogout) {
+      btnLogout.onclick = () => {
+        StorageService.logout();
+        if (window.App && window.App.showToast) {
+          window.App.showToast('Keluar dari Mode Administrator.');
+        }
+        if (window.App && window.App.updateHeaderAuthState) {
+          window.App.updateHeaderAuthState();
+        }
+        this.loadProfileData();
+        if (window.CamerasView && window.CamerasView.loadData) window.CamerasView.loadData();
+        if (window.LensesView && window.LensesView.loadData) window.LensesView.loadData();
+      };
+    }
+    if (installBtn) {
+      installBtn.onclick = () => {
+        if (window.deferredPWAInstallPrompt) {
+          window.deferredPWAInstallPrompt.prompt();
+          window.deferredPWAInstallPrompt.userChoice.then(() => {
+            window.deferredPWAInstallPrompt = null;
+          });
+        } else {
+          alert('Fitur instalasi PWA: Buka menu browser Anda (ikon titik tiga di Chrome / ikon Bagikan di Safari iOS), lalu pilih "Tambahkan ke Layar Utama" (Install App).');
+        }
+      };
+    }
+  },
+
+  // Event handler interaksi halaman profil mahasiswa
   bindProfileEvents(currentUser) {
     const editBtn = document.getElementById('btn-edit-student-profile');
     const cancelBtn = document.getElementById('btn-cancel-edit-profile');
     const editBox = document.getElementById('profile-edit-box');
     const form = document.getElementById('form-edit-profile');
     const resetBtn = document.getElementById('btn-reset-default-profile');
-    const profileLoginLink = document.getElementById('btn-profile-login-link');
     const fileInput = document.getElementById('input-edit-avatar-file');
     const urlInput = document.getElementById('input-edit-avatar-url');
     const previewImg = document.getElementById('edit-avatar-preview-img');
     const btnOpenCropperManual = document.getElementById('btn-open-cropper-manual');
-    const btnProfileAddCamera = document.getElementById('btn-profile-add-camera');
-    const btnProfileAddLens = document.getElementById('btn-profile-add-lens');
     const installBtn = document.getElementById('btn-install-pwa');
-
-    // Admin Action Buttons
-    if (btnProfileAddCamera) {
-      btnProfileAddCamera.onclick = () => {
-        if (window.openAddCameraModal) window.openAddCameraModal();
-      };
-    }
-    if (btnProfileAddLens) {
-      btnProfileAddLens.onclick = () => {
-        if (window.openAddLensModal) window.openAddLensModal();
-      };
-    }
-
-    // Tombol Login / Keluar Admin di Kanan Atas
-    if (profileLoginLink) {
-      profileLoginLink.onclick = () => {
-        if (StorageService.isAdmin()) {
-          StorageService.logout();
-          if (window.App && window.App.showToast) {
-            window.App.showToast('Keluar dari Mode Administrator.');
-          }
-          this.loadProfileData();
-          if (window.location.hash.startsWith('#camera') && window.CamerasView && window.CamerasView.loadCamerasData) {
-            window.CamerasView.loadCamerasData();
-          }
-          if (window.location.hash.startsWith('#lens') && window.LensesView && window.LensesView.loadLensesData) {
-            window.LensesView.loadLensesData();
-          }
-        } else {
-          if (window.openAdminLoginModal) window.openAdminLoginModal();
-        }
-      };
-    }
 
     // Install PWA Button
     if (installBtn) {

@@ -332,6 +332,7 @@ const LensesView = {
       }
 
       // Render Clean, Realistic Store Product Cards
+      const isAdmin = StorageService.isAdmin();
       grid.innerHTML = lenses.map(lens => {
         const isFav = StorageService.isLensFavorite(lens.id);
         return `
@@ -359,6 +360,11 @@ const LensesView = {
               <div class="card-brand-row">
                 <span class="card-brand-label">${lens.brand} &bull; ${lens.category}</span>
                 <span class="card-year-label">${lens.releaseYear}</span>
+                ${isAdmin ? `
+                  <button type="button" class="btn-clean-edit-item" data-edit-lens-id="${lens.id}" title="Edit data lensa ini">
+                    ✏️ Edit
+                  </button>
+                ` : ''}
               </div>
               
               <h3 class="card-product-name">${lens.name}</h3>
@@ -386,9 +392,21 @@ const LensesView = {
       // Attach Card Clicks to Detail Navigation (Ketentuan 4)
       grid.querySelectorAll('.clean-product-card').forEach(card => {
         card.addEventListener('click', (e) => {
-          if (e.target.closest('.card-wishlist-btn')) return;
+          if (e.target.closest('.card-wishlist-btn') || e.target.closest('.btn-clean-edit-item')) return;
           const id = card.getAttribute('data-id');
           window.location.hash = `#lens/${id}`;
+        });
+      });
+
+      // Attach Admin Edit Buttons
+      grid.querySelectorAll('.btn-clean-edit-item').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute('data-edit-lens-id');
+          const lens = this.state.lenses.find(l => l.id === id);
+          if (lens && window.openEditLensModal) {
+            window.openEditLensModal(lens);
+          }
         });
       });
 

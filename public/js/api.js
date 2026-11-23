@@ -62,17 +62,40 @@ const ApiService = {
       const toAdd = custom.filter(c => !existingIds.has(c.id));
       results = [...toAdd, ...results];
     }
+
+    // Apply edited cameras overrides (Admin edits)
+    const edited = StorageService.getEditedCameras ? StorageService.getEditedCameras() : {};
+    results = results.map(c => edited[c.id] ? { ...c, ...edited[c.id] } : c);
+
     return results;
   },
 
   // Get camera detail by ID
   async getCameraById(id) {
+    const edited = StorageService.getEditedCameras ? StorageService.getEditedCameras() : {};
+    if (edited[id]) {
+      return edited[id];
+    }
     try {
       const res = await this.request(`/cameras/${id}`);
       return res.data;
     } catch (e) {
       const all = await this.getCameras();
       return all.find(c => c.id === id) || null;
+    }
+  },
+
+  // Update existing camera (Admin)
+  async updateCamera(camera) {
+    StorageService.updateCamera(camera);
+    try {
+      return await this.request(`/cameras/${camera.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(camera)
+      });
+    } catch (e) {
+      console.warn('[ApiService] Backend PUT /cameras error (normal offline):', e.message);
+      return { status: 'success', data: camera };
     }
   },
 
@@ -101,17 +124,40 @@ const ApiService = {
       const toAdd = custom.filter(l => !existingIds.has(l.id));
       results = [...toAdd, ...results];
     }
+
+    // Apply edited lenses overrides (Admin edits)
+    const edited = StorageService.getEditedLenses ? StorageService.getEditedLenses() : {};
+    results = results.map(l => edited[l.id] ? { ...l, ...edited[l.id] } : l);
+
     return results;
   },
 
   // Get lens detail by ID
   async getLensById(id) {
+    const edited = StorageService.getEditedLenses ? StorageService.getEditedLenses() : {};
+    if (edited[id]) {
+      return edited[id];
+    }
     try {
       const res = await this.request(`/lenses/${id}`);
       return res.data;
     } catch (e) {
       const all = await this.getLenses();
       return all.find(l => l.id === id) || null;
+    }
+  },
+
+  // Update existing lens (Admin)
+  async updateLens(lens) {
+    StorageService.updateLens(lens);
+    try {
+      return await this.request(`/lenses/${lens.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(lens)
+      });
+    } catch (e) {
+      console.warn('[ApiService] Backend PUT /lenses error (normal offline):', e.message);
+      return { status: 'success', data: lens };
     }
   },
 

@@ -11,10 +11,27 @@ const STORAGE_KEYS = {
 };
 
 const StorageService = {
+  // --- SCOPED FAVORITES KEYS ---
+  getFavoriteKey(type) {
+    const isAdmin = this.isAdmin();
+    if (type === 'cameras') {
+      return isAdmin ? 'retrocam_fav_cameras_admin' : 'retrocam_fav_cameras_user';
+    } else {
+      return isAdmin ? 'retrocam_fav_lenses_admin' : 'retrocam_fav_lenses_user';
+    }
+  },
+
   // --- CAMERA FAVORITES ---
   getFavoriteCameras() {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.FAVORITE_CAMERAS);
+      const key = this.getFavoriteKey('cameras');
+      let data = localStorage.getItem(key);
+      if (!data && !this.isAdmin()) {
+        data = localStorage.getItem(STORAGE_KEYS.FAVORITE_CAMERAS);
+        if (data) {
+          localStorage.setItem(key, data);
+        }
+      }
       return data ? JSON.parse(data) : [];
     } catch (e) {
       console.error('Error reading favorite cameras:', e);
@@ -40,7 +57,8 @@ const StorageService = {
       added = true;
     }
 
-    localStorage.setItem(STORAGE_KEYS.FAVORITE_CAMERAS, JSON.stringify(list));
+    const key = this.getFavoriteKey('cameras');
+    localStorage.setItem(key, JSON.stringify(list));
     window.dispatchEvent(new CustomEvent('favoritesUpdated', { detail: { type: 'camera', added, item: camera } }));
     return added;
   },
@@ -48,7 +66,14 @@ const StorageService = {
   // --- LENS FAVORITES ---
   getFavoriteLenses() {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.FAVORITE_LENSES);
+      const key = this.getFavoriteKey('lenses');
+      let data = localStorage.getItem(key);
+      if (!data && !this.isAdmin()) {
+        data = localStorage.getItem(STORAGE_KEYS.FAVORITE_LENSES);
+        if (data) {
+          localStorage.setItem(key, data);
+        }
+      }
       return data ? JSON.parse(data) : [];
     } catch (e) {
       console.error('Error reading favorite lenses:', e);
@@ -74,7 +99,8 @@ const StorageService = {
       added = true;
     }
 
-    localStorage.setItem(STORAGE_KEYS.FAVORITE_LENSES, JSON.stringify(list));
+    const key = this.getFavoriteKey('lenses');
+    localStorage.setItem(key, JSON.stringify(list));
     window.dispatchEvent(new CustomEvent('favoritesUpdated', { detail: { type: 'lens', added, item: lens } }));
     return added;
   },
@@ -143,10 +169,74 @@ const StorageService = {
     }
   },
 
+  // --- EDITED CAMERAS & LENSES (Admin Overrides) ---
+  getEditedCameras() {
+    try {
+      const data = localStorage.getItem('retrocam_edited_cameras');
+      return data ? JSON.parse(data) : {};
+    } catch (e) {
+      return {};
+    }
+  },
+
+  updateCamera(camera) {
+    try {
+      const edits = this.getEditedCameras();
+      edits[camera.id] = { ...(edits[camera.id] || {}), ...camera };
+      localStorage.setItem('retrocam_edited_cameras', JSON.stringify(edits));
+
+      // Juga sinkronkan jika ada di custom cameras
+      const custom = this.getCustomCameras();
+      const cIdx = custom.findIndex(c => c.id === camera.id);
+      if (cIdx >= 0) {
+        custom[cIdx] = { ...custom[cIdx], ...camera };
+        localStorage.setItem('retrocam_custom_cameras', JSON.stringify(custom));
+      }
+
+      window.dispatchEvent(new CustomEvent('catalogUpdated', { detail: { type: 'camera', item: camera } }));
+      return true;
+    } catch (e) {
+      console.error('Error updating camera:', e);
+      return false;
+    }
+  },
+
+  getEditedLenses() {
+    try {
+      const data = localStorage.getItem('retrocam_edited_lenses');
+      return data ? JSON.parse(data) : {};
+    } catch (e) {
+      return {};
+    }
+  },
+
+  updateLens(lens) {
+    try {
+      const edits = this.getEditedLenses();
+      edits[lens.id] = { ...(edits[lens.id] || {}), ...lens };
+      localStorage.setItem('retrocam_edited_lenses', JSON.stringify(edits));
+
+      // Juga sinkronkan jika ada di custom lenses
+      const custom = this.getCustomLenses();
+      const lIdx = custom.findIndex(l => l.id === lens.id);
+      if (lIdx >= 0) {
+        custom[lIdx] = { ...custom[lIdx], ...lens };
+        localStorage.setItem('retrocam_custom_lenses', JSON.stringify(custom));
+      }
+
+      window.dispatchEvent(new CustomEvent('catalogUpdated', { detail: { type: 'lens', item: lens } }));
+      return true;
+    } catch (e) {
+      console.error('Error updating lens:', e);
+      return false;
+    }
+  },
+
   login(user) {
     try {
       localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
       window.dispatchEvent(new CustomEvent('authChanged', { detail: { isLoggedIn: true, user } }));
+      window.dispatchEvent(new CustomEvent('favoritesUpdated', { detail: { role: 'admin' } }));
       return true;
     } catch (e) {
       console.error('Error logging in:', e);
@@ -158,6 +248,7 @@ const StorageService = {
     try {
       localStorage.removeItem(STORAGE_KEYS.AUTH_USER);
       window.dispatchEvent(new CustomEvent('authChanged', { detail: { isLoggedIn: false } }));
+      window.dispatchEvent(new CustomEvent('favoritesUpdated', { detail: { role: 'user' } }));
       return true;
     } catch (e) {
       console.error('Error logging out:', e);

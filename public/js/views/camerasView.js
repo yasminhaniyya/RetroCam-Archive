@@ -323,6 +323,7 @@ const CamerasView = {
       }
 
       // Render Clean, Realistic Store Product Cards
+      const isAdmin = StorageService.isAdmin();
       grid.innerHTML = cameras.map(cam => {
         const isFav = StorageService.isCameraFavorite(cam.id);
         return `
@@ -350,6 +351,11 @@ const CamerasView = {
               <div class="card-brand-row">
                 <span class="card-brand-label">${cam.brand}</span>
                 <span class="card-year-label">${cam.releaseYear}</span>
+                ${isAdmin ? `
+                  <button type="button" class="btn-clean-edit-item" data-edit-cam-id="${cam.id}" title="Edit data kamera ini">
+                    ✏️ Edit
+                  </button>
+                ` : ''}
               </div>
               
               <h3 class="card-product-name">${cam.name}</h3>
@@ -377,9 +383,21 @@ const CamerasView = {
       // Attach Card Clicks to Detail Navigation (Ketentuan 4)
       grid.querySelectorAll('.clean-product-card').forEach(card => {
         card.addEventListener('click', (e) => {
-          if (e.target.closest('.card-wishlist-btn')) return;
+          if (e.target.closest('.card-wishlist-btn') || e.target.closest('.btn-clean-edit-item')) return;
           const id = card.getAttribute('data-id');
           window.location.hash = `#camera/${id}`;
+        });
+      });
+
+      // Attach Admin Edit Buttons
+      grid.querySelectorAll('.btn-clean-edit-item').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute('data-edit-cam-id');
+          const cam = this.state.cameras.find(c => c.id === id);
+          if (cam && window.openEditCameraModal) {
+            window.openEditCameraModal(cam);
+          }
         });
       });
 

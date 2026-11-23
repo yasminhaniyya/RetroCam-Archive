@@ -55,6 +55,21 @@ module.exports = (req, res) => {
       });
     }
 
+    // PUT: Update Kamera (Admin)
+    if (req.method === 'PUT') {
+      const body = req.body || {};
+      const targetId = req.query.id || body.id;
+      const idx = cameras.findIndex(c => c.id === targetId);
+      if (idx === -1) {
+        return res.status(404).json({ status: 'error', message: 'Kamera tidak ditemukan' });
+      }
+      cameras[idx] = { ...cameras[idx], ...body, id: targetId };
+      try {
+        fs.writeFileSync(filePath, JSON.stringify(cameras, null, 2), 'utf-8');
+      } catch (err) {}
+      return res.status(200).json({ status: 'success', message: 'Kamera berhasil diperbarui', data: cameras[idx] });
+    }
+
     const { id, search, category, sensor, brand, sort } = req.query;
 
     if (id) {

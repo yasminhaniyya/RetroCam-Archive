@@ -29,7 +29,7 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="/css/style.css?v=3.8.2" />
+  <link rel="stylesheet" href="/css/style.css?v=3.8.3" />
 </head>
 <body>
 
@@ -47,14 +47,19 @@
       </a>
 
       <div class="header-actions">
-        <!-- Quick Install PWA Button (Visible when supported) -->
-        <button id="btn-header-install" class="btn btn-sm btn-accent header-install-btn" title="Pasang aplikasi di perangkat">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+        <!-- Quick Install PWA Button -->
+        <button id="btn-header-install" class="btn btn-sm btn-secondary header-install-btn" title="Pasang aplikasi di perangkat">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <polyline points="7 10 12 15 17 10"></polyline>
             <line x1="12" y1="15" x2="12" y2="3"></line>
           </svg>
-          <span class="hide-mobile">Install App</span>
+          <span class="header-install-text">Install App</span>
+        </button>
+
+        <!-- Tombol Login Teks Abu di Sebelah Install App -->
+        <button id="btn-header-login" class="header-login-btn" title="Masuk Mode Administrator">
+          <span id="header-login-text">Login</span>
         </button>
       </div>
     </div>
@@ -310,17 +315,147 @@
     </div>
   </div>
 
+  <!-- Modal Edit Kamera (Khusus Administrator) -->
+  <div id="modal-edit-camera" class="modal-backdrop is-hidden" role="dialog" aria-modal="true" aria-labelledby="modal-edit-camera-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-edit-camera-title">✏️ Edit Data Kamera</h3>
+        <button type="button" class="btn-clear" id="btn-close-modal-edit-camera">&times;</button>
+      </div>
+      <form id="form-modal-edit-camera" class="modal-body">
+        <input type="hidden" id="edit-camera-id" />
+        <div class="form-group">
+          <label for="edit-camera-name">Nama Kamera:</label>
+          <input type="text" id="edit-camera-name" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label for="edit-camera-brand">Merek:</label>
+          <input type="text" id="edit-camera-brand" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label for="edit-camera-category">Kategori Kamera:</label>
+          <select id="edit-camera-category" class="form-input" required>
+            <option value="Kamera Hibrida">Kamera Hibrida</option>
+            <option value="Kamera Saku">Kamera Saku</option>
+            <option value="Kamera Prosumer">Kamera Prosumer</option>
+            <option value="Kamera Refleks">Kamera Refleks</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit-camera-year">Tahun Rilis:</label>
+          <input type="number" id="edit-camera-year" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label for="edit-camera-sensor">Tipe Sensor:</label>
+          <select id="edit-camera-sensor" class="form-input" required>
+            <option value="CCD">CCD</option>
+            <option value="Super HAD CCD">Super HAD CCD</option>
+            <option value="Live MOS">Live MOS</option>
+            <option value="CMOS">CMOS</option>
+            <option value="Foveon X3">Foveon X3</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit-camera-mp">Megapiksel (MP):</label>
+          <input type="number" step="0.1" id="edit-camera-mp" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label for="edit-camera-price">Estimasi Harga (IDR / Rupiah):</label>
+          <input type="text" id="edit-camera-price" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label for="edit-camera-rating">Rating (1 - 5):</label>
+          <input type="number" step="0.1" min="1" max="5" id="edit-camera-rating" class="form-input" required />
+        </div>
+        <div class="form-group col-span-full">
+          <label for="edit-camera-img">URL Gambar Kamera:</label>
+          <input type="text" id="edit-camera-img" class="form-input" />
+        </div>
+        <div class="form-group col-span-full">
+          <label for="edit-camera-summary">Karakter Warna / Ringkasan:</label>
+          <textarea id="edit-camera-summary" class="form-input" rows="2" required></textarea>
+        </div>
+        <div class="modal-footer col-span-full">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-modal-edit-camera">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-edit-camera">Simpan Perubahan Kamera</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Edit Lensa (Khusus Administrator) -->
+  <div id="modal-edit-lens" class="modal-backdrop is-hidden" role="dialog" aria-modal="true" aria-labelledby="modal-edit-lens-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-edit-lens-title">✏️ Edit Data Lensa</h3>
+        <button type="button" class="btn-clear" id="btn-close-modal-edit-lens">&times;</button>
+      </div>
+      <form id="form-modal-edit-lens" class="modal-body">
+        <input type="hidden" id="edit-lens-id" />
+        <div class="form-group">
+          <label for="edit-lens-name">Nama Lensa:</label>
+          <input type="text" id="edit-lens-name" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label for="edit-lens-brand">Merek:</label>
+          <input type="text" id="edit-lens-brand" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label for="edit-lens-category">Kategori Lensa:</label>
+          <select id="edit-lens-category" class="form-input" required>
+            <option value="Lensa Prime">Lensa Prime</option>
+            <option value="Lensa Zoom Standar">Lensa Zoom Standar</option>
+            <option value="Lensa Telephoto">Lensa Telephoto</option>
+            <option value="Lensa Makro">Lensa Makro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit-lens-mount">Dudukan Mount:</label>
+          <input type="text" id="edit-lens-mount" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label for="edit-lens-focal">Focal Length:</label>
+          <input type="text" id="edit-lens-focal" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label for="edit-lens-aperture">Bukaan Maksimum (Aperture):</label>
+          <input type="text" id="edit-lens-aperture" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label for="edit-lens-year">Tahun Rilis:</label>
+          <input type="number" id="edit-lens-year" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label for="edit-lens-price">Estimasi Harga (Yen / Rupiah):</label>
+          <input type="text" id="edit-lens-price" class="form-input" required />
+        </div>
+        <div class="form-group col-span-full">
+          <label for="edit-lens-img">URL Gambar Lensa:</label>
+          <input type="text" id="edit-lens-img" class="form-input" />
+        </div>
+        <div class="form-group col-span-full">
+          <label for="edit-lens-summary">Ringkasan / Karakter Bokeh:</label>
+          <textarea id="edit-lens-summary" class="form-input" rows="2" required></textarea>
+        </div>
+        <div class="modal-footer col-span-full">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-modal-edit-lens">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-edit-lens">Simpan Perubahan Lensa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- JavaScript Modules & Views -->
-  <script src="/js/fallbackData.js?v=3.8.1"></script>
-  <script src="/js/storage.js?v=3.8.1"></script>
-  <script src="/js/api.js?v=3.8.1"></script>
-  <script src="/js/views/camerasView.js?v=3.8.1"></script>
-  <script src="/js/views/cameraDetailView.js?v=3.8.1"></script>
-  <script src="/js/views/lensesView.js?v=3.8.1"></script>
-  <script src="/js/views/lensDetailView.js?v=3.8.1"></script>
-  <script src="/js/views/favoritesView.js?v=3.8.1"></script>
-  <script src="/js/views/guideView.js?v=3.8.1"></script>
-  <script src="/js/views/profileView.js?v=3.8.2"></script>
-  <script src="/js/app.js?v=3.8.1"></script>
+  <script src="/js/fallbackData.js?v=3.8.3"></script>
+  <script src="/js/storage.js?v=3.8.3"></script>
+  <script src="/js/api.js?v=3.8.3"></script>
+  <script src="/js/views/camerasView.js?v=3.8.3"></script>
+  <script src="/js/views/cameraDetailView.js?v=3.8.3"></script>
+  <script src="/js/views/lensesView.js?v=3.8.3"></script>
+  <script src="/js/views/lensDetailView.js?v=3.8.3"></script>
+  <script src="/js/views/favoritesView.js?v=3.8.3"></script>
+  <script src="/js/views/guideView.js?v=3.8.3"></script>
+  <script src="/js/views/profileView.js?v=3.8.3"></script>
+  <script src="/js/app.js?v=3.8.3"></script>
 </body>
 </html>
