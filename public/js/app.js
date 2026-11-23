@@ -345,6 +345,55 @@ const App = {
         }
       };
     }
+
+    // Modal Admin Login
+    const modalAdmin = document.getElementById('modal-admin-login');
+    const closeAdminBtn = document.getElementById('btn-close-modal-admin');
+    const cancelAdminBtn = document.getElementById('btn-cancel-modal-admin');
+    const formAdmin = document.getElementById('form-modal-admin-login');
+
+    window.openAdminLoginModal = () => {
+      if (modalAdmin) modalAdmin.classList.remove('is-hidden');
+    };
+
+    window.closeAdminLoginModal = () => {
+      if (modalAdmin) modalAdmin.classList.add('is-hidden');
+    };
+
+    if (closeAdminBtn) closeAdminBtn.onclick = window.closeAdminLoginModal;
+    if (cancelAdminBtn) cancelAdminBtn.onclick = window.closeAdminLoginModal;
+
+    if (formAdmin) {
+      formAdmin.onsubmit = (e) => {
+        e.preventDefault();
+        const email = document.getElementById('admin-login-email').value.trim();
+        const adminUser = {
+          name: 'Administrator RetroCam',
+          email: email || 'admin@retrocam.id',
+          role: 'admin',
+          phone: '+62 811-9876-5432',
+          city: 'Semarang, Jawa Tengah',
+          memberTier: 'Administrator',
+          joinDate: 'Sistem Katalog 2024',
+          bio: 'Pengelola arsip katalog kamera digital dan lensa vintage RetroCam Archive.',
+          avatarUrl: '/images/app-logo.png'
+        };
+
+        StorageService.login(adminUser);
+        window.closeAdminLoginModal();
+        App.showToast('Login berhasil sebagai Administrator! Akses tambah kamera & lensa aktif.');
+
+        if (window.ProfileView && window.ProfileView.loadProfileData) {
+          window.ProfileView.loadProfileData();
+        }
+        if (window.location.hash.startsWith('#camera') && window.CamerasView && window.CamerasView.loadCamerasData) {
+          window.CamerasView.loadCamerasData();
+        }
+        if (window.location.hash.startsWith('#lens') && window.LensesView && window.LensesView.loadLensesData) {
+          window.LensesView.loadLensesData();
+        }
+      };
+    }
   }
 };
 

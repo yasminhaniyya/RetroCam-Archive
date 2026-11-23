@@ -182,134 +182,27 @@ const ProfileView = {
       this.statsData = stats;
 
       const isOnline = navigator.onLine;
-      const isLoggedIn = StorageService.isLoggedIn();
+      const isAdmin = StorageService.isAdmin();
+      const customProfile = StorageService.getSavedProfile() || {};
 
-      // ==========================================
-      // KONDISI 1: PENGGUNA BELUM LOGIN
-      // ==========================================
-      if (!isLoggedIn) {
-        if (heroTitle) heroTitle.textContent = 'Profil Akun';
-        if (heroSubtitle) heroSubtitle.textContent = 'Silakan masuk ke akun Anda untuk melihat profil e-commerce, pesanan, dan wishlist kamera.';
-
-        container.innerHTML = `
-          <!-- E-Commerce Auth Card -->
-          <div class="auth-card card-glass animate-fade-in">
-            <div class="auth-header">
-              <div class="auth-icon-badge">
-                <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-              </div>
-              <h2 style="font-size: 1.45rem; font-weight: 800; color: #0f172a; margin-bottom: 0.35rem;">Masuk ke Akun</h2>
-              <p class="subtitle-small">Masuk untuk mengelola profil belanja, wishlist kamera favorit, dan pengiriman.</p>
-            </div>
-
-            <!-- Tabs: Masuk / Daftar -->
-            <div class="auth-tabs">
-              <button type="button" class="auth-tab-btn is-active" id="tab-auth-login">Masuk (Login)</button>
-              <button type="button" class="auth-tab-btn" id="tab-auth-register">Daftar Akun</button>
-            </div>
-
-            <!-- Form Login -->
-            <form id="form-auth-login" class="auth-form">
-              <div class="form-group">
-                <label for="login-email">Email / Username:</label>
-                <input type="email" id="login-email" class="form-input" placeholder="contoh: yasmin@example.com" value="yasminhaniyyaa@gmail.com" required />
-              </div>
-
-              <div class="form-group">
-                <label for="login-password">Kata Sandi:</label>
-                <input type="password" id="login-password" class="form-input" placeholder="••••••••" value="password123" required />
-              </div>
-
-              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; margin: 0.2rem 0;">
-                <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; color: var(--text-secondary);">
-                  <input type="checkbox" checked /> Ingat Saya
-                </label>
-                <a href="javascript:void(0)" style="color: #0284c7; text-decoration: none; font-weight: 600;" onclick="alert('Kata sandi demo bebas atau gunakan password123')">Lupa Sandi?</a>
-              </div>
-
-              <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem;">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
-                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                  <polyline points="10 17 15 12 10 7"></polyline>
-                  <line x1="15" y1="12" x2="3" y2="12"></line>
-                </svg>
-                Masuk Sekarang
-              </button>
-            </form>
-
-            <!-- Form Register -->
-            <form id="form-auth-register" class="auth-form is-hidden">
-              <div class="form-group">
-                <label for="reg-name">Nama Lengkap:</label>
-                <input type="text" id="reg-name" class="form-input" placeholder="Nama Anda" value="Yasmin Haniyya" required />
-              </div>
-
-              <div class="form-group">
-                <label for="reg-email">Email:</label>
-                <input type="email" id="reg-email" class="form-input" placeholder="email@example.com" value="yasminhaniyyaa@gmail.com" required />
-              </div>
-
-              <div class="form-group">
-                <label for="reg-phone">Nomor Telepon / WhatsApp:</label>
-                <input type="text" id="reg-phone" class="form-input" placeholder="+62 8..." value="+62 812-3456-7890" required />
-              </div>
-
-              <div class="form-group">
-                <label for="reg-city">Kota Domisili:</label>
-                <input type="text" id="reg-city" class="form-input" placeholder="Kota" value="Semarang, Jawa Tengah" required />
-              </div>
-
-              <div class="form-group">
-                <label for="reg-password">Kata Sandi:</label>
-                <input type="password" id="reg-password" class="form-input" placeholder="Minimal 6 karakter" value="password123" required />
-              </div>
-
-              <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem;">
-                Daftar & Masuk
-              </button>
-            </form>
-
-            <!-- Quick Demo Login Button -->
-            <div class="auth-quick-demo">
-              <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.6rem;">Pilih mode login demo cepat:</p>
-              <button type="button" id="btn-quick-demo-login" class="btn-demo-quick">
-                ⚡ Masuk sebagai Member (Yasmin Haniyya)
-              </button>
-              <button type="button" id="btn-quick-admin-login" class="btn-demo-quick btn-demo-admin">
-                🛡️ Masuk sebagai Admin (Kelola & Tambah Katalog)
-              </button>
-            </div>
-          </div>
-
-          ${this.renderAboutAndStatusSection(isOnline, stats)}
-        `;
-
-        this.bindAuthEvents(profile);
-        return;
+      if (heroTitle) heroTitle.textContent = 'Profil';
+      if (heroSubtitle) {
+        heroSubtitle.textContent = isAdmin
+          ? 'Mode Administrator Aktif: Anda dapat menambah katalog kamera dan lensa baru.'
+          : 'Informasi profil, koleksi favorit, dan preferensi belanja kamera Anda.';
       }
 
-      // ==========================================
-      // KONDISI 2: PENGGUNA SUDAH LOGIN
-      // ==========================================
-      if (heroTitle) heroTitle.textContent = 'Profil';
-      if (heroSubtitle) heroSubtitle.textContent = 'Informasi akun e-commerce, alamat pengiriman, dan preferensi belanja kamera Anda.';
-
-      const authUser = StorageService.getAuthUser() || {};
-      const customProfile = StorageService.getSavedProfile() || {};
-      const isAdmin = StorageService.isAdmin();
-
       const user = {
-        name: isAdmin ? (customProfile.name || authUser.name || 'Administrator RetroCam') : (customProfile.name || authUser.name || profile?.userInfo?.name || 'Yasmin Haniyya'),
-        email: customProfile.email || authUser.email || (isAdmin ? 'admin@retrocam.id' : (profile?.userInfo?.email || 'yasminhaniyyaa@gmail.com')),
-        phone: customProfile.phone || authUser.phone || (isAdmin ? '+62 811-9876-5432' : (profile?.userInfo?.phone || '+62 812-3456-7890')),
-        city: customProfile.city || authUser.city || (isAdmin ? 'Semarang / Jakarta' : (profile?.userInfo?.city || 'Semarang, Jawa Tengah')),
-        memberTier: isAdmin ? 'Administrator' : (customProfile.memberTier || authUser.memberTier || profile?.userInfo?.memberTier || 'Gold Member'),
-        joinDate: customProfile.joinDate || authUser.joinDate || (isAdmin ? 'Sistem Katalog 2024' : (profile?.userInfo?.joinDate || 'Januari 2024')),
-        bio: customProfile.bio || authUser.bio || (isAdmin ? 'Pengelola arsip katalog kamera digital dan lensa vintage RetroCam Archive.' : (profile?.userInfo?.bio || 'Pecinta fotografi kamera digital era CCD dan eksplorasi lensa manual vintage.')),
-        avatarUrl: customProfile.avatarUrl || authUser.avatarUrl || (isAdmin ? '/images/app-logo.png' : (profile?.userInfo?.avatarUrl || profile?.academicInfo?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'))
+        name: isAdmin
+          ? (customProfile.name || 'Administrator RetroCam')
+          : (customProfile.name || profile?.userInfo?.name || profile?.academicInfo?.studentName || 'Yasmin Haniyya'),
+        email: customProfile.email || (isAdmin ? 'admin@retrocam.id' : (profile?.userInfo?.email || profile?.academicInfo?.email || 'yasminhaniyyaa@gmail.com')),
+        phone: customProfile.phone || (isAdmin ? '+62 811-9876-5432' : (profile?.userInfo?.phone || profile?.academicInfo?.phone || '+62 812-3456-7890')),
+        city: customProfile.city || (isAdmin ? 'Semarang / Jakarta' : (profile?.userInfo?.city || profile?.academicInfo?.city || 'Semarang, Jawa Tengah')),
+        memberTier: isAdmin ? 'Administrator' : (customProfile.memberTier || profile?.userInfo?.memberTier || profile?.academicInfo?.memberTier || 'Gold Member'),
+        joinDate: customProfile.joinDate || (isAdmin ? 'Sistem Katalog 2024' : (profile?.userInfo?.joinDate || 'Januari 2024')),
+        bio: customProfile.bio || (isAdmin ? 'Pengelola arsip katalog kamera digital dan lensa vintage RetroCam Archive.' : (profile?.userInfo?.bio || 'Pecinta fotografi kamera digital era CCD dan eksplorasi lensa manual vintage.')),
+        avatarUrl: customProfile.avatarUrl || (isAdmin ? '/images/app-logo.png' : (profile?.userInfo?.avatarUrl || profile?.academicInfo?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'))
       };
 
       this.currentAvatarData = user.avatarUrl;
@@ -362,7 +255,7 @@ const ProfileView = {
                 </div>
               </div>
 
-              <div class="profile-action-btn-row" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <div class="profile-action-btn-row" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
                 ${isAdmin ? `
                   <button type="button" class="btn btn-primary" id="btn-profile-add-camera" style="background: linear-gradient(135deg, #0284c7, #0369a1);">
                     ➕ Tambah Kamera Baru
@@ -370,22 +263,37 @@ const ProfileView = {
                   <button type="button" class="btn btn-primary" id="btn-profile-add-lens" style="background: linear-gradient(135deg, #0284c7, #0369a1);">
                     ➕ Tambah Lensa Baru
                   </button>
-                ` : ''}
-                <button class="btn ${isAdmin ? 'btn-secondary' : 'btn-primary'}" id="btn-edit-student-profile">
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                  </svg>
-                  Edit Data Profil
-                </button>
-                <button class="btn btn-secondary" id="btn-logout-user" style="border-color: #ef4444; color: #ef4444;">
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16 17 21 12 16 7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                  </svg>
-                  Keluar / Logout
-                </button>
+                  <button type="button" class="btn btn-secondary" id="btn-edit-student-profile">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit Data Profil
+                  </button>
+                  <button type="button" class="btn btn-secondary" id="btn-logout-admin" style="border-color: #ef4444; color: #ef4444;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                      <polyline points="16 17 21 12 16 7"></polyline>
+                      <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Keluar Mode Admin
+                  </button>
+                ` : `
+                  <button type="button" class="btn btn-primary" id="btn-edit-student-profile">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit Data Profil
+                  </button>
+                  <button type="button" class="btn btn-secondary" id="btn-open-admin-login" style="border-color: #0284c7; color: #0284c7;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Login Admin
+                  </button>
+                `}
               </div>
             </div>
           </div>
@@ -549,130 +457,60 @@ const ProfileView = {
     }
   },
 
-  // Event handler saat pengguna belum login
-  bindAuthEvents(profile) {
-    const tabLogin = document.getElementById('tab-auth-login');
-    const tabRegister = document.getElementById('tab-auth-register');
-    const formLogin = document.getElementById('form-auth-login');
-    const formRegister = document.getElementById('form-auth-register');
-    const quickDemoBtn = document.getElementById('btn-quick-demo-login');
-    const quickAdminBtn = document.getElementById('btn-quick-admin-login');
+  // Event handler interaksi halaman profil
+  bindProfileEvents(currentUser) {
+    const editBtn = document.getElementById('btn-edit-student-profile');
+    const cancelBtn = document.getElementById('btn-cancel-edit-profile');
+    const editBox = document.getElementById('profile-edit-box');
+    const form = document.getElementById('form-edit-profile');
+    const resetBtn = document.getElementById('btn-reset-default-profile');
+    const openAdminBtn = document.getElementById('btn-open-admin-login');
+    const logoutAdminBtn = document.getElementById('btn-logout-admin');
+    const fileInput = document.getElementById('input-edit-avatar-file');
+    const urlInput = document.getElementById('input-edit-avatar-url');
+    const previewImg = document.getElementById('edit-avatar-preview-img');
+    const btnOpenCropperManual = document.getElementById('btn-open-cropper-manual');
+    const btnProfileAddCamera = document.getElementById('btn-profile-add-camera');
+    const btnProfileAddLens = document.getElementById('btn-profile-add-lens');
+    const installBtn = document.getElementById('btn-install-pwa');
 
-    // Switch Tabs
-    if (tabLogin && tabRegister && formLogin && formRegister) {
-      tabLogin.onclick = () => {
-        tabLogin.classList.add('is-active');
-        tabRegister.classList.remove('is-active');
-        formLogin.classList.remove('is-hidden');
-        formRegister.classList.add('is-hidden');
+    // Admin Action Buttons
+    if (btnProfileAddCamera) {
+      btnProfileAddCamera.onclick = () => {
+        if (window.openAddCameraModal) window.openAddCameraModal();
       };
-
-      tabRegister.onclick = () => {
-        tabRegister.classList.add('is-active');
-        tabLogin.classList.remove('is-active');
-        formRegister.classList.remove('is-hidden');
-        formLogin.classList.add('is-hidden');
+    }
+    if (btnProfileAddLens) {
+      btnProfileAddLens.onclick = () => {
+        if (window.openAddLensModal) window.openAddLensModal();
       };
     }
 
-    // Submit Login
-    if (formLogin) {
-      formLogin.onsubmit = (e) => {
-        e.preventDefault();
-        const email = document.getElementById('login-email').value.trim();
-        const isAdminEmail = email.toLowerCase().includes('admin');
-        const demoUser = {
-          name: isAdminEmail ? 'Administrator RetroCam' : (profile?.userInfo?.name || 'Yasmin Haniyya'),
-          email: email || (isAdminEmail ? 'admin@retrocam.id' : 'yasminhaniyyaa@gmail.com'),
-          role: isAdminEmail ? 'admin' : 'member',
-          phone: profile?.userInfo?.phone || '+62 812-3456-7890',
-          city: profile?.userInfo?.city || 'Semarang, Jawa Tengah',
-          memberTier: isAdminEmail ? 'Administrator' : 'Gold Member',
-          joinDate: 'Januari 2024',
-          bio: isAdminEmail ? 'Pengelola arsip katalog kamera digital dan lensa vintage RetroCam Archive.' : (profile?.userInfo?.bio || 'Pecinta fotografi kamera digital era CCD dan eksplorasi lensa manual.'),
-          avatarUrl: isAdminEmail ? '/images/app-logo.png' : (profile?.userInfo?.avatarUrl || profile?.academicInfo?.avatarUrl)
-        };
-
-        StorageService.login(demoUser);
-        if (window.App && window.App.showToast) {
-          window.App.showToast(`Selamat datang kembali, ${demoUser.name}!`);
-        }
-        this.loadProfileData();
+    // Login Admin Button
+    if (openAdminBtn) {
+      openAdminBtn.onclick = () => {
+        if (window.openAdminLoginModal) window.openAdminLoginModal();
       };
     }
 
-    // Quick Demo Login Button (Member)
-    if (quickDemoBtn) {
-      quickDemoBtn.onclick = () => {
-        const demoUser = {
-          name: profile?.userInfo?.name || 'Yasmin Haniyya',
-          email: 'yasminhaniyyaa@gmail.com',
-          role: 'member',
-          phone: profile?.userInfo?.phone || '+62 812-3456-7890',
-          city: profile?.userInfo?.city || 'Semarang, Jawa Tengah',
-          memberTier: 'Gold Member',
-          joinDate: 'Januari 2024',
-          bio: profile?.userInfo?.bio || 'Pecinta fotografi kamera digital era CCD dan eksplorasi lensa manual.',
-          avatarUrl: profile?.userInfo?.avatarUrl || profile?.academicInfo?.avatarUrl
-        };
-
-        StorageService.login(demoUser);
+    // Logout Admin Button
+    if (logoutAdminBtn) {
+      logoutAdminBtn.onclick = () => {
+        StorageService.logout();
         if (window.App && window.App.showToast) {
-          window.App.showToast(`Login berhasil sebagai ${demoUser.name}!`);
+          window.App.showToast('Keluar dari Mode Administrator.');
         }
         this.loadProfileData();
-      };
-    }
-
-    // Quick Demo Admin Login Button
-    if (quickAdminBtn) {
-      quickAdminBtn.onclick = () => {
-        const adminUser = {
-          name: 'Administrator RetroCam',
-          email: 'admin@retrocam.id',
-          role: 'admin',
-          phone: '+62 811-9876-5432',
-          city: 'Semarang, Jawa Tengah',
-          memberTier: 'Administrator',
-          joinDate: 'Sistem Katalog 2024',
-          bio: 'Pengelola arsip katalog kamera digital dan lensa vintage RetroCam Archive.',
-          avatarUrl: '/images/app-logo.png'
-        };
-
-        StorageService.login(adminUser);
-        if (window.App && window.App.showToast) {
-          window.App.showToast('Login berhasil sebagai Administrator! Akses kelola & tambah katalog aktif.');
+        if (window.location.hash.startsWith('#camera') && window.CamerasView && window.CamerasView.loadCamerasData) {
+          window.CamerasView.loadCamerasData();
         }
-        this.loadProfileData();
-      };
-    }
-
-    // Submit Register
-    if (formRegister) {
-      formRegister.onsubmit = (e) => {
-        e.preventDefault();
-        const newUser = {
-          name: document.getElementById('reg-name').value.trim() || 'Yasmin Haniyya',
-          email: document.getElementById('reg-email').value.trim() || 'yasminhaniyyaa@gmail.com',
-          role: 'member',
-          phone: document.getElementById('reg-phone').value.trim() || '+62 812-3456-7890',
-          city: document.getElementById('reg-city').value.trim() || 'Semarang, Jawa Tengah',
-          memberTier: 'Member Baru',
-          joinDate: 'November 2024',
-          bio: 'Pengguna baru aplikasi RetroCam Archive.',
-          avatarUrl: profile?.userInfo?.avatarUrl || profile?.academicInfo?.avatarUrl
-        };
-
-        StorageService.login(newUser);
-        if (window.App && window.App.showToast) {
-          window.App.showToast(`Akun berhasil dibuat. Selamat datang, ${newUser.name}!`);
+        if (window.location.hash.startsWith('#lens') && window.LensesView && window.LensesView.loadLensesData) {
+          window.LensesView.loadLensesData();
         }
-        this.loadProfileData();
       };
     }
 
     // Install PWA Button
-    const installBtn = document.getElementById('btn-install-pwa');
     if (installBtn) {
       installBtn.onclick = () => {
         if (window.deferredPWAInstallPrompt) {
@@ -688,34 +526,6 @@ const ProfileView = {
         }
       };
     }
-  },
-
-  // Event handler saat pengguna sudah login
-  bindProfileEvents(currentUser) {
-    const editBtn = document.getElementById('btn-edit-student-profile');
-    const cancelBtn = document.getElementById('btn-cancel-edit-profile');
-    const editBox = document.getElementById('profile-edit-box');
-    const form = document.getElementById('form-edit-profile');
-    const resetBtn = document.getElementById('btn-reset-default-profile');
-    const logoutBtn = document.getElementById('btn-logout-user');
-    const fileInput = document.getElementById('input-edit-avatar-file');
-    const urlInput = document.getElementById('input-edit-avatar-url');
-    const previewImg = document.getElementById('edit-avatar-preview-img');
-    const btnOpenCropperManual = document.getElementById('btn-open-cropper-manual');
-    const btnProfileAddCamera = document.getElementById('btn-profile-add-camera');
-    const btnProfileAddLens = document.getElementById('btn-profile-add-lens');
-
-    // Admin Action Buttons
-    if (btnProfileAddCamera) {
-      btnProfileAddCamera.onclick = () => {
-        if (window.openAddCameraModal) window.openAddCameraModal();
-      };
-    }
-    if (btnProfileAddLens) {
-      btnProfileAddLens.onclick = () => {
-        if (window.openAddLensModal) window.openAddLensModal();
-      };
-    }
 
     // Buka / Tutup Form Edit
     if (editBtn && editBox) {
@@ -728,19 +538,6 @@ const ProfileView = {
     if (cancelBtn && editBox) {
       cancelBtn.onclick = () => {
         editBox.classList.add('is-hidden');
-      };
-    }
-
-    // Tombol Logout
-    if (logoutBtn) {
-      logoutBtn.onclick = () => {
-        if (confirm('Apakah Anda yakin ingin keluar dari akun?')) {
-          StorageService.logout();
-          if (window.App && window.App.showToast) {
-            window.App.showToast('Anda telah berhasil keluar dari akun.');
-          }
-          this.loadProfileData();
-        }
       };
     }
 
@@ -848,24 +645,6 @@ const ProfileView = {
         editBox.classList.add('is-hidden');
         if (window.App && window.App.showToast) {
           window.App.showToast('Profil e-commerce berhasil diperbarui!');
-        }
-      };
-    }
-
-    // Install PWA Button
-    const installBtn = document.getElementById('btn-install-pwa');
-    if (installBtn) {
-      installBtn.onclick = () => {
-        if (window.deferredPWAInstallPrompt) {
-          window.deferredPWAInstallPrompt.prompt();
-          window.deferredPWAInstallPrompt.userChoice.then((choice) => {
-            if (choice.outcome === 'accepted') {
-              console.log('User accepted PWA installation');
-            }
-            window.deferredPWAInstallPrompt = null;
-          });
-        } else {
-          alert('Fitur instalasi PWA: Buka menu browser Anda (ikon titik tiga di Chrome / ikon Bagikan di Safari iOS), lalu pilih "Tambahkan ke Layar Utama" (Add to Home screen / Install App).');
         }
       };
     }

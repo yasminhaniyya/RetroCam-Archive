@@ -8,7 +8,7 @@
   --bg-surface: #ffffff;
   --bg-surface-elevated: #f1f3f6;
   --bg-glass: rgba(255, 255, 255, 0.92);
-  
+
   --border-subtle: #e5e7eb;
   --border-medium: #d1d5db;
   --border-accent: rgba(2, 132, 199, 0.25);
@@ -45,7 +45,9 @@
 /* ==========================================================================
    Base & Resets
    ========================================================================== */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -75,7 +77,9 @@ a {
   text-decoration: none;
 }
 
-button, input, select {
+button,
+input,
+select {
   font-family: inherit;
 }
 
@@ -1242,7 +1246,7 @@ button, input, select {
   font-weight: 600;
   padding: 0.25rem 0.6rem;
   border-radius: var(--radius-sm);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 .detail-hero-info {
@@ -1491,14 +1495,16 @@ button, input, select {
   gap: 0.4rem;
 }
 
-.pros-list, .cons-list {
+.pros-list,
+.cons-list {
   list-style: none;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.pros-list li, .cons-list li {
+.pros-list li,
+.cons-list li {
   font-size: 0.88rem;
   color: var(--text-secondary);
   line-height: 1.45;
@@ -2160,9 +2166,17 @@ button, input, select {
   gap: 0.4rem;
 }
 
-.text-success { color: #2d6a4f; }
-.text-warning { color: var(--accent-amber); }
-.text-info { color: #0f766e; }
+.text-success {
+  color: #2d6a4f;
+}
+
+.text-warning {
+  color: var(--accent-amber);
+}
+
+.text-info {
+  color: #0f766e;
+}
 
 .dot-status {
   width: 7px;
@@ -2518,8 +2532,15 @@ button, input, select {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-toast-in {
@@ -2527,8 +2548,15 @@ button, input, select {
 }
 
 @keyframes toastIn {
-  from { opacity: 0; transform: translateX(30px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .animate-toast-out {
@@ -2536,8 +2564,15 @@ button, input, select {
 }
 
 @keyframes toastOut {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(30px); }
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(30px);
+  }
 }
 
 .loading-state {
@@ -2560,7 +2595,9 @@ button, input, select {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Admin Catalog Banner */
@@ -2826,10 +2863,21 @@ button, input, select {
 }
 
 /* Utility Helpers */
-.mt-2 { margin-top: 0.5rem; }
-.mt-3 { margin-top: 1rem; }
-.text-muted { color: var(--text-muted); }
-.col-span-full { grid-column: 1 / -1; }
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.col-span-full {
+  grid-column: 1 / -1;
+}
 
 @media (max-width: 640px) {
   .hide-mobile {
