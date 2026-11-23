@@ -1690,10 +1690,49 @@ select {
    Profile & About View
    ========================================================================== */
 .profile-hero-card {
+  position: relative;
   margin-bottom: 1.5rem;
   padding: 1.75rem;
+  border-radius: var(--radius-xl, 18px);
   border: 1px solid rgba(3, 105, 161, 0.2);
   background: linear-gradient(135deg, rgba(224, 242, 254, 0.7), #ffffff);
+}
+
+.text-login-link {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0.2rem 0.4rem !important;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #94a3b8;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  z-index: 5;
+}
+
+.text-login-link:hover,
+.text-login-link:focus-visible {
+  color: #0284c7;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@media (max-width: 639px) {
+  .text-login-link {
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.82rem;
+  }
 }
 
 .profile-layout {

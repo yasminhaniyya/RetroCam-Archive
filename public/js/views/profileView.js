@@ -31,7 +31,7 @@ const ProfileView = {
         <header class="section-hero">
           <h1 class="hero-title" id="profile-page-title">Profil</h1>
           <p class="hero-subtitle" id="profile-page-subtitle">
-            Informasi akun dan preferensi belanja kamera Anda.
+            Informasi profil pengguna aplikasi.
           </p>
         </header>
 
@@ -187,32 +187,34 @@ const ProfileView = {
 
       if (heroTitle) heroTitle.textContent = 'Profil';
       if (heroSubtitle) {
-        heroSubtitle.textContent = isAdmin
-          ? 'Mode Administrator Aktif: Anda dapat menambah katalog kamera dan lensa baru.'
-          : 'Informasi profil, koleksi favorit, dan preferensi belanja kamera Anda.';
+        heroSubtitle.textContent = 'Informasi profil pengguna aplikasi.';
       }
 
+      const defaultAcademic = profile?.academicInfo || {};
       const user = {
-        name: isAdmin
-          ? (customProfile.name || 'Administrator RetroCam')
-          : (customProfile.name || profile?.userInfo?.name || profile?.academicInfo?.studentName || 'Yasmin Haniyya'),
-        email: customProfile.email || (isAdmin ? 'admin@retrocam.id' : (profile?.userInfo?.email || profile?.academicInfo?.email || 'yasminhaniyyaa@gmail.com')),
-        phone: customProfile.phone || (isAdmin ? '+62 811-9876-5432' : (profile?.userInfo?.phone || profile?.academicInfo?.phone || '+62 812-3456-7890')),
-        city: customProfile.city || (isAdmin ? 'Semarang / Jakarta' : (profile?.userInfo?.city || profile?.academicInfo?.city || 'Semarang, Jawa Tengah')),
-        memberTier: isAdmin ? 'Administrator' : (customProfile.memberTier || profile?.userInfo?.memberTier || profile?.academicInfo?.memberTier || 'Gold Member'),
-        joinDate: customProfile.joinDate || (isAdmin ? 'Sistem Katalog 2024' : (profile?.userInfo?.joinDate || 'Januari 2024')),
-        bio: customProfile.bio || (isAdmin ? 'Pengelola arsip katalog kamera digital dan lensa vintage RetroCam Archive.' : (profile?.userInfo?.bio || 'Pecinta fotografi kamera digital era CCD dan eksplorasi lensa manual vintage.')),
-        avatarUrl: customProfile.avatarUrl || (isAdmin ? '/images/app-logo.png' : (profile?.userInfo?.avatarUrl || profile?.academicInfo?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'))
+        name: customProfile.name || defaultAcademic.studentName || 'Yasmin Haniyya',
+        nim: customProfile.nim || defaultAcademic.studentNim || '21120121130000',
+        studyProgram: customProfile.studyProgram || defaultAcademic.studyProgram || 'Teknik Komputer / Informatika',
+        faculty: customProfile.faculty || defaultAcademic.faculty || 'Fakultas Teknik',
+        email: customProfile.email || defaultAcademic.email || 'yasminhaniyyaa@gmail.com',
+        avatarUrl: customProfile.avatarUrl || defaultAcademic.avatarUrl || (profile?.userInfo?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80')
       };
 
       this.currentAvatarData = user.avatarUrl;
-      const favCamerasCount = StorageService.getFavoriteCameras().length;
-      const favLensesCount = StorageService.getFavoriteLenses().length;
-      const totalFavCount = favCamerasCount + favLensesCount;
 
       container.innerHTML = `
-        <!-- E-Commerce User Profile Card -->
+        <!-- Profile Hero Card (Sesuai Screenshot Pengguna) -->
         <div class="profile-hero-card card-glass">
+          <!-- Tombol Login Abu-Abu di Kanan Atas Tanpa Shape (Hover Ditunjuk) -->
+          <button 
+            type="button" 
+            id="btn-profile-login-link" 
+            class="text-login-link" 
+            title="${isAdmin ? 'Klik untuk keluar dari mode administrator' : 'Klik untuk masuk sebagai admin'}"
+          >
+            ${isAdmin ? 'Mode Admin (Keluar)' : 'Login'}
+          </button>
+
           <div class="profile-layout">
             <div class="profile-avatar-box">
               <div class="avatar-ring">
@@ -227,146 +229,53 @@ const ProfileView = {
             </div>
 
             <div class="profile-details">
-              <div class="ecommerce-badge ${isAdmin ? 'admin-badge' : ''}">
-                <span>${isAdmin ? '🛡️ Administrator' : `👑 ${user.memberTier}`}</span> • <span>${isAdmin ? 'Kelola Katalog' : 'Terverifikasi'}</span>
-              </div>
               <h2 class="profile-name" id="display-user-name">${user.name}</h2>
 
               <div class="profile-meta-list">
                 <div class="profile-meta-item">
-                  <span class="meta-k">✉️ Email:</span>
+                  <span class="meta-k">NIM:</span>
+                  <strong class="meta-v" id="display-user-nim">${user.nim}</strong>
+                </div>
+                <div class="profile-meta-item">
+                  <span class="meta-k">Program Studi:</span>
+                  <span class="meta-v" id="display-user-prodi">${user.studyProgram}</span>
+                </div>
+                <div class="profile-meta-item">
+                  <span class="meta-k">Fakultas / Kampus:</span>
+                  <span class="meta-v" id="display-user-faculty">${user.faculty}</span>
+                </div>
+                <div class="profile-meta-item">
+                  <span class="meta-k">Email / Kontak:</span>
                   <span class="meta-v" id="display-user-email">${user.email}</span>
-                </div>
-                <div class="profile-meta-item">
-                  <span class="meta-k">📱 Nomor HP / WA:</span>
-                  <strong class="meta-v" id="display-user-phone">${user.phone}</strong>
-                </div>
-                <div class="profile-meta-item">
-                  <span class="meta-k">📍 Kota Domisili:</span>
-                  <span class="meta-v" id="display-user-city">${user.city}</span>
-                </div>
-                <div class="profile-meta-item">
-                  <span class="meta-k">📅 Member Sejak:</span>
-                  <span class="meta-v">${user.joinDate}</span>
-                </div>
-                <div class="profile-meta-item">
-                  <span class="meta-k">💬 Minat / Catatan:</span>
-                  <span class="meta-v" id="display-user-bio">${user.bio}</span>
                 </div>
               </div>
 
               <div class="profile-action-btn-row" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+                <button type="button" class="btn btn-primary" id="btn-edit-student-profile" style="background: #0284c7; color: #fff; border: none; border-radius: 8px; padding: 0.55rem 1.1rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                  Edit Data Profil
+                </button>
                 ${isAdmin ? `
-                  <button type="button" class="btn btn-primary" id="btn-profile-add-camera" style="background: linear-gradient(135deg, #0284c7, #0369a1);">
-                    ➕ Tambah Kamera Baru
+                  <button type="button" class="btn btn-primary" id="btn-profile-add-camera" style="background: linear-gradient(135deg, #0284c7, #0369a1); border: none; border-radius: 8px; padding: 0.55rem 1rem; font-weight: 600;">
+                    ➕ Tambah Kamera
                   </button>
-                  <button type="button" class="btn btn-primary" id="btn-profile-add-lens" style="background: linear-gradient(135deg, #0284c7, #0369a1);">
-                    ➕ Tambah Lensa Baru
+                  <button type="button" class="btn btn-primary" id="btn-profile-add-lens" style="background: linear-gradient(135deg, #0284c7, #0369a1); border: none; border-radius: 8px; padding: 0.55rem 1rem; font-weight: 600;">
+                    ➕ Tambah Lensa
                   </button>
-                  <button type="button" class="btn btn-secondary" id="btn-edit-student-profile">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;">
-                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                    </svg>
-                    Edit Data Profil
-                  </button>
-                  <button type="button" class="btn btn-secondary" id="btn-logout-admin" style="border-color: #ef4444; color: #ef4444;">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;">
-                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                      <polyline points="16 17 21 12 16 7"></polyline>
-                      <line x1="21" y1="12" x2="9" y2="12"></line>
-                    </svg>
-                    Keluar Mode Admin
-                  </button>
-                ` : `
-                  <button type="button" class="btn btn-primary" id="btn-edit-student-profile">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;">
-                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                    </svg>
-                    Edit Data Profil
-                  </button>
-                  <button type="button" class="btn btn-secondary" id="btn-open-admin-login" style="border-color: #0284c7; color: #0284c7;">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;">
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                    </svg>
-                    Login Admin
-                  </button>
-                `}
+                ` : ''}
               </div>
             </div>
           </div>
         </div>
 
-        <!-- E-Commerce / Admin Activity Summary -->
-        <div class="ecommerce-dashboard-grid">
-          ${isAdmin ? `
-            <div class="ecommerce-dash-card" style="cursor: pointer;" onclick="window.openAddCameraModal && window.openAddCameraModal()">
-              <div class="ecommerce-dash-icon">📸</div>
-              <div>
-                <div class="ecommerce-dash-title">Kelola Kamera</div>
-                <div class="ecommerce-dash-value" style="color: #0284c7;">+ Tambah Kamera Baru</div>
-              </div>
-            </div>
-            <div class="ecommerce-dash-card" style="cursor: pointer;" onclick="window.openAddLensModal && window.openAddLensModal()">
-              <div class="ecommerce-dash-icon">🔍</div>
-              <div>
-                <div class="ecommerce-dash-title">Kelola Lensa</div>
-                <div class="ecommerce-dash-value" style="color: #0284c7;">+ Tambah Lensa Baru</div>
-              </div>
-            </div>
-            <a href="#favorites" class="ecommerce-dash-card">
-              <div class="ecommerce-dash-icon">❤️</div>
-              <div>
-                <div class="ecommerce-dash-title">Wishlist Favorit</div>
-                <div class="ecommerce-dash-value">${totalFavCount} Item Tersimpan</div>
-              </div>
-            </a>
-            <div class="ecommerce-dash-card" onclick="alert('Role: Administrator RetroCam. Anda memiliki akses penuh menambah katalog kamera dan lensa.')">
-              <div class="ecommerce-dash-icon">🛡️</div>
-              <div>
-                <div class="ecommerce-dash-title">Hak Akses Admin</div>
-                <div class="ecommerce-dash-value" style="color: #10b981;">Akses Penuh Aktif</div>
-              </div>
-            </div>
-          ` : `
-            <a href="#favorites" class="ecommerce-dash-card">
-              <div class="ecommerce-dash-icon">❤️</div>
-              <div>
-                <div class="ecommerce-dash-title">Wishlist Favorit</div>
-                <div class="ecommerce-dash-value">${totalFavCount} Item Tersimpan</div>
-              </div>
-            </a>
-            <div class="ecommerce-dash-card" onclick="alert('Pesanan Saya: 2 transaksi kamera sebelumnya berstatus selesai & telah diterima.')">
-              <div class="ecommerce-dash-icon">🛒</div>
-              <div>
-                <div class="ecommerce-dash-title">Pesanan Saya</div>
-                <div class="ecommerce-dash-value">2 Pesanan Selesai</div>
-              </div>
-            </div>
-            <div class="ecommerce-dash-card" onclick="alert('Voucher Aktif: Diskon 10% untuk pembelian kamera retro dan gratis ongkir se-Jawa!')">
-              <div class="ecommerce-dash-icon">🎟️</div>
-              <div>
-                <div class="ecommerce-dash-title">Voucher Diskon</div>
-                <div class="ecommerce-dash-value">3 Kupon Aktif</div>
-              </div>
-            </div>
-            <div class="ecommerce-dash-card" onclick="alert('Poin Loyalitas: Anda memiliki 1.250 Poin yang dapat ditukar voucher diskon.')">
-              <div class="ecommerce-dash-icon">⭐</div>
-              <div>
-                <div class="ecommerce-dash-title">Poin Reward</div>
-                <div class="ecommerce-dash-value">1.250 Poin</div>
-              </div>
-            </div>
-          `}
-        </div>
-
         <!-- Edit Profile Form Container -->
         <div id="profile-edit-box" class="card-glass edit-profile-box is-hidden animate-fade-in">
           <div class="edit-box-header">
-            <h3>✏️ Edit Profil E-Commerce</h3>
-            <p class="subtitle-small">Ubah foto profil, nama, nomor kontak, domisili, dan catatan Anda. Perubahan langsung aktif.</p>
+            <h3>✏️ Edit Data Profil</h3>
+            <p class="subtitle-small">Ubah foto profil, nama, NIM, program studi, fakultas, atau kontak Anda. Perubahan langsung aktif.</p>
           </div>
 
           <form id="form-edit-profile" class="edit-form-grid">
@@ -412,23 +321,23 @@ const ProfileView = {
             </div>
 
             <div class="form-group">
-              <label for="input-edit-email">Email:</label>
-              <input type="email" id="input-edit-email" class="form-input" value="${user.email}" required />
+              <label for="input-edit-nim">NIM:</label>
+              <input type="text" id="input-edit-nim" class="form-input" value="${user.nim}" required />
             </div>
 
             <div class="form-group">
-              <label for="input-edit-phone">Nomor Telepon / WhatsApp:</label>
-              <input type="text" id="input-edit-phone" class="form-input" value="${user.phone}" required />
+              <label for="input-edit-prodi">Program Studi:</label>
+              <input type="text" id="input-edit-prodi" class="form-input" value="${user.studyProgram}" required />
             </div>
 
             <div class="form-group">
-              <label for="input-edit-city">Kota Domisili / Alamat:</label>
-              <input type="text" id="input-edit-city" class="form-input" value="${user.city}" required />
+              <label for="input-edit-faculty">Fakultas / Kampus:</label>
+              <input type="text" id="input-edit-faculty" class="form-input" value="${user.faculty}" required />
             </div>
 
             <div class="form-group col-span-full">
-              <label for="input-edit-bio">Minat Fotografi / Catatan Kolektor:</label>
-              <input type="text" id="input-edit-bio" class="form-input" value="${user.bio}" />
+              <label for="input-edit-email">Email / Kontak:</label>
+              <input type="email" id="input-edit-email" class="form-input" value="${user.email}" required />
             </div>
 
             <div class="form-action-row col-span-full">
@@ -464,8 +373,7 @@ const ProfileView = {
     const editBox = document.getElementById('profile-edit-box');
     const form = document.getElementById('form-edit-profile');
     const resetBtn = document.getElementById('btn-reset-default-profile');
-    const openAdminBtn = document.getElementById('btn-open-admin-login');
-    const logoutAdminBtn = document.getElementById('btn-logout-admin');
+    const profileLoginLink = document.getElementById('btn-profile-login-link');
     const fileInput = document.getElementById('input-edit-avatar-file');
     const urlInput = document.getElementById('input-edit-avatar-url');
     const previewImg = document.getElementById('edit-avatar-preview-img');
@@ -486,26 +394,23 @@ const ProfileView = {
       };
     }
 
-    // Login Admin Button
-    if (openAdminBtn) {
-      openAdminBtn.onclick = () => {
-        if (window.openAdminLoginModal) window.openAdminLoginModal();
-      };
-    }
-
-    // Logout Admin Button
-    if (logoutAdminBtn) {
-      logoutAdminBtn.onclick = () => {
-        StorageService.logout();
-        if (window.App && window.App.showToast) {
-          window.App.showToast('Keluar dari Mode Administrator.');
-        }
-        this.loadProfileData();
-        if (window.location.hash.startsWith('#camera') && window.CamerasView && window.CamerasView.loadCamerasData) {
-          window.CamerasView.loadCamerasData();
-        }
-        if (window.location.hash.startsWith('#lens') && window.LensesView && window.LensesView.loadLensesData) {
-          window.LensesView.loadLensesData();
+    // Tombol Login / Keluar Admin di Kanan Atas
+    if (profileLoginLink) {
+      profileLoginLink.onclick = () => {
+        if (StorageService.isAdmin()) {
+          StorageService.logout();
+          if (window.App && window.App.showToast) {
+            window.App.showToast('Keluar dari Mode Administrator.');
+          }
+          this.loadProfileData();
+          if (window.location.hash.startsWith('#camera') && window.CamerasView && window.CamerasView.loadCamerasData) {
+            window.CamerasView.loadCamerasData();
+          }
+          if (window.location.hash.startsWith('#lens') && window.LensesView && window.LensesView.loadLensesData) {
+            window.LensesView.loadLensesData();
+          }
+        } else {
+          if (window.openAdminLoginModal) window.openAdminLoginModal();
         }
       };
     }
@@ -604,21 +509,18 @@ const ProfileView = {
 
         const updated = {
           name: document.getElementById('input-edit-name').value.trim(),
+          nim: document.getElementById('input-edit-nim').value.trim(),
+          studyProgram: document.getElementById('input-edit-prodi').value.trim(),
+          faculty: document.getElementById('input-edit-faculty').value.trim(),
           email: document.getElementById('input-edit-email').value.trim(),
-          phone: document.getElementById('input-edit-phone').value.trim(),
-          city: document.getElementById('input-edit-city').value.trim(),
-          bio: document.getElementById('input-edit-bio').value.trim(),
-          memberTier: currentUser.memberTier || 'Gold Member',
-          joinDate: currentUser.joinDate || 'Januari 2024',
           avatarUrl: this.currentAvatarData || currentUser.avatarUrl
         };
 
         // 1. Simpan di LocalStorage
         StorageService.saveCustomProfile(updated);
-        StorageService.setAuthUser(updated);
 
         // 2. Sinkron ke Backend API jika online
-        ApiService.updateProfile(updated).catch(err => {
+        ApiService.updateProfile({ academicInfo: updated }).catch(err => {
           console.warn('API update notice (normal saat offline):', err);
         });
 
@@ -629,22 +531,22 @@ const ProfileView = {
         const nameEl = document.getElementById('display-user-name');
         if (nameEl) nameEl.textContent = updated.name;
 
+        const nimEl = document.getElementById('display-user-nim');
+        if (nimEl) nimEl.textContent = updated.nim || '-';
+
+        const prodiEl = document.getElementById('display-user-prodi');
+        if (prodiEl) prodiEl.textContent = updated.studyProgram || '-';
+
+        const facultyEl = document.getElementById('display-user-faculty');
+        if (facultyEl) facultyEl.textContent = updated.faculty || '-';
+
         const emailEl = document.getElementById('display-user-email');
         if (emailEl) emailEl.textContent = updated.email || '-';
-
-        const phoneEl = document.getElementById('display-user-phone');
-        if (phoneEl) phoneEl.textContent = updated.phone || '-';
-
-        const cityEl = document.getElementById('display-user-city');
-        if (cityEl) cityEl.textContent = updated.city || '-';
-
-        const bioEl = document.getElementById('display-user-bio');
-        if (bioEl) bioEl.textContent = updated.bio || '-';
 
         // 4. Tutup form edit dan tampilkan toast
         editBox.classList.add('is-hidden');
         if (window.App && window.App.showToast) {
-          window.App.showToast('Profil e-commerce berhasil diperbarui!');
+          window.App.showToast('Data profil berhasil diperbarui!');
         }
       };
     }
