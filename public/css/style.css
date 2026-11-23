@@ -1949,6 +1949,54 @@ button, input, select {
   background: #fee2e2;
 }
 
+/* About Application Section */
+.about-app-card {
+  border-color: rgba(2, 132, 199, 0.2);
+}
+
+.about-app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 0.85rem;
+  margin-top: 1.15rem;
+}
+
+.about-app-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.9rem 1rem;
+  background: rgba(2, 132, 199, 0.04);
+  border: 1px solid rgba(2, 132, 199, 0.12);
+  border-radius: var(--radius-md);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.about-app-item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(2, 132, 199, 0.28);
+}
+
+.about-item-icon {
+  font-size: 1.45rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.about-item-content strong {
+  display: block;
+  font-size: 0.9rem;
+  color: #0f172a;
+  margin-bottom: 0.25rem;
+}
+
+.about-item-content p {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin: 0;
+}
+
 /* WA/IG-Style Avatar Circular Cropper Modal */
 .avatar-crop-modal {
   position: fixed;

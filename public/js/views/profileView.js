@@ -29,9 +29,9 @@ const ProfileView = {
       <section class="page-container page-profile animate-fade-in">
         <!-- Hero Header -->
         <header class="section-hero">
-          <h1 class="hero-title">Profil Pengembang & Tentang Aplikasi</h1>
+          <h1 class="hero-title">Profil</h1>
           <p class="hero-subtitle">
-            Informasi pengembang aplikasi RetroCam Archive dan status aplikasi.
+            Informasi profil pengguna aplikasi.
           </p>
         </header>
 
@@ -111,13 +111,12 @@ const ProfileView = {
               <div class="avatar-ring">
                 <img 
                   src="${academic.avatarUrl}" 
-                  alt="Foto Pengembang" 
+                  alt="Foto Profil" 
                   class="profile-avatar-img"
                   id="profile-avatar-display"
                   onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'"
                 />
               </div>
-              <div class="avatar-badge-tag">Pengembang</div>
             </div>
 
             <div class="profile-details">
@@ -158,8 +157,8 @@ const ProfileView = {
         <!-- Edit Profile Form Container -->
         <div id="profile-edit-box" class="card-glass edit-profile-box is-hidden animate-fade-in">
           <div class="edit-box-header">
-            <h3>✏️ Edit Profil Pengembang</h3>
-            <p class="subtitle-small">Ubah foto profil, nama, NIM, dan rincian data akademik Anda. Perubahan langsung aktif.</p>
+            <h3>✏️ Edit Profil</h3>
+            <p class="subtitle-small">Ubah foto profil, nama, NIM, dan rincian data Anda. Perubahan langsung aktif.</p>
           </div>
 
           <form id="form-edit-profile" class="edit-form-grid">
@@ -174,7 +173,7 @@ const ProfileView = {
                 />
               </div>
               <div class="avatar-controls-box">
-                <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary);">Foto Profil Pengembang</label>
+                <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary);">Foto Profil</label>
                 <div class="avatar-file-btns">
                   <input type="file" id="input-edit-avatar-file" accept="image/*" class="hidden-file-input" />
                   <label for="input-edit-avatar-file" class="btn-file-label">
@@ -239,18 +238,48 @@ const ProfileView = {
           </form>
         </div>
 
-        <!-- About RetroCam Archive Card -->
-        <div class="info-card card-glass">
+        <!-- About / Tentang Aplikasi Card -->
+        <div class="info-card card-glass about-app-card">
           <div class="info-card-header">
             <div>
-              <h3>Tentang RetroCam Archive</h3>
-              <p class="subtitle-small">Platform katalog kamera digital dan lensa kamera</p>
+              <h3>About RetroCam Archive</h3>
+              <p class="subtitle-small">Katalog Interaktif Kamera Digital & Lensa Klasik</p>
             </div>
           </div>
           <div class="narrative-body">
             <p>
-              RetroCam Archive adalah platform arsip katalog interaktif yang mengkurasi kamera digital klasik dan modern beserta lensa interchangeable. Dilengkapi dengan spesifikasi teknis mendalam, karakteristik warna gambar, panduan kompatibilitas, serta kemampuan akses secara offline melalui teknologi Progressive Web Apps.
+              <strong>RetroCam Archive</strong> adalah aplikasi web interaktif berbasis Progressive Web Apps (PWA) yang mengkurasi arsip kamera digital klasik era sensor CCD/CMOS tahun 2000-an hingga modern, serta berbagai lensa kamera pilihan dari Yodobashi Camera dan arsip fotografi.
             </p>
+            <div class="about-app-grid">
+              <div class="about-app-item">
+                <span class="about-item-icon">📷</span>
+                <div class="about-item-content">
+                  <strong>Katalog Kamera</strong>
+                  <p>Menjelajahi beragam tipe kamera digital (Hibrida, Saku, Prosumer, Refleks) lengkap dengan spesifikasi teknis dan karakteristik sensor.</p>
+                </div>
+              </div>
+              <div class="about-app-item">
+                <span class="about-item-icon">🔍</span>
+                <div class="about-item-content">
+                  <strong>Katalog Lensa</strong>
+                  <p>Koleksi lensa prime, zoom, makro, dan telephoto dengan panduan mount lensa dan bukaan diafragma (aperture).</p>
+                </div>
+              </div>
+              <div class="about-app-item">
+                <span class="about-item-icon">⭐</span>
+                <div class="about-item-content">
+                  <strong>Koleksi Pribadi</strong>
+                  <p>Fitur simpan favorit secara offline di penyimpanan lokal perangkat untuk menandai kamera dan lensa pilihan.</p>
+                </div>
+              </div>
+              <div class="about-app-item">
+                <span class="about-item-icon">⚡</span>
+                <div class="about-item-content">
+                  <strong>PWA & Akses Offline</strong>
+                  <p>Dapat dipasang langsung ke layar beranda perangkat dan tetap dapat diakses saat tidak ada koneksi internet.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
