@@ -25,7 +25,7 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="/css/style.css?v=3.5.0" />
+  <link rel="stylesheet" href="/css/style.css?v=3.6.0" />
 </head>
 <body>
 
@@ -34,14 +34,7 @@
     <div class="header-container">
       <a href="#cameras" class="brand-logo" aria-label="Beranda RetroCam">
         <div class="logo-mark">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <circle cx="12" cy="12" r="3"></circle>
-            <line x1="12" y1="2" x2="12" y2="5"></line>
-            <line x1="12" y1="19" x2="12" y2="22"></line>
-            <line x1="2" y1="12" x2="5" y2="12"></line>
-            <line x1="19" y1="12" x2="22" y2="12"></line>
-          </svg>
+          <img src="/images/app-logo.png" alt="RetroCam Logo" class="brand-logo-img" />
         </div>
         <div class="brand-text">
           <span class="brand-title">RetroCam <em>Archive</em></span>
@@ -50,12 +43,6 @@
       </a>
 
       <div class="header-actions">
-        <!-- Live Online/Offline indicator pill -->
-        <div id="network-status-pill" class="status-pill online" title="Status Jaringan">
-          <span class="status-dot"></span>
-          <span>Online</span>
-        </div>
-
         <!-- Quick Install PWA Button (Visible when supported) -->
         <button id="btn-header-install" class="btn btn-sm btn-accent header-install-btn" title="Pasang aplikasi di perangkat">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -139,16 +126,16 @@
   <div id="toast-container" class="toast-wrapper" aria-live="polite"></div>
 
   <!-- JavaScript Modules & Views -->
-  <script src="/js/fallbackData.js?v=3.5.0"></script>
-  <script src="/js/storage.js?v=3.5.0"></script>
-  <script src="/js/api.js?v=3.5.0"></script>
-  <script src="/js/views/camerasView.js?v=3.5.0"></script>
-  <script src="/js/views/cameraDetailView.js?v=3.5.0"></script>
-  <script src="/js/views/lensesView.js?v=3.5.0"></script>
-  <script src="/js/views/lensDetailView.js?v=3.5.0"></script>
-  <script src="/js/views/favoritesView.js?v=3.5.0"></script>
-  <script src="/js/views/guideView.js?v=3.5.0"></script>
-  <script src="/js/views/profileView.js?v=3.5.0"></script>
-  <script src="/js/app.js?v=3.5.0"></script>
+  <script src="/js/fallbackData.js?v=3.6.0"></script>
+  <script src="/js/storage.js?v=3.6.0"></script>
+  <script src="/js/api.js?v=3.6.0"></script>
+  <script src="/js/views/camerasView.js?v=3.6.0"></script>
+  <script src="/js/views/cameraDetailView.js?v=3.6.0"></script>
+  <script src="/js/views/lensesView.js?v=3.6.0"></script>
+  <script src="/js/views/lensDetailView.js?v=3.6.0"></script>
+  <script src="/js/views/favoritesView.js?v=3.6.0"></script>
+  <script src="/js/views/guideView.js?v=3.6.0"></script>
+  <script src="/js/views/profileView.js?v=3.6.0"></script>
+  <script src="/js/app.js?v=3.6.0"></script>
 </body>
 </html>
