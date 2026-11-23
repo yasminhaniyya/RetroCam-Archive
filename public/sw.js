@@ -3,7 +3,7 @@
  * Provides offline-first caching for static assets & stale-while-revalidate for API
  */
 
-const CACHE_NAME = 'retrocam-v3.6.0';
+const CACHE_NAME = 'retrocam-v3.6.1';
 
 // Assets to pre-cache on service worker installation
 const PRECACHE_ASSETS = [
@@ -26,6 +26,9 @@ const PRECACHE_ASSETS = [
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/icon-maskable.png',
+  '/icons/favicon.png',
+  '/icons/favicon-32.png',
+  '/icons/favicon-16.png',
   '/favicon.ico'
 ];
 
