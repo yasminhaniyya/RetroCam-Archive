@@ -9,12 +9,19 @@ module.exports = (req, res) => {
 
     if (req.method === 'POST' || req.method === 'PUT') {
       const body = req.body || {};
-      const academicUpdates = body.academicInfo ? body.academicInfo : body;
+      const updates = body.userInfo ? body.userInfo : (body.academicInfo ? body.academicInfo : body);
 
-      profile.academicInfo = {
-        ...profile.academicInfo,
-        ...academicUpdates
+      profile.userInfo = {
+        ...(profile.userInfo || {}),
+        ...updates
       };
+
+      if (profile.academicInfo) {
+        profile.academicInfo = {
+          ...profile.academicInfo,
+          ...updates
+        };
+      }
 
       try {
         fs.writeFileSync(filePath, JSON.stringify(profile, null, 2), 'utf-8');
@@ -24,7 +31,7 @@ module.exports = (req, res) => {
 
       return res.status(200).json({
         status: 'success',
-        message: 'Profil mahasiswa berhasil diperbarui.',
+        message: 'Profil berhasil diperbarui.',
         data: profile
       });
     }

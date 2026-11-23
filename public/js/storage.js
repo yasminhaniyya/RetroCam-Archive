@@ -5,7 +5,9 @@
 const STORAGE_KEYS = {
   FAVORITE_CAMERAS: 'retrocam_fav_cameras',
   FAVORITE_LENSES: 'retrocam_fav_lenses',
-  STUDENT_PROFILE: 'retrocam_student_profile'
+  USER_PROFILE: 'retrocam_user_profile',
+  STUDENT_PROFILE: 'retrocam_student_profile',
+  AUTH_USER: 'retrocam_auth_user'
 };
 
 const StorageService = {
@@ -81,10 +83,46 @@ const StorageService = {
     return this.getFavoriteCameras().length + this.getFavoriteLenses().length;
   },
 
-  // --- CUSTOM STUDENT PROFILE OVERRIDE ---
+  // --- AUTHENTICATION (ECOMMERCE LOGIN) ---
+  getAuthUser() {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.AUTH_USER);
+      return data ? JSON.parse(data) : null;
+    } catch (e) {
+      return null;
+    }
+  },
+
+  isLoggedIn() {
+    return !!this.getAuthUser();
+  },
+
+  login(user) {
+    try {
+      localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
+      window.dispatchEvent(new CustomEvent('authChanged', { detail: { isLoggedIn: true, user } }));
+      return true;
+    } catch (e) {
+      console.error('Error logging in:', e);
+      return false;
+    }
+  },
+
+  logout() {
+    try {
+      localStorage.removeItem(STORAGE_KEYS.AUTH_USER);
+      window.dispatchEvent(new CustomEvent('authChanged', { detail: { isLoggedIn: false } }));
+      return true;
+    } catch (e) {
+      console.error('Error logging out:', e);
+      return false;
+    }
+  },
+
+  // --- USER PROFILE OVERRIDE ---
   getSavedProfile() {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.STUDENT_PROFILE);
+      const data = localStorage.getItem(STORAGE_KEYS.USER_PROFILE) || localStorage.getItem(STORAGE_KEYS.STUDENT_PROFILE);
       return data ? JSON.parse(data) : null;
     } catch (e) {
       return null;
@@ -93,6 +131,7 @@ const StorageService = {
 
   saveCustomProfile(profileData) {
     try {
+      localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(profileData));
       localStorage.setItem(STORAGE_KEYS.STUDENT_PROFILE, JSON.stringify(profileData));
       window.dispatchEvent(new CustomEvent('profileUpdated', { detail: profileData }));
     } catch (e) {
@@ -102,6 +141,7 @@ const StorageService = {
 
   clearSavedProfile() {
     try {
+      localStorage.removeItem(STORAGE_KEYS.USER_PROFILE);
       localStorage.removeItem(STORAGE_KEYS.STUDENT_PROFILE);
       window.dispatchEvent(new CustomEvent('profileUpdated', { detail: null }));
     } catch (e) {
