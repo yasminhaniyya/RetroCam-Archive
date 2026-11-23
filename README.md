@@ -11,14 +11,14 @@
 
 ---
 
-## 📌 1. Deskripsi Aplikasi
+## 1. Deskripsi Aplikasi
 **RetroCam Archive** adalah aplikasi *Progressive Web Apps* (PWA) interaktif yang didedikasikan untuk mendokumentasikan kamera digital jadul (khususnya era sensor CCD awal tahun 2000-an yang legendaris) dan lensa manual vintage. 
 
 Aplikasi ini dirancang dengan gaya visual modern-clean white beraksen baby blue elegan, dilengkapi navigasi *Bottom Navigation Bar* responsif, kemampuan berjalan 100% *offline* melalui *Service Worker*, penyimpanan koleksi favorit dengan *LocalStorage*, serta terintegrasi langsung dengan Web Service REST API mandiri yang dibuat sesuai silabus Modul 1.
 
 ---
 
-## ✅ 2. Pemenuhan Ketentuan Tugas Akhir
+## 2. Pemenuhan Ketentuan Tugas Akhir
 
 | No | Ketentuan Tugas Akhir PPB | Status | Bukti Implementasi pada Proyek |
 |---|---|:---:|---|
@@ -33,7 +33,7 @@ Aplikasi ini dirancang dengan gaya visual modern-clean white beraksen baby blue 
 
 ---
 
-## 🚀 3. Fitur Utama Aplikasi
+## 3. Fitur Utama Aplikasi
 
 1. **Katalog Kamera Digital Klasik & Modern (Halaman 1 & 2):**
    - Menampilkan **55 kamera digital** katalog & ranking Yodobashi Camera (19 Kamera Saku, 19 Kamera Prosumer, 17 Kamera Hibrida) dengan foto produk fisik otentik.
@@ -69,7 +69,7 @@ Aplikasi ini dirancang dengan gaya visual modern-clean white beraksen baby blue 
 
 ---
 
-## 📡 4. Dokumentasi Web Service REST API (Modul 1)
+##  4. Dokumentasi Web Service REST API (Modul 1)
 
 Web Service API mandiri dibangun dengan **Node.js & Express.js**.
 
@@ -114,7 +114,7 @@ Web Service API mandiri dibangun dengan **Node.js & Express.js**.
 
 ---
 
-## 🛠️ 5. Struktur Direktori Proyek
+##  5. Struktur Direktori Proyek
 
 ```text
 TA PPB/
@@ -165,7 +165,7 @@ TA PPB/
 
 ---
 
-## 💻 6. Panduan Menjalankan Secara Lokal
+## 6. Panduan Menjalankan Secara Lokal
 
 ### Prasyarat:
 - Komputer telah terpasang **Node.js** (versi 16 atau yang lebih baru).
@@ -226,7 +226,7 @@ vercel --prod
 
 ---
 
-## 🐙 8. Panduan Mengunggah Source Code ke GitHub
+## 8. Panduan Mengunggah Source Code ke GitHub
 
 1. Buka situs [https://github.com](https://github.com), login, dan klik **New Repository**.
 2. Beri nama repository, misalnya: `RetroCam-Archive` atau `TA-PPB-RetroCam`.
@@ -245,7 +245,7 @@ vercel --prod
 
 ---
 
-## 📱 9. Cara Menginstal PWA di Smartphone Android / Desktop
+## 9. Cara Menginstal PWA di Smartphone Android / Desktop
 
 1. Buka URL aplikasi yang telah di-deploy (atau `http://localhost:3000`) menggunakan **Google Chrome** di Android atau Komputer Desktop.
 2. **Di Android:**
@@ -257,7 +257,7 @@ vercel --prod
 
 ---
 
-## 👨‍🎓 10. Identitas Praktikan
+## 10. Identitas Praktikan
 
 - **Nama Praktikan:** Yasmin Haniyya
 - **NIM:** 21120121130000 *(dapat disesuaikan)*
