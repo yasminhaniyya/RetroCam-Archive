@@ -185,11 +185,11 @@ const ProfileView = {
       const isAdmin = StorageService.isAdmin();
       const customProfile = StorageService.getSavedProfile() || {};
 
-      // Jika dalam Mode Admin: Tampilkan Profil Administrator
+      // Jika dalam Mode Admin: Tampilkan Profil Administrator Sederhana (Mirip Profil Sebelumnya)
       if (isAdmin) {
-        if (heroTitle) heroTitle.textContent = 'Profil Administrator';
+        if (heroTitle) heroTitle.textContent = 'Profil';
         if (heroSubtitle) {
-          heroSubtitle.textContent = 'Mode Pengelola Aktif: Anda memiliki akses penuh menambah dan mengedit katalog kamera & lensa.';
+          heroSubtitle.textContent = 'Informasi profil pengguna aplikasi.';
         }
 
         container.innerHTML = `
@@ -197,10 +197,10 @@ const ProfileView = {
           <div class="profile-hero-card card-glass">
             <div class="profile-layout">
               <div class="profile-avatar-box">
-                <div class="avatar-ring" style="background: linear-gradient(135deg, #0284c7, #0369a1);">
+                <div class="avatar-ring">
                   <img 
                     src="/images/app-logo.png" 
-                    alt="Logo Admin" 
+                    alt="Foto Profil Admin" 
                     class="profile-avatar-img"
                     id="profile-avatar-display"
                   />
@@ -208,39 +208,30 @@ const ProfileView = {
               </div>
 
               <div class="profile-details">
-                <div class="admin-badge" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.25rem 0.65rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd;">
-                  <span>🛡️ Mode Administrator Aktif</span>
-                </div>
-                <h2 class="profile-name">Administrator RetroCam</h2>
+                <h2 class="profile-name">Administrator</h2>
 
                 <div class="profile-meta-list">
                   <div class="profile-meta-item">
-                    <span class="meta-k">Peran Akun:</span>
-                    <strong class="meta-v">Pengelola Arsip & Katalog</strong>
+                    <span class="meta-k">Peran / Akun:</span>
+                    <strong class="meta-v">Administrator</strong>
                   </div>
                   <div class="profile-meta-item">
-                    <span class="meta-k">Email Admin:</span>
+                    <span class="meta-k">Email / Kontak:</span>
                     <span class="meta-v">admin@retrocam.id</span>
                   </div>
                   <div class="profile-meta-item">
-                    <span class="meta-k">Hak Akses:</span>
-                    <span class="meta-v">Tambah & Edit Seluruh Katalog Kamera dan Lensa</span>
+                    <span class="meta-k">Nomor Telepon:</span>
+                    <span class="meta-v">+62 811-9876-5432</span>
                   </div>
                   <div class="profile-meta-item">
-                    <span class="meta-k">Status Sesi:</span>
-                    <span class="meta-v" style="color: #10b981; font-weight: 600;">🟢 Online (Akses Penuh Terbuka)</span>
+                    <span class="meta-k">Kota Domisili:</span>
+                    <span class="meta-v">Semarang, Jawa Tengah</span>
                   </div>
                 </div>
 
                 <div class="profile-action-btn-row" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
-                  <button type="button" class="btn btn-primary" id="btn-profile-add-camera" style="background: linear-gradient(135deg, #0284c7, #0369a1); border: none; border-radius: 8px; padding: 0.55rem 1rem; font-weight: 600;">
-                    ➕ Tambah Kamera Baru
-                  </button>
-                  <button type="button" class="btn btn-primary" id="btn-profile-add-lens" style="background: linear-gradient(135deg, #0284c7, #0369a1); border: none; border-radius: 8px; padding: 0.55rem 1rem; font-weight: 600;">
-                    ➕ Tambah Lensa Baru
-                  </button>
-                  <button type="button" class="btn btn-secondary" id="btn-logout-admin" style="border-color: #ef4444; color: #ef4444; font-weight: 600;">
-                    🚪 Keluar Mode Admin
+                  <button type="button" class="btn btn-secondary" id="btn-logout-admin" style="border-radius: 8px; padding: 0.55rem 1.1rem; font-weight: 600;">
+                    Logout
                   </button>
                 </div>
               </div>
@@ -420,26 +411,14 @@ const ProfileView = {
 
   // Event handler khusus untuk Profil Administrator
   bindAdminProfileEvents() {
-    const btnAddCam = document.getElementById('btn-profile-add-camera');
-    const btnAddLens = document.getElementById('btn-profile-add-lens');
     const btnLogout = document.getElementById('btn-logout-admin');
     const installBtn = document.getElementById('btn-install-pwa');
 
-    if (btnAddCam) {
-      btnAddCam.onclick = () => {
-        if (window.openAddCameraModal) window.openAddCameraModal();
-      };
-    }
-    if (btnAddLens) {
-      btnAddLens.onclick = () => {
-        if (window.openAddLensModal) window.openAddLensModal();
-      };
-    }
     if (btnLogout) {
       btnLogout.onclick = () => {
         StorageService.logout();
         if (window.App && window.App.showToast) {
-          window.App.showToast('Keluar dari Mode Administrator.');
+          window.App.showToast('Berhasil logout.');
         }
         if (window.App && window.App.updateHeaderAuthState) {
           window.App.updateHeaderAuthState();

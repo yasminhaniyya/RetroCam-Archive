@@ -108,10 +108,10 @@ const App = {
     this.updateHeaderAuthState = () => {
       const isAdmin = StorageService.isAdmin();
       if (loginTextHeader) {
-        loginTextHeader.textContent = isAdmin ? 'Keluar Admin' : 'Login';
+        loginTextHeader.textContent = isAdmin ? 'Logout' : 'Login';
       }
       if (loginBtnHeader) {
-        loginBtnHeader.title = isAdmin ? 'Klik untuk keluar dari mode administrator' : 'Masuk sebagai Administrator';
+        loginBtnHeader.title = isAdmin ? 'Klik untuk logout' : 'Masuk sebagai Administrator';
       }
     };
 
@@ -132,7 +132,7 @@ const App = {
       loginBtnHeader.onclick = () => {
         if (StorageService.isAdmin()) {
           StorageService.logout();
-          this.showToast('Keluar dari Mode Administrator.');
+          this.showToast('Berhasil logout.');
           this.updateHeaderAuthState();
           this.handleRoute();
         } else {
@@ -403,7 +403,10 @@ const App = {
     const formAdmin = document.getElementById('form-modal-admin-login');
 
     window.openAdminLoginModal = () => {
-      if (modalAdmin) modalAdmin.classList.remove('is-hidden');
+      if (modalAdmin) {
+        if (formAdmin) formAdmin.reset();
+        modalAdmin.classList.remove('is-hidden');
+      }
     };
 
     window.closeAdminLoginModal = () => {
@@ -417,24 +420,28 @@ const App = {
       formAdmin.onsubmit = (e) => {
         e.preventDefault();
         const email = document.getElementById('admin-login-email').value.trim();
-        const adminUser = {
-          name: 'Administrator RetroCam',
-          email: email || 'admin@retrocam.id',
-          role: 'admin',
-          phone: '+62 811-9876-5432',
-          city: 'Semarang, Jawa Tengah',
-          memberTier: 'Administrator',
-          joinDate: 'Sistem Katalog 2024',
-          bio: 'Pengelola arsip katalog kamera digital dan lensa vintage RetroCam Archive.',
-          avatarUrl: '/images/app-logo.png'
-        };
+        const password = document.getElementById('admin-login-password').value.trim();
 
-        StorageService.login(adminUser);
-        window.closeAdminLoginModal();
-        App.showToast('Login berhasil sebagai Administrator! Akses tambah & edit katalog aktif.');
+        if (email.toLowerCase() === 'admin@retrocam.id' && password === 'admin123') {
+          const adminUser = {
+            name: 'Administrator',
+            email: 'admin@retrocam.id',
+            role: 'admin',
+            phone: '+62 811-9876-5432',
+            city: 'Semarang, Jawa Tengah',
+            avatarUrl: '/images/app-logo.png'
+          };
 
-        if (App.updateHeaderAuthState) App.updateHeaderAuthState();
-        App.handleRoute();
+          StorageService.login(adminUser);
+          window.closeAdminLoginModal();
+          formAdmin.reset();
+          App.showToast('Login berhasil sebagai Administrator.');
+
+          if (App.updateHeaderAuthState) App.updateHeaderAuthState();
+          App.handleRoute();
+        } else {
+          alert('Email atau kata sandi admin salah. Silakan coba lagi.');
+        }
       };
     }
 
