@@ -14,7 +14,7 @@
 ## 📌 1. Deskripsi Aplikasi
 **RetroCam Archive** adalah aplikasi *Progressive Web Apps* (PWA) interaktif yang didedikasikan untuk mendokumentasikan kamera digital jadul (khususnya era sensor CCD awal tahun 2000-an yang legendaris) dan lensa manual vintage. 
 
-Aplikasi ini dirancang dengan gaya visual modern-vintage dark industrial, dilengkapi navigasi *Bottom Navigation Bar* responsif, kemampuan berjalan 100% *offline* melalui *Service Worker*, penyimpanan koleksi favorit dengan *LocalStorage*, serta terintegrasi langsung dengan Web Service REST API mandiri yang dibuat sesuai silabus Modul 1.
+Aplikasi ini dirancang dengan gaya visual modern-clean white beraksen baby blue elegan, dilengkapi navigasi *Bottom Navigation Bar* responsif, kemampuan berjalan 100% *offline* melalui *Service Worker*, penyimpanan koleksi favorit dengan *LocalStorage*, serta terintegrasi langsung dengan Web Service REST API mandiri yang dibuat sesuai silabus Modul 1.
 
 ---
 
@@ -35,17 +35,18 @@ Aplikasi ini dirancang dengan gaya visual modern-vintage dark industrial, dileng
 
 ## 🚀 3. Fitur Utama Aplikasi
 
-1. **Katalog Kamera Digital Klasik (Halaman 1 & 2):**
-   - Menampilkan 10+ kamera digital legendaris (Canon PowerShot G2, Fujifilm FinePix F31fd, Sony Cyber-shot DSC-P200, Leica Digilux 2, Epson R-D1, Olympus Camedia C-7070, dll).
-   - Pencarian real-time berdasarkan nama, merek, dan sensor.
-   - Filter chips merek (*Canon, Fujifilm, Sony, Olympus, Nikon, Leica, Ricoh, Pentax*).
-   - Filter tipe sensor (*CCD, Super CCD, CMOS*).
-   - **Halaman Detail:** Spesifikasi perangkat keras, sensor size, megapixels, lensa bawaan, ISO, baterai, slot memori, analisis tone warna CCD, kelebihan & kekurangan, serta tombol bookmark koleksi.
+1. **Katalog Kamera Digital Klasik & Modern (Halaman 1 & 2):**
+   - Menampilkan **55 kamera digital** katalog & ranking Yodobashi Camera (19 Kamera Saku, 19 Kamera Prosumer, 17 Kamera Hibrida) dengan foto produk fisik otentik.
+   - Pencarian real-time berdasarkan nama, seri, merek, atau kategori.
+   - Kategori melingkar interaktif gaya Neokyo: Berdasarkan Jenis Kamera & Berdasarkan Merek (*Sony, Canon, Fujifilm, Nikon, Olympus, Panasonic, Ricoh, Leica, Kodak, Pentax, Casio*).
+   - Format harga tunggal nominal tertinggi (bukan rentang).
+   - **Halaman Detail:** Spesifikasi resolusi megapixels, tipe sensor CCD/CMOS, lensa, rentang ISO, analisis render warna, tabel spesifikasi teknis lengkap, dan bookmark favorit.
 
-2. **Katalog Lensa Manual & Vintage (Halaman 3 & 4):**
-   - Menampilkan 8+ lensa manual legendaris (Helios 44-2 58mm f/2 swirly bokeh, Asahi Pentax Super-Takumar 50mm f/1.4 thorium golden glow, Canon FD 50mm f/1.4 S.S.C., Carl Zeiss Jena Pancolar, Jupiter-9 85mm f/2 15-blade, Minolta MD Rokkor 45mm pancake, dll).
-   - Filter dudukan mount (*M42, Canon FD, Nikon F, Olympus OM, Minolta MD*).
-   - **Halaman Detail:** Formula optik, jumlah bilah diafragma, karakter bokeh, panduan adaptor mirrorless (Sony E, Fuji X, Canon RF, Nikon Z, M4/3), serta estimasi harga pasaran kolektor.
+2. **Katalog Lensa Kamera Interchangeable (Halaman 3 & 4):**
+   - Menampilkan **52 lensa interchangeable** terlaris Yodobashi Camera (18 Zoom Standar, 18 Prime / Fix, 16 Telephoto Zoom) dengan foto unit fisik akurat.
+   - Kategori melingkar Neokyo: Berdasarkan Jenis Lensa & Berdasarkan Dudukan Mount (*Sony E-mount, Canon RF, Nikon Z, Fujifilm X, Micro Four Thirds, L-mount*).
+   - Format harga tunggal nominal tertinggi.
+   - **Halaman Detail:** Panjang fokal, aperture maksimum/minimum, bilah diafragma, formula optik, diameter filter ulir, jarak fokus minimum, bobot, ulasan keunggulan optik, dan panduan kompatibilitas bodi kamera mirrorless.
 
 3. **Koleksi Saya / Favorit (Halaman 5):**
    - Menyimpan kamera dan lensa yang disukai pengguna secara offline menggunakan `LocalStorage`.
