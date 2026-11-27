@@ -290,7 +290,7 @@ const CameraDetailView = {
               title: `${camera.name} - RetroCam Archive`,
               text: `Lihat spesifikasi kamera klasik ${camera.name} di RetroCam Archive:`,
               url: shareUrl
-            }).catch(() => {});
+            }).catch(() => { });
           } else if (navigator.clipboard) {
             navigator.clipboard.writeText(shareUrl).then(() => {
               if (window.App && window.App.showToast) {

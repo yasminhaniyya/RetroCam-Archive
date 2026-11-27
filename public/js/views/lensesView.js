@@ -14,8 +14,8 @@ const LensesView = {
     mount: 'all',
     brand: 'all',
     sort: 'year-desc',
-    displayedCount: 12, // Jumlah item awal untuk Lazy Loading
-    batchSize: 12       // Jumlah item per muatan lazy load
+    currentPage: 1,     // Halaman pagination aktif
+    itemsPerPage: 8     // Jumlah produk per halaman
   },
 
   lazyObserver: null,
@@ -289,8 +289,8 @@ const LensesView = {
       this.lazyObserver = null;
     }
 
-    // Reset displayedCount ke batch awal setiap kali filter atau pencarian berubah
-    this.state.displayedCount = this.state.batchSize;
+    // Reset halaman ke halaman 1 setiap kali filter atau pencarian berubah
+    this.state.currentPage = 1;
 
     grid.innerHTML = `
       <div class="loading-state">
@@ -428,91 +428,135 @@ const LensesView = {
     `;
   },
 
-  // Render kartu lensa secara bertahap (Lazy Loading / Infinite Scroll)
+  // Render kartu lensa dengan Pagination
   renderCardsWithLazyLoad() {
+    this.renderCards();
+  },
+
+  renderCards() {
     const grid = document.getElementById('lens-cards-grid');
     const counter = document.getElementById('lens-results-count');
     if (!grid) return;
 
-    if (this.lazyObserver) {
-      this.lazyObserver.disconnect();
-      this.lazyObserver = null;
-    }
-
-    const lenses = this.state.lenses;
+    const lenses = this.state.lenses || [];
     const total = lenses.length;
-    const count = Math.min(this.state.displayedCount, total);
-    const visible = lenses.slice(0, count);
+    const perPage = this.state.itemsPerPage || 8;
+    const totalPages = Math.max(1, Math.ceil(total / perPage));
+
+    if (this.state.currentPage > totalPages) this.state.currentPage = totalPages;
+    if (this.state.currentPage < 1) this.state.currentPage = 1;
+
+    const startIndex = (this.state.currentPage - 1) * perPage;
+    const endIndex = Math.min(startIndex + perPage, total);
+    const visible = lenses.slice(startIndex, endIndex);
     const isAdmin = StorageService.isAdmin();
 
     // Update Counter di Toolbar
     if (counter) {
-      if (count < total) {
-        counter.innerHTML = `Menampilkan <strong>${count}</strong> dari <strong>${total}</strong> lensa`;
+      if (total === 0) {
+        counter.innerHTML = `Menampilkan <strong>0</strong> lensa`;
       } else {
-        counter.innerHTML = `Menampilkan seluruh <strong>${total}</strong> lensa`;
+        counter.innerHTML = `Menampilkan <strong>${startIndex + 1}–${endIndex}</strong> dari <strong>${total}</strong> lensa <span class="badge-page-count">Halaman ${this.state.currentPage} / ${totalPages}</span>`;
       }
     }
 
     const cardsHtml = visible.map(lens => this.renderLensCardHtml(lens, isAdmin)).join('');
 
-    let footerHtml = '';
-    if (count < total) {
-      const remaining = total - count;
-      footerHtml = `
-        <div id="lens-lazy-sentinel" class="lazy-load-sentinel">
-          <div class="lazy-load-indicator">
-            <div class="lazy-spinner"></div>
-            <span>Memuat lensa berikutnya secara otomatis saat digulir...</span>
-          </div>
-          <button type="button" class="btn-load-more" id="btn-load-more-lenses">
-            Muat Lebih Banyak (${remaining} lensa tersisa)
+    // Pagination Controls
+    let paginationHtml = '';
+    if (totalPages > 1) {
+      let pageBtnsHtml = '';
+      for (let p = 1; p <= totalPages; p++) {
+        pageBtnsHtml += `
+          <button 
+            type="button" 
+            class="pagination-num-btn ${p === this.state.currentPage ? 'active' : ''}" 
+            data-page="${p}"
+            title="Ke halaman ${p}"
+          >
+            ${p}
           </button>
-        </div>
-      `;
-    } else if (total > this.state.batchSize) {
-      footerHtml = `
-        <div class="lazy-load-done">
-          <span>✓ Seluruh ${total} lensa telah berhasil dimuat</span>
+        `;
+      }
+
+      paginationHtml = `
+        <div class="pagination-container col-span-full">
+          <div class="pagination-info">
+            Menampilkan halaman <strong>${this.state.currentPage}</strong> dari <strong>${totalPages}</strong> (${total} total lensa)
+          </div>
+          <div class="pagination-controls">
+            <button 
+              type="button" 
+              class="pagination-btn pagination-prev" 
+              id="btn-page-prev-lens"
+              ${this.state.currentPage <= 1 ? 'disabled' : ''}
+              title="Halaman Sebelumnya"
+            >
+              &larr; Sebelumnya
+            </button>
+            <div class="pagination-pages-list">
+              ${pageBtnsHtml}
+            </div>
+            <button 
+              type="button" 
+              class="pagination-btn pagination-next" 
+              id="btn-page-next-lens"
+              ${this.state.currentPage >= totalPages ? 'disabled' : ''}
+              title="Halaman Selanjutnya"
+            >
+              Selanjutnya &rarr;
+            </button>
+          </div>
         </div>
       `;
     }
 
-    grid.innerHTML = cardsHtml + footerHtml;
+    grid.innerHTML = cardsHtml + paginationHtml;
     this.bindCardEvents(grid);
-
-    // Aktifkan Infinite Scroll Otomatis via IntersectionObserver
-    if (count < total) {
-      const sentinel = document.getElementById('lens-lazy-sentinel');
-      const loadBtn = document.getElementById('btn-load-more-lenses');
-
-      if (loadBtn) {
-        loadBtn.onclick = () => {
-          this.loadNextBatch();
-        };
-      }
-
-      if (sentinel && 'IntersectionObserver' in window) {
-        this.lazyObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              this.loadNextBatch();
-            }
-          });
-        }, {
-          rootMargin: '250px 0px',
-          threshold: 0.1
-        });
-        this.lazyObserver.observe(sentinel);
-      }
-    }
+    this.bindPaginationEvents(grid, totalPages);
   },
 
-  // Memuat batch berikutnya
-  loadNextBatch() {
-    if (this.state.displayedCount >= this.state.lenses.length) return;
-    this.state.displayedCount += this.state.batchSize;
-    this.renderCardsWithLazyLoad();
+  bindPaginationEvents(grid, totalPages) {
+    const prevBtn = document.getElementById('btn-page-prev-lens');
+    const nextBtn = document.getElementById('btn-page-next-lens');
+
+    if (prevBtn) {
+      prevBtn.onclick = () => {
+        if (this.state.currentPage > 1) {
+          this.state.currentPage--;
+          this.renderCards();
+          this.scrollToCatalog();
+        }
+      };
+    }
+
+    if (nextBtn) {
+      nextBtn.onclick = () => {
+        if (this.state.currentPage < totalPages) {
+          this.state.currentPage++;
+          this.renderCards();
+          this.scrollToCatalog();
+        }
+      };
+    }
+
+    grid.querySelectorAll('.pagination-num-btn').forEach(btn => {
+      btn.onclick = () => {
+        const p = parseInt(btn.getAttribute('data-page'), 10);
+        if (p && p !== this.state.currentPage) {
+          this.state.currentPage = p;
+          this.renderCards();
+          this.scrollToCatalog();
+        }
+      };
+    });
+  },
+
+  scrollToCatalog() {
+    const toolbar = document.querySelector('.catalog-toolbar') || document.getElementById('lens-cards-grid');
+    if (toolbar) {
+      toolbar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   },
 
   // Bind Event Clicks untuk Navigasi, Edit, dan Favorit
