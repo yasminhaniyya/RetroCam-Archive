@@ -25,11 +25,13 @@ const App = {
     this.initHeaderControls();
     this.initBottomNav();
     this.updateFavoritesBadge();
+    this.initCartModal();
     this.initAdminModals();
 
     // Listen to hash change for SPA navigation
     window.addEventListener('hashchange', () => this.handleRoute());
     window.addEventListener('favoritesUpdated', () => this.updateFavoritesBadge());
+    window.addEventListener('cartUpdated', () => this.updateCartBadge());
 
     // Initial route handling
     this.handleRoute();
@@ -244,6 +246,247 @@ const App = {
       badge.style.display = 'inline-flex';
     } else {
       badge.style.display = 'none';
+    }
+  },
+
+  // 6b. Shopping Cart Badge & Management
+  updateCartBadge() {
+    const badge = document.getElementById('header-cart-badge');
+    if (!badge) return;
+    const total = StorageService.getCartTotalCount();
+    if (total > 0) {
+      badge.textContent = total > 99 ? '99+' : total;
+      badge.classList.remove('is-hidden');
+    } else {
+      badge.classList.add('is-hidden');
+    }
+  },
+
+  initCartModal() {
+    const cartBtn = document.getElementById('btn-header-cart');
+    const modalCart = document.getElementById('modal-cart');
+    const closeBtn = document.getElementById('btn-close-modal-cart');
+
+    window.openCartModal = () => {
+      this.renderCartModalContent();
+      if (modalCart) modalCart.classList.remove('is-hidden');
+    };
+
+    window.closeCartModal = () => {
+      if (modalCart) modalCart.classList.add('is-hidden');
+    };
+
+    if (cartBtn) cartBtn.onclick = () => window.openCartModal();
+    if (closeBtn) closeBtn.onclick = () => window.closeCartModal();
+
+    if (modalCart) {
+      modalCart.addEventListener('click', (e) => {
+        if (e.target === modalCart) window.closeCartModal();
+      });
+    }
+
+    this.updateCartBadge();
+  },
+
+  renderCartModalContent() {
+    const body = document.getElementById('modal-cart-body');
+    if (!body) return;
+
+    const cart = StorageService.getCart();
+    if (!cart || cart.length === 0) {
+      body.innerHTML = `
+        <div class="cart-empty-state">
+          <div class="cart-empty-icon">🛒</div>
+          <h4>Keranjang Anda Masih Kosong</h4>
+          <p>Belum ada kamera atau lensa klasik yang ditambahkan ke keranjang belanja.</p>
+          <button type="button" class="btn btn-primary btn-sm" onclick="window.closeCartModal(); window.location.hash='#cameras';">
+            Jelajahi Kamera
+          </button>
+        </div>
+      `;
+      return;
+    }
+
+    const selectedItems = StorageService.getSelectedCartItems();
+    const selectedCount = StorageService.getSelectedTotalCount();
+    const selectedPrice = StorageService.getSelectedTotalPrice();
+    const formattedTotal = 'Rp ' + selectedPrice.toLocaleString('id-ID');
+    const isAllSelected = cart.length > 0 && selectedItems.length === cart.length;
+
+    // Preserve customer fields if user is typing
+    const prevName = document.getElementById('cart-cust-name')?.value || '';
+    const prevNotes = document.getElementById('cart-cust-notes')?.value || '';
+
+    body.innerHTML = `
+      <!-- Toolbar Pilih Semua & Counter -->
+      <div class="cart-select-all-bar">
+        <label class="cart-checkbox-label">
+          <input type="checkbox" id="cart-select-all-checkbox" ${isAllSelected ? 'checked' : ''} />
+          <span><strong>Pilih Semua</strong> (${cart.length} produk)</span>
+        </label>
+        <span class="cart-selected-count-badge">${selectedCount} barang dipilih</span>
+      </div>
+
+      <!-- Daftar Produk di Keranjang -->
+      <div class="cart-items-list">
+        ${cart.map(item => {
+          const isSelected = item.selected !== false;
+          return `
+            <div class="cart-item-row ${isSelected ? 'is-selected' : ''}" data-cart-id="${item.id}">
+              <label class="cart-checkbox-label" title="Centang untuk checkout barang ini">
+                <input type="checkbox" class="cart-item-checkbox" data-id="${item.id}" ${isSelected ? 'checked' : ''} />
+              </label>
+              <div class="cart-item-thumb">
+                <img src="${item.imageUrl}" alt="${item.name}" onerror="this.src='/icons/icon-512.png'" />
+              </div>
+              <div class="cart-item-info">
+                <span class="cart-item-type">${item.type} &bull; ${item.brand}</span>
+                <h4 class="cart-item-title">${item.name}</h4>
+                <span class="cart-item-price">${item.priceFormatted}</span>
+              </div>
+              <div class="cart-item-actions">
+                <div class="cart-qty-control">
+                  <button type="button" class="btn-qty-minus" data-id="${item.id}" title="Kurangi jumlah">&minus;</button>
+                  <span class="cart-qty-value">${item.quantity || 1}</span>
+                  <button type="button" class="btn-qty-plus" data-id="${item.id}" title="Tambah jumlah">&#43;</button>
+                </div>
+                <button type="button" class="btn-cart-remove" data-id="${item.id}" title="Hapus dari keranjang">&times;</button>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <div class="cart-checkout-section">
+        <div class="cart-customer-fields">
+          <div class="form-group" style="margin-bottom: 0.6rem;">
+            <label for="cart-cust-name" style="font-size: 0.82rem; font-weight: 600; color: #475569;">Nama Pemesan (Opsional):</label>
+            <input type="text" id="cart-cust-name" class="form-input form-input-sm" placeholder="Nama Anda" value="${prevName}" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0.6rem;">
+            <label for="cart-cust-notes" style="font-size: 0.82rem; font-weight: 600; color: #475569;">Catatan / Alamat Pengiriman (Opsional):</label>
+            <textarea id="cart-cust-notes" class="form-input form-input-sm" rows="2" placeholder="Catatan khusus atau kota tujuan pengiriman">${prevNotes}</textarea>
+          </div>
+        </div>
+
+        <div class="cart-total-box">
+          <div class="cart-total-row">
+            <span>Barang Dipilih untuk Checkout:</span>
+            <strong>${selectedCount} barang</strong>
+          </div>
+          <div class="cart-total-row highlight">
+            <span>Total Estimasi Checkout:</span>
+            <strong class="cart-total-price">${formattedTotal}</strong>
+          </div>
+        </div>
+
+        <button type="button" id="btn-checkout-wa" class="btn btn-whatsapp-checkout ${selectedCount === 0 ? 'is-disabled' : ''}" ${selectedCount === 0 ? 'disabled' : ''}>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42a8.23 8.23 0 0 1 2.41 5.82c0 4.54-3.7 8.24-8.24 8.24-1.42 0-2.82-.37-4.06-1.08l-.29-.17-3.02.79.81-2.94-.19-.3a8.25 8.25 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.58c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.36-.77-1.86-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.78 2.71 4.31 3.8.6.26 1.07.42 1.44.53.61.2 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.12-.22-.19-.47-.32z"/>
+          </svg>
+          <span>${selectedCount > 0 ? `Checkout (${selectedCount} barang) via WhatsApp` : 'Pilih Barang untuk Checkout'}</span>
+        </button>
+        <p class="wa-checkout-note">${selectedCount > 0 ? 'Pesanan produk terpilih dikirimkan langsung ke WhatsApp <strong>082329191645</strong>' : 'Silakan pilih/centang produk yang ingin Anda beli di atas.'}</p>
+      </div>
+    `;
+
+    // Event Listeners for item checkboxes
+    body.querySelectorAll('.cart-item-checkbox').forEach(cb => {
+      cb.onchange = (e) => {
+        const id = cb.getAttribute('data-id');
+        StorageService.toggleCartItemSelection(id);
+        this.renderCartModalContent();
+      };
+    });
+
+    // Event Listener for Select All checkbox
+    const selectAllCb = document.getElementById('cart-select-all-checkbox');
+    if (selectAllCb) {
+      selectAllCb.onchange = (e) => {
+        StorageService.setAllCartSelection(e.target.checked);
+        this.renderCartModalContent();
+      };
+    }
+
+    // Event Listeners for quantity and remove
+    body.querySelectorAll('.btn-qty-minus').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute('data-id');
+        StorageService.updateCartQty(id, -1);
+        this.renderCartModalContent();
+      };
+    });
+
+    body.querySelectorAll('.btn-qty-plus').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute('data-id');
+        StorageService.updateCartQty(id, 1);
+        this.renderCartModalContent();
+      };
+    });
+
+    body.querySelectorAll('.btn-cart-remove').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute('data-id');
+        StorageService.removeFromCart(id);
+        this.renderCartModalContent();
+      };
+    });
+
+    // Checkout WhatsApp button handler
+    const checkoutBtn = document.getElementById('btn-checkout-wa');
+    if (checkoutBtn) {
+      checkoutBtn.onclick = () => {
+        const itemsToCheckout = StorageService.getSelectedCartItems();
+        if (itemsToCheckout.length === 0) {
+          this.showToast('Silakan pilih minimal 1 produk untuk checkout.');
+          return;
+        }
+
+        const custName = (document.getElementById('cart-cust-name')?.value || '').trim();
+        const custNotes = (document.getElementById('cart-cust-notes')?.value || '').trim();
+        const phone = '6282329191645';
+
+        let message = `Halo RetroCam Archive, saya ingin memesan produk berikut:\n\n`;
+        message += `🛍️ *DAFTAR PESANAN:*\n`;
+
+        itemsToCheckout.forEach((item, index) => {
+          message += `${index + 1}. *${item.name}* (x${item.quantity || 1}) - ${item.priceFormatted}\n`;
+        });
+
+        const totalItemsCount = StorageService.getSelectedTotalCount();
+        const totalItemsPrice = StorageService.getSelectedTotalPrice();
+        const formattedCheckoutTotal = 'Rp ' + totalItemsPrice.toLocaleString('id-ID');
+
+        message += `\n----------------------------------------\n`;
+        message += `📦 *Total Item Dipilih:* ${totalItemsCount} barang\n`;
+        message += `💰 *Total Estimasi:* ${formattedCheckoutTotal}\n`;
+        message += `----------------------------------------\n`;
+
+        if (custName) {
+          message += `👤 *Nama Pemesan:* ${custName}\n`;
+        }
+        if (custNotes) {
+          message += `📝 *Catatan / Alamat:* ${custNotes}\n`;
+        }
+
+        message += `\nMohon info ketersediaan stok & petunjuk pembayarannya. Terima kasih!`;
+
+        // 1. Kurangi stok produk yang dicheckout
+        itemsToCheckout.forEach(item => {
+          StorageService.reduceProductStock(item.id, item.quantity || 1);
+        });
+
+        // 2. Hapus produk yang sudah dicheckout dari keranjang belanja
+        const currentCart = StorageService.getCart();
+        const remainingCart = currentCart.filter(item => item.selected === false);
+        StorageService.saveCart(remainingCart);
+
+        const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+        window.open(waUrl, '_blank');
+        this.showToast('Membuka WhatsApp & stok berhasil dikurangi!');
+        this.renderCartModalContent();
+      };
     }
   },
 

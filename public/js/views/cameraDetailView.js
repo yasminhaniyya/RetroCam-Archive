@@ -66,6 +66,7 @@ const CameraDetailView = {
       if (breadcrumb) breadcrumb.textContent = camera.name;
 
       const isFav = StorageService.isCameraFavorite(camera.id);
+      const stock = StorageService.getProductStock(camera.id);
 
       container.innerHTML = `
         <!-- Detail Hero Banner -->
@@ -112,6 +113,30 @@ const CameraDetailView = {
 
               <div class="detail-action-row">
                 <button 
+                  id="btn-detail-add-cart" 
+                  class="btn btn-cart-action ${stock <= 0 ? 'is-disabled' : ''}"
+                  ${stock <= 0 ? 'disabled' : ''}
+                  title="${stock <= 0 ? 'Stok produk ini sedang habis' : 'Tambahkan kamera ini ke keranjang belanja'}"
+                >
+                  ${stock <= 0 ? '❌ Stok Habis' : '🛒 Tambah ke Keranjang'}
+                </button>
+
+                <button 
+                  id="btn-detail-share" 
+                  class="btn btn-secondary btn-share-detail"
+                  title="Bagikan tautan spesifikasi kamera ini"
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                  </svg>
+                  <span>Bagikan Link</span>
+                </button>
+
+                <button 
                   id="btn-detail-fav-toggle" 
                   class="btn ${isFav ? 'btn-fav-active' : 'btn-fav'}"
                 >
@@ -121,11 +146,10 @@ const CameraDetailView = {
                   <span id="fav-btn-text">${isFav ? 'Tersimpan di Koleksi Saya' : 'Simpan ke Koleksi Saya'}</span>
                 </button>
 
-                ${StorageService.isAdmin() ? `
-                  <button id="btn-admin-edit-camera-detail" class="btn btn-secondary" style="border-color: #0284c7; color: #0284c7; font-weight: 600;">
-                    ✏️ Edit Data Kamera
-                  </button>
-                ` : ''}
+                <div class="detail-stock-pill ${stock <= 0 ? 'out-of-stock' : ''}">
+                  <span class="detail-stock-label">Stok Tersedia:</span>
+                  <strong class="detail-stock-amt">${stock > 0 ? stock + ' unit' : 'Habis'}</strong>
+                </div>
 
                 <div class="market-price-pill">
                   <span class="market-price-label">Harga Pasar:</span>
@@ -238,6 +262,44 @@ const CameraDetailView = {
           <a href="#guides" class="btn btn-outline">Baca Panduan Perawatan Sensor &rarr;</a>
         </div>
       `;
+
+      // Bind Detail Cart Button
+      const cartBtn = document.getElementById('btn-detail-add-cart');
+      if (cartBtn) {
+        cartBtn.addEventListener('click', () => {
+          if (StorageService.isOutOfStock(camera.id)) {
+            if (window.App && window.App.showToast) {
+              window.App.showToast(`❌ Maaf, stok ${camera.name} sedang habis.`);
+            }
+            return;
+          }
+          StorageService.addToCart(camera, 1);
+          if (window.App && window.App.showToast) {
+            window.App.showToast(`🛒 ${camera.name} dimasukkan ke keranjang! Buka keranjang di atas untuk checkout.`);
+          }
+        });
+      }
+
+      // Bind Detail Share Button
+      const shareBtn = document.getElementById('btn-detail-share');
+      if (shareBtn) {
+        shareBtn.addEventListener('click', () => {
+          const shareUrl = `${window.location.origin}${window.location.pathname}#camera/${camera.id}`;
+          if (navigator.share) {
+            navigator.share({
+              title: `${camera.name} - RetroCam Archive`,
+              text: `Lihat spesifikasi kamera klasik ${camera.name} di RetroCam Archive:`,
+              url: shareUrl
+            }).catch(() => {});
+          } else if (navigator.clipboard) {
+            navigator.clipboard.writeText(shareUrl).then(() => {
+              if (window.App && window.App.showToast) {
+                window.App.showToast(`🔗 Link ${camera.name} berhasil disalin!`);
+              }
+            });
+          }
+        });
+      }
 
       // Bind Detail Favorite Button
       const favBtn = document.getElementById('btn-detail-fav-toggle');

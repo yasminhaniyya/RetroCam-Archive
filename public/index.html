@@ -44,8 +44,7 @@
     <div class="header-container">
       <a href="#cameras" class="brand-logo" aria-label="Beranda RetroCam">
         <div class="logo-mark">
-          <img src="/images/app-logo.png?v=3.8.0" alt="RetroCam Logo" class="brand-logo-img" />
-          <img src="/images/app-logo.png?v=3.8.5" alt="RetroCam Logo" class="brand-logo-img" />
+          <img src="/images/app-logo.png?v=3.8.6" alt="RetroCam Logo" class="brand-logo-img" />
         </div>
         <div class="brand-text">
           <span class="brand-title">RetroCam <em>Archive</em></span>
@@ -54,6 +53,16 @@
       </a>
 
       <div class="header-actions">
+        <!-- Tombol Keranjang Belanja -->
+        <button id="btn-header-cart" class="header-cart-btn" title="Lihat Keranjang Belanja" aria-label="Keranjang Belanja">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span id="header-cart-badge" class="header-cart-badge is-hidden">0</span>
+        </button>
+
         <!-- Quick Install PWA Button -->
         <button id="btn-header-install" class="btn btn-sm btn-secondary header-install-btn" title="Pasang aplikasi di perangkat">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -140,6 +149,23 @@
 
   <!-- Toast Notification Container -->
   <div id="toast-container" class="toast-wrapper" aria-live="polite"></div>
+
+  <!-- Modal Keranjang Belanja & Checkout WhatsApp -->
+  <div id="modal-cart" class="modal-backdrop is-hidden" role="dialog" aria-modal="true" aria-labelledby="modal-cart-title">
+    <div class="modal-card modal-cart-card">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.3rem;">🛒</span>
+          <h3 id="modal-cart-title" style="margin: 0; font-size: 1.15rem; font-weight: 700;">Keranjang Belanja</h3>
+        </div>
+        <button type="button" class="btn-clear" id="btn-close-modal-cart">&times;</button>
+      </div>
+
+      <div class="modal-cart-body" id="modal-cart-body">
+        <!-- Content will be rendered by App.renderCartModalContent() -->
+      </div>
+    </div>
+  </div>
 
   <!-- Modal Tambah Kamera (Admin) -->
   <div id="modal-add-camera" class="modal-backdrop is-hidden" role="dialog" aria-modal="true" aria-labelledby="title-modal-add-cam">

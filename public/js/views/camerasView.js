@@ -346,6 +346,7 @@ const CamerasView = {
   // Template satu kartu produk kamera dengan Image Lazy Load & Skeleton Shimmer
   renderCameraCardHtml(cam, isAdmin) {
     const isFav = StorageService.isCameraFavorite(cam.id);
+    const stock = StorageService.getProductStock(cam.id);
     return `
       <article class="clean-product-card" data-id="${cam.id}">
         <div class="card-thumb-box">
@@ -358,6 +359,21 @@ const CamerasView = {
             onload="this.classList.add('is-loaded'); this.parentElement.classList.add('is-loaded');"
             onerror="this.src='/icons/icon-512.png'; this.classList.add('is-loaded'); this.parentElement.classList.add('is-loaded');"
           />
+          <button 
+            type="button"
+            class="card-share-btn" 
+            data-share-id="${cam.id}" 
+            data-share-name="${cam.name}" 
+            title="Bagikan / salin tautan produk ini"
+          >
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+          </button>
           <button 
             class="card-wishlist-btn ${isFav ? 'is-active' : ''}" 
             data-fav-id="${cam.id}" 
@@ -373,6 +389,7 @@ const CamerasView = {
           <div class="card-brand-row">
             <span class="card-brand-label">${cam.brand}</span>
             <span class="card-year-label">${cam.releaseYear}</span>
+            <span class="card-stock-badge ${stock <= 0 ? 'out-of-stock' : ''}">${stock > 0 ? `Stok: ${stock}` : 'Habis'}</span>
             ${isAdmin ? `
               <button type="button" class="btn-clean-edit-item" data-edit-cam-id="${cam.id}" title="Edit data kamera ini">
                 ✏️ Edit
@@ -494,9 +511,32 @@ const CamerasView = {
     // Navigasi ke Halaman Detail (Ketentuan 4)
     grid.querySelectorAll('.clean-product-card').forEach(card => {
       card.addEventListener('click', (e) => {
-        if (e.target.closest('.card-wishlist-btn') || e.target.closest('.btn-clean-edit-item')) return;
+        if (e.target.closest('.card-wishlist-btn') || e.target.closest('.btn-clean-edit-item') || e.target.closest('.card-share-btn')) return;
         const id = card.getAttribute('data-id');
         window.location.hash = `#camera/${id}`;
+      });
+    });
+
+    // Tombol Bagikan / Share Link Produk
+    grid.querySelectorAll('.card-share-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-share-id');
+        const name = btn.getAttribute('data-share-name');
+        const shareUrl = `${window.location.origin}${window.location.pathname}#camera/${id}`;
+        if (navigator.share) {
+          navigator.share({
+            title: `${name} - RetroCam Archive`,
+            text: `Lihat kamera ${name} di RetroCam Archive:`,
+            url: shareUrl
+          }).catch(() => {});
+        } else if (navigator.clipboard) {
+          navigator.clipboard.writeText(shareUrl).then(() => {
+            if (window.App && window.App.showToast) {
+              window.App.showToast(`🔗 Link ${name} berhasil disalin!`);
+            }
+          });
+        }
       });
     });
 

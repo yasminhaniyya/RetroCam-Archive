@@ -284,6 +284,167 @@ const StorageService = {
     } catch (e) {
       console.error('Error clearing profile:', e);
     }
+  },
+
+  // --- SHOPPING CART (KERANJANG BELANJA & CHECKOUT WA) ---
+  getCart() {
+    try {
+      const data = localStorage.getItem('retrocam_cart');
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      console.error('Error reading cart:', e);
+      return [];
+    }
+  },
+
+  saveCart(cart) {
+    try {
+      localStorage.setItem('retrocam_cart', JSON.stringify(cart));
+      window.dispatchEvent(new CustomEvent('cartUpdated', { detail: { cart } }));
+    } catch (e) {
+      console.error('Error saving cart:', e);
+    }
+  },
+
+  addToCart(item, qty = 1) {
+    const cart = this.getCart();
+    const existing = cart.find(c => c.id === item.id);
+    if (existing) {
+      existing.quantity = (existing.quantity || 1) + qty;
+      existing.selected = true;
+    } else {
+      let numPrice = 0;
+      const rawPrice = item.estimatedPriceIdr || item.priceYen || '';
+      const cleaned = rawPrice.replace(/[^0-9]/g, '');
+      if (cleaned) numPrice = parseInt(cleaned, 10);
+
+      cart.push({
+        id: item.id,
+        name: item.name,
+        brand: item.brand || '',
+        price: numPrice,
+        priceFormatted: item.estimatedPriceIdr || item.priceYen || 'Rp 0',
+        imageUrl: item.imageUrl || '/icons/icon-512.png',
+        type: item.focalLength ? 'Lensa' : 'Kamera',
+        quantity: qty,
+        selected: true
+      });
+    }
+    this.saveCart(cart);
+    return cart;
+  },
+
+  toggleCartItemSelection(id) {
+    const cart = this.getCart();
+    const item = cart.find(c => c.id === id);
+    if (item) {
+      item.selected = item.selected === false ? true : false;
+      this.saveCart(cart);
+    }
+    return cart;
+  },
+
+  setAllCartSelection(isSelected) {
+    const cart = this.getCart();
+    cart.forEach(item => {
+      item.selected = !!isSelected;
+    });
+    this.saveCart(cart);
+    return cart;
+  },
+
+  getSelectedCartItems() {
+    const cart = this.getCart();
+    return cart.filter(item => item.selected !== false);
+  },
+
+  getSelectedTotalCount() {
+    const selected = this.getSelectedCartItems();
+    return selected.reduce((sum, item) => sum + (item.quantity || 1), 0);
+  },
+
+  getSelectedTotalPrice() {
+    const selected = this.getSelectedCartItems();
+    return selected.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 1)), 0);
+  },
+
+  updateCartQty(id, delta) {
+    let cart = this.getCart();
+    const item = cart.find(c => c.id === id);
+    if (!item) return cart;
+    item.quantity = (item.quantity || 1) + delta;
+    if (item.quantity <= 0) {
+      cart = cart.filter(c => c.id !== id);
+    }
+    this.saveCart(cart);
+    return cart;
+  },
+
+  removeFromCart(id) {
+    let cart = this.getCart();
+    cart = cart.filter(c => c.id !== id);
+    this.saveCart(cart);
+    return cart;
+  },
+
+  clearCart() {
+    this.saveCart([]);
+  },
+
+  getCartTotalCount() {
+    const cart = this.getCart();
+    return cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+  },
+
+  getCartTotalPrice() {
+    const cart = this.getCart();
+    return cart.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 1)), 0);
+  },
+
+  // --- CATALOG STOCK MANAGEMENT (STOK ACAK 2-5 & BERKURANG SAAT CHECKOUT) ---
+  getStockMap() {
+    try {
+      const data = localStorage.getItem('retrocam_catalog_stocks');
+      return data ? JSON.parse(data) : {};
+    } catch (e) {
+      return {};
+    }
+  },
+
+  saveStockMap(stocks) {
+    try {
+      localStorage.setItem('retrocam_catalog_stocks', JSON.stringify(stocks));
+      window.dispatchEvent(new CustomEvent('stockUpdated', { detail: { stocks } }));
+    } catch (e) {
+      console.error('Error saving stock map:', e);
+    }
+  },
+
+  getProductStock(id) {
+    if (!id) return 0;
+    const stocks = this.getStockMap();
+    if (stocks[id] !== undefined) {
+      return stocks[id];
+    }
+    // Hasilkan stok acak awal 2 - 5 yang konsisten per ID
+    const hash = String(id).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const initialStock = (hash % 4) + 2; // nilai 2, 3, 4, atau 5
+    stocks[id] = initialStock;
+    this.saveStockMap(stocks);
+    return initialStock;
+  },
+
+  reduceProductStock(id, qty = 1) {
+    const current = this.getProductStock(id);
+    const remaining = Math.max(0, current - qty);
+    const stocks = this.getStockMap();
+    stocks[id] = remaining;
+    this.saveStockMap(stocks);
+    return remaining;
+  },
+
+  isOutOfStock(id) {
+    return this.getProductStock(id) <= 0;
   }
 };
 
