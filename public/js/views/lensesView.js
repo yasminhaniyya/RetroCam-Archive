@@ -428,10 +428,10 @@ const LensesView = {
     const visible = lenses.slice(0, count);
     const isAdmin = StorageService.isAdmin();
 
-    // Update Counter di Toolbar dengan Tag Lazy Load
+    // Update Counter di Toolbar
     if (counter) {
       if (count < total) {
-        counter.innerHTML = `Menampilkan <strong>${count}</strong> dari <strong>${total}</strong> lensa <span class="badge-lazy-tag">Lazy Load Aktif</span>`;
+        counter.innerHTML = `Menampilkan <strong>${count}</strong> dari <strong>${total}</strong> lensa`;
       } else {
         counter.innerHTML = `Menampilkan seluruh <strong>${total}</strong> lensa`;
       }
