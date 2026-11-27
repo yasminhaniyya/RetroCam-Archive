@@ -3,7 +3,7 @@
  * Provides robust offline-first caching for static assets & stale-while-revalidate for API
  */
 
-const CACHE_NAME = 'retrocam-v3.8.5';
+const CACHE_NAME = 'retrocam-v3.8.6';
 
 // Assets to pre-cache on service worker installation
 const PRECACHE_ASSETS = [
@@ -45,7 +45,6 @@ self.addEventListener('install', (event) => {
             const response = await fetch(url);
             if (response && response.ok) {
               await cache.put(url, response.clone());
-              // Juga simpan tanpa query params untuk pencarian fleksibel
               const pathOnly = new URL(url, self.location.origin).pathname;
               await cache.put(pathOnly, response);
             }
@@ -119,9 +118,9 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(async () => {
           console.log('[Service Worker] Network failed, serving cached API data for:', requestUrl.pathname);
-          const cachedResponse = await caches.match(event.request, { ignoreSearch: true });
-          if (cachedResponse) {
-            return cachedResponse;
+          const cached = await caches.match(event.request, { ignoreSearch: true });
+          if (cached) {
+            return cached;
           }
           // Fallback JSON if neither network nor cache has it
           return new Response(
@@ -144,13 +143,10 @@ self.addEventListener('fetch', (event) => {
   // Stale-While-Revalidate / Cache-First with ignoreSearch
   event.respondWith(
     (async () => {
-      // Coba cari di cache terlebih dahulu (mengabaikan ?v=...)
       const cached = await getCachedAsset(event.request, requestUrl.pathname);
 
-      // Jika ada di cache dan ini adalah asset static (CSS, JS, gambar, icon),
-      // kembalikan langsung dari cache agar cepat & 100% offline-ready!
+      // Jika ada di cache dan ini asset static (CSS, JS, gambar, icon), kembalikan dari cache
       if (cached && event.request.mode !== 'navigate') {
-        // Update cache di background jika sedang online
         fetch(event.request).then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
             caches.open(CACHE_NAME).then((cache) => {
@@ -162,7 +158,7 @@ self.addEventListener('fetch', (event) => {
         return cached;
       }
 
-      // Jika mode navigasi (buka halaman HTML), coba jaringan dulu, fallback ke cache jika offline
+      // Mode navigasi (HTML) atau asset belum ada di cache: fetch dari jaringan
       try {
         const networkResponse = await fetch(event.request);
         if (networkResponse && networkResponse.status === 200) {

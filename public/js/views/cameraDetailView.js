@@ -76,6 +76,8 @@ const CameraDetailView = {
                 src="${camera.imageUrl}" 
                 alt="${camera.name}" 
                 class="detail-hero-img" 
+                loading="lazy"
+                decoding="async"
                 onerror="this.src='/icons/icon-512.png'"
               />
               <div class="detail-img-overlay-badges">

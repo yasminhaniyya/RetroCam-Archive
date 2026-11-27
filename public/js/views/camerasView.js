@@ -13,8 +13,12 @@ const CamerasView = {
     category: 'all',
     brand: 'all',
     sensor: 'all',
-    sort: 'year-desc'
+    sort: 'year-desc',
+    displayedCount: 12, // Jumlah item awal untuk Lazy Loading
+    batchSize: 12       // Jumlah item per muatan lazy load
   },
+
+  lazyObserver: null,
 
   // Category definitions with clean photo thumbnails
   categoryTypes: [
@@ -275,6 +279,14 @@ const CamerasView = {
     const counter = document.getElementById('camera-results-count');
     if (!grid) return;
 
+    if (this.lazyObserver) {
+      this.lazyObserver.disconnect();
+      this.lazyObserver = null;
+    }
+
+    // Reset displayedCount ke batch awal setiap kali filter atau pencarian berubah
+    this.state.displayedCount = this.state.batchSize;
+
     grid.innerHTML = `
       <div class="loading-state">
         <div class="spinner"></div>
@@ -293,11 +305,8 @@ const CamerasView = {
 
       this.state.cameras = cameras;
 
-      if (counter) {
-        counter.innerHTML = `Menampilkan <strong>${cameras.length}</strong> produk`;
-      }
-
       if (!cameras || cameras.length === 0) {
+        if (counter) counter.innerHTML = `Menampilkan <strong>0</strong> produk`;
         grid.innerHTML = `
           <div class="empty-state-clean col-span-full">
             <p>Tidak ada kamera yang sesuai dengan pilihan kategori.</p>
@@ -322,105 +331,7 @@ const CamerasView = {
         return;
       }
 
-      // Render Clean, Realistic Store Product Cards
-      const isAdmin = StorageService.isAdmin();
-      grid.innerHTML = cameras.map(cam => {
-        const isFav = StorageService.isCameraFavorite(cam.id);
-        return `
-          <article class="clean-product-card" data-id="${cam.id}">
-            <div class="card-thumb-box">
-              <img 
-                src="${cam.imageUrl}" 
-                alt="${cam.name}" 
-                class="card-thumb-img" 
-                loading="lazy"
-                onerror="this.src='/icons/icon-512.png'"
-              />
-              <button 
-                class="card-wishlist-btn ${isFav ? 'is-active' : ''}" 
-                data-fav-id="${cam.id}" 
-                title="${isFav ? 'Hapus dari favorit' : 'Simpan ke favorit'}"
-              >
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="${isFav ? '#0284c7' : 'none'}" stroke="${isFav ? '#0284c7' : '#6b7280'}" stroke-width="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-              </button>
-            </div>
-
-            <div class="card-detail-box">
-              <div class="card-brand-row">
-                <span class="card-brand-label">${cam.brand}</span>
-                <span class="card-year-label">${cam.releaseYear}</span>
-                ${isAdmin ? `
-                  <button type="button" class="btn-clean-edit-item" data-edit-cam-id="${cam.id}" title="Edit data kamera ini">
-                    ✏️ Edit
-                  </button>
-                ` : ''}
-              </div>
-              
-              <h3 class="card-product-name">${cam.name}</h3>
-
-              <div class="card-specs-line">
-                <span>${cam.megapixels} MP</span>
-                <span class="sep">&middot;</span>
-                <span>${cam.sensorType}</span>
-                <span class="sep">&middot;</span>
-                <span>${cam.category || 'Kamera saku'}</span>
-              </div>
-
-              <div class="card-price-row">
-                <div class="price-box">
-                  <span class="price-title">Harga</span>
-                  <span class="price-amount">${cam.estimatedPriceIdr}</span>
-                </div>
-                <span class="view-detail-text">Detail &rarr;</span>
-              </div>
-            </div>
-          </article>
-        `;
-      }).join('');
-
-      // Attach Card Clicks to Detail Navigation (Ketentuan 4)
-      grid.querySelectorAll('.clean-product-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-          if (e.target.closest('.card-wishlist-btn') || e.target.closest('.btn-clean-edit-item')) return;
-          const id = card.getAttribute('data-id');
-          window.location.hash = `#camera/${id}`;
-        });
-      });
-
-      // Attach Admin Edit Buttons
-      grid.querySelectorAll('.btn-clean-edit-item').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const id = btn.getAttribute('data-edit-cam-id');
-          const cam = this.state.cameras.find(c => c.id === id);
-          if (cam && window.openEditCameraModal) {
-            window.openEditCameraModal(cam);
-          }
-        });
-      });
-
-      // Attach Favorite Toggle Buttons
-      grid.querySelectorAll('.card-wishlist-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const id = btn.getAttribute('data-fav-id');
-          const cam = this.state.cameras.find(c => c.id === id);
-          if (cam) {
-            const isAdded = StorageService.toggleFavoriteCamera(cam);
-            btn.classList.toggle('is-active', isAdded);
-            const svg = btn.querySelector('svg');
-            if (svg) {
-              svg.setAttribute('fill', isAdded ? '#0284c7' : 'none');
-              svg.setAttribute('stroke', isAdded ? '#0284c7' : '#6b7280');
-            }
-            if (window.App && window.App.showToast) {
-              window.App.showToast(isAdded ? `Ditambahkan ke Favorit: ${cam.name}` : `Dihapus dari Favorit: ${cam.name}`);
-            }
-          }
-        });
-      });
+      this.renderCardsWithLazyLoad();
 
     } catch (err) {
       grid.innerHTML = `
@@ -430,6 +341,197 @@ const CamerasView = {
         </div>
       `;
     }
+  },
+
+  // Template satu kartu produk kamera dengan Image Lazy Load & Skeleton Shimmer
+  renderCameraCardHtml(cam, isAdmin) {
+    const isFav = StorageService.isCameraFavorite(cam.id);
+    return `
+      <article class="clean-product-card" data-id="${cam.id}">
+        <div class="card-thumb-box">
+          <img 
+            src="${cam.imageUrl}" 
+            alt="${cam.name}" 
+            class="card-thumb-img" 
+            loading="lazy"
+            decoding="async"
+            onload="this.classList.add('is-loaded'); this.parentElement.classList.add('is-loaded');"
+            onerror="this.src='/icons/icon-512.png'; this.classList.add('is-loaded'); this.parentElement.classList.add('is-loaded');"
+          />
+          <button 
+            class="card-wishlist-btn ${isFav ? 'is-active' : ''}" 
+            data-fav-id="${cam.id}" 
+            title="${isFav ? 'Hapus dari favorit' : 'Simpan ke favorit'}"
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="${isFav ? '#0284c7' : 'none'}" stroke="${isFav ? '#0284c7' : '#6b7280'}" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="card-detail-box">
+          <div class="card-brand-row">
+            <span class="card-brand-label">${cam.brand}</span>
+            <span class="card-year-label">${cam.releaseYear}</span>
+            ${isAdmin ? `
+              <button type="button" class="btn-clean-edit-item" data-edit-cam-id="${cam.id}" title="Edit data kamera ini">
+                ✏️ Edit
+              </button>
+            ` : ''}
+          </div>
+          
+          <h3 class="card-product-name">${cam.name}</h3>
+
+          <div class="card-specs-line">
+            <span>${cam.megapixels} MP</span>
+            <span class="sep">&middot;</span>
+            <span>${cam.sensorType}</span>
+            <span class="sep">&middot;</span>
+            <span>${cam.category || 'Kamera saku'}</span>
+          </div>
+
+          <div class="card-price-row">
+            <div class="price-box">
+              <span class="price-title">Harga</span>
+              <span class="price-amount">${cam.estimatedPriceIdr || 'Rp 3.500.000'}</span>
+            </div>
+            <span class="view-detail-text">Detail &rarr;</span>
+          </div>
+        </div>
+      </article>
+    `;
+  },
+
+  // Render kartu kamera secara bertahap (Lazy Loading / Infinite Scroll)
+  renderCardsWithLazyLoad() {
+    const grid = document.getElementById('camera-cards-grid');
+    const counter = document.getElementById('camera-results-count');
+    if (!grid) return;
+
+    if (this.lazyObserver) {
+      this.lazyObserver.disconnect();
+      this.lazyObserver = null;
+    }
+
+    const cameras = this.state.cameras;
+    const total = cameras.length;
+    const count = Math.min(this.state.displayedCount, total);
+    const visible = cameras.slice(0, count);
+    const isAdmin = StorageService.isAdmin();
+
+    // Update Counter di Toolbar dengan Tag Lazy Load
+    if (counter) {
+      if (count < total) {
+        counter.innerHTML = `Menampilkan <strong>${count}</strong> dari <strong>${total}</strong> kamera <span class="badge-lazy-tag">Lazy Load Aktif</span>`;
+      } else {
+        counter.innerHTML = `Menampilkan seluruh <strong>${total}</strong> kamera`;
+      }
+    }
+
+    const cardsHtml = visible.map(cam => this.renderCameraCardHtml(cam, isAdmin)).join('');
+
+    let footerHtml = '';
+    if (count < total) {
+      const remaining = total - count;
+      footerHtml = `
+        <div id="camera-lazy-sentinel" class="lazy-load-sentinel">
+          <div class="lazy-load-indicator">
+            <div class="lazy-spinner"></div>
+            <span>Memuat kamera berikutnya secara otomatis saat digulir...</span>
+          </div>
+          <button type="button" class="btn-load-more" id="btn-load-more-cameras">
+            Muat Lebih Banyak (${remaining} kamera tersisa)
+          </button>
+        </div>
+      `;
+    } else if (total > this.state.batchSize) {
+      footerHtml = `
+        <div class="lazy-load-done">
+          <span>✓ Seluruh ${total} kamera telah berhasil dimuat</span>
+        </div>
+      `;
+    }
+
+    grid.innerHTML = cardsHtml + footerHtml;
+    this.bindCardEvents(grid);
+
+    // Aktifkan Infinite Scroll Otomatis via IntersectionObserver
+    if (count < total) {
+      const sentinel = document.getElementById('camera-lazy-sentinel');
+      const loadBtn = document.getElementById('btn-load-more-cameras');
+
+      if (loadBtn) {
+        loadBtn.onclick = () => {
+          this.loadNextBatch();
+        };
+      }
+
+      if (sentinel && 'IntersectionObserver' in window) {
+        this.lazyObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              this.loadNextBatch();
+            }
+          });
+        }, {
+          rootMargin: '250px 0px',
+          threshold: 0.1
+        });
+        this.lazyObserver.observe(sentinel);
+      }
+    }
+  },
+
+  // Memuat batch berikutnya
+  loadNextBatch() {
+    if (this.state.displayedCount >= this.state.cameras.length) return;
+    this.state.displayedCount += this.state.batchSize;
+    this.renderCardsWithLazyLoad();
+  },
+
+  // Bind Event Clicks untuk Navigasi, Edit, dan Favorit
+  bindCardEvents(grid) {
+    // Navigasi ke Halaman Detail (Ketentuan 4)
+    grid.querySelectorAll('.clean-product-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.card-wishlist-btn') || e.target.closest('.btn-clean-edit-item')) return;
+        const id = card.getAttribute('data-id');
+        window.location.hash = `#camera/${id}`;
+      });
+    });
+
+    // Tombol Edit Mode Admin
+    grid.querySelectorAll('.btn-clean-edit-item').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-edit-cam-id');
+        const cam = this.state.cameras.find(c => c.id === id);
+        if (cam && window.openEditCameraModal) {
+          window.openEditCameraModal(cam);
+        }
+      });
+    });
+
+    // Tombol Toggle Favorit
+    grid.querySelectorAll('.card-wishlist-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-fav-id');
+        const cam = this.state.cameras.find(c => c.id === id);
+        if (cam) {
+          const isAdded = StorageService.toggleFavoriteCamera(cam);
+          btn.classList.toggle('is-active', isAdded);
+          const svg = btn.querySelector('svg');
+          if (svg) {
+            svg.setAttribute('fill', isAdded ? '#0284c7' : 'none');
+            svg.setAttribute('stroke', isAdded ? '#0284c7' : '#6b7280');
+          }
+          if (window.App && window.App.showToast) {
+            window.App.showToast(isAdded ? `Ditambahkan ke Favorit: ${cam.name}` : `Dihapus dari Favorit: ${cam.name}`);
+          }
+        }
+      });
+    });
   }
 };
 

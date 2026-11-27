@@ -13,8 +13,12 @@ const LensesView = {
     category: 'all',
     mount: 'all',
     brand: 'all',
-    sort: 'year-desc'
+    sort: 'year-desc',
+    displayedCount: 12, // Jumlah item awal untuk Lazy Loading
+    batchSize: 12       // Jumlah item per muatan lazy load
   },
+
+  lazyObserver: null,
 
   categoryTypes: [
     { id: 'all', name: 'Semua jenis', img: '/images/lenses/lens-zoom-01.jpg' },
@@ -280,6 +284,14 @@ const LensesView = {
     const counter = document.getElementById('lens-results-count');
     if (!grid) return;
 
+    if (this.lazyObserver) {
+      this.lazyObserver.disconnect();
+      this.lazyObserver = null;
+    }
+
+    // Reset displayedCount ke batch awal setiap kali filter atau pencarian berubah
+    this.state.displayedCount = this.state.batchSize;
+
     grid.innerHTML = `
       <div class="loading-state">
         <div class="spinner"></div>
@@ -298,11 +310,8 @@ const LensesView = {
 
       this.state.lenses = lenses;
 
-      if (counter) {
-        counter.innerHTML = `Menampilkan <strong>${lenses.length}</strong> produk`;
-      }
-
       if (!lenses || lenses.length === 0) {
+        if (counter) counter.innerHTML = `Menampilkan <strong>0</strong> produk`;
         grid.innerHTML = `
           <div class="empty-state-clean col-span-full">
             <p>Tidak ada lensa yang sesuai dengan filter atau kata kunci pencarian.</p>
@@ -331,105 +340,7 @@ const LensesView = {
         return;
       }
 
-      // Render Clean, Realistic Store Product Cards
-      const isAdmin = StorageService.isAdmin();
-      grid.innerHTML = lenses.map(lens => {
-        const isFav = StorageService.isLensFavorite(lens.id);
-        return `
-          <article class="clean-product-card" data-id="${lens.id}">
-            <div class="card-thumb-box">
-              <img 
-                src="${lens.imageUrl}" 
-                alt="${lens.name}" 
-                class="card-thumb-img" 
-                loading="lazy"
-                onerror="this.src='/icons/icon-512.png'"
-              />
-              <button 
-                class="card-wishlist-btn ${isFav ? 'is-active' : ''}" 
-                data-fav-id="${lens.id}" 
-                title="${isFav ? 'Hapus dari favorit' : 'Simpan ke favorit'}"
-              >
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="${isFav ? '#0284c7' : 'none'}" stroke="${isFav ? '#0284c7' : '#6b7280'}" stroke-width="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-              </button>
-            </div>
-
-            <div class="card-detail-box">
-              <div class="card-brand-row">
-                <span class="card-brand-label">${lens.brand} &bull; ${lens.category}</span>
-                <span class="card-year-label">${lens.releaseYear}</span>
-                ${isAdmin ? `
-                  <button type="button" class="btn-clean-edit-item" data-edit-lens-id="${lens.id}" title="Edit data lensa ini">
-                    ✏️ Edit
-                  </button>
-                ` : ''}
-              </div>
-              
-              <h3 class="card-product-name">${lens.name}</h3>
-
-              <div class="card-specs-line">
-                <span>${lens.focalLength}</span>
-                <span class="sep">&middot;</span>
-                <span>${lens.maxAperture}</span>
-                <span class="sep">&middot;</span>
-                <span>${lens.mount}</span>
-              </div>
-
-              <div class="card-price-row">
-                <div class="price-box">
-                  <span class="price-title">Harga</span>
-                  <span class="price-amount">${lens.estimatedPriceIdr}</span>
-                </div>
-                <span class="view-detail-text">Detail &rarr;</span>
-              </div>
-            </div>
-          </article>
-        `;
-      }).join('');
-
-      // Attach Card Clicks to Detail Navigation (Ketentuan 4)
-      grid.querySelectorAll('.clean-product-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-          if (e.target.closest('.card-wishlist-btn') || e.target.closest('.btn-clean-edit-item')) return;
-          const id = card.getAttribute('data-id');
-          window.location.hash = `#lens/${id}`;
-        });
-      });
-
-      // Attach Admin Edit Buttons
-      grid.querySelectorAll('.btn-clean-edit-item').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const id = btn.getAttribute('data-edit-lens-id');
-          const lens = this.state.lenses.find(l => l.id === id);
-          if (lens && window.openEditLensModal) {
-            window.openEditLensModal(lens);
-          }
-        });
-      });
-
-      // Attach Favorite Toggle Buttons
-      grid.querySelectorAll('.card-wishlist-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const id = btn.getAttribute('data-fav-id');
-          const lens = this.state.lenses.find(l => l.id === id);
-          if (lens) {
-            const isAdded = StorageService.toggleFavoriteLens(lens);
-            btn.classList.toggle('is-active', isAdded);
-            const svg = btn.querySelector('svg');
-            if (svg) {
-              svg.setAttribute('fill', isAdded ? '#0284c7' : 'none');
-              svg.setAttribute('stroke', isAdded ? '#0284c7' : '#6b7280');
-            }
-            if (window.App && window.App.showToast) {
-              window.App.showToast(isAdded ? `Ditambahkan ke Favorit: ${lens.name}` : `Dihapus dari Favorit: ${lens.name}`);
-            }
-          }
-        });
-      });
+      this.renderCardsWithLazyLoad();
 
     } catch (err) {
       grid.innerHTML = `
@@ -439,6 +350,197 @@ const LensesView = {
         </div>
       `;
     }
+  },
+
+  // Template satu kartu produk lensa dengan Image Lazy Load & Skeleton Shimmer
+  renderLensCardHtml(lens, isAdmin) {
+    const isFav = StorageService.isLensFavorite(lens.id);
+    return `
+      <article class="clean-product-card" data-id="${lens.id}">
+        <div class="card-thumb-box">
+          <img 
+            src="${lens.imageUrl}" 
+            alt="${lens.name}" 
+            class="card-thumb-img" 
+            loading="lazy"
+            decoding="async"
+            onload="this.classList.add('is-loaded'); this.parentElement.classList.add('is-loaded');"
+            onerror="this.src='/icons/icon-512.png'; this.classList.add('is-loaded'); this.parentElement.classList.add('is-loaded');"
+          />
+          <button 
+            class="card-wishlist-btn ${isFav ? 'is-active' : ''}" 
+            data-fav-id="${lens.id}" 
+            title="${isFav ? 'Hapus dari favorit' : 'Simpan ke favorit'}"
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="${isFav ? '#0284c7' : 'none'}" stroke="${isFav ? '#0284c7' : '#6b7280'}" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="card-detail-box">
+          <div class="card-brand-row">
+            <span class="card-brand-label">${lens.brand} &bull; ${lens.category}</span>
+            <span class="card-year-label">${lens.releaseYear}</span>
+            ${isAdmin ? `
+              <button type="button" class="btn-clean-edit-item" data-edit-lens-id="${lens.id}" title="Edit data lensa ini">
+                ✏️ Edit
+              </button>
+            ` : ''}
+          </div>
+          
+          <h3 class="card-product-name">${lens.name}</h3>
+
+          <div class="card-specs-line">
+            <span>${lens.focalLength}</span>
+            <span class="sep">&middot;</span>
+            <span>${lens.maxAperture}</span>
+            <span class="sep">&middot;</span>
+            <span>${lens.mount}</span>
+          </div>
+
+          <div class="card-price-row">
+            <div class="price-box">
+              <span class="price-title">Harga</span>
+              <span class="price-amount">${lens.estimatedPriceIdr || 'Rp 5.500.000'}</span>
+            </div>
+            <span class="view-detail-text">Detail &rarr;</span>
+          </div>
+        </div>
+      </article>
+    `;
+  },
+
+  // Render kartu lensa secara bertahap (Lazy Loading / Infinite Scroll)
+  renderCardsWithLazyLoad() {
+    const grid = document.getElementById('lens-cards-grid');
+    const counter = document.getElementById('lens-results-count');
+    if (!grid) return;
+
+    if (this.lazyObserver) {
+      this.lazyObserver.disconnect();
+      this.lazyObserver = null;
+    }
+
+    const lenses = this.state.lenses;
+    const total = lenses.length;
+    const count = Math.min(this.state.displayedCount, total);
+    const visible = lenses.slice(0, count);
+    const isAdmin = StorageService.isAdmin();
+
+    // Update Counter di Toolbar dengan Tag Lazy Load
+    if (counter) {
+      if (count < total) {
+        counter.innerHTML = `Menampilkan <strong>${count}</strong> dari <strong>${total}</strong> lensa <span class="badge-lazy-tag">Lazy Load Aktif</span>`;
+      } else {
+        counter.innerHTML = `Menampilkan seluruh <strong>${total}</strong> lensa`;
+      }
+    }
+
+    const cardsHtml = visible.map(lens => this.renderLensCardHtml(lens, isAdmin)).join('');
+
+    let footerHtml = '';
+    if (count < total) {
+      const remaining = total - count;
+      footerHtml = `
+        <div id="lens-lazy-sentinel" class="lazy-load-sentinel">
+          <div class="lazy-load-indicator">
+            <div class="lazy-spinner"></div>
+            <span>Memuat lensa berikutnya secara otomatis saat digulir...</span>
+          </div>
+          <button type="button" class="btn-load-more" id="btn-load-more-lenses">
+            Muat Lebih Banyak (${remaining} lensa tersisa)
+          </button>
+        </div>
+      `;
+    } else if (total > this.state.batchSize) {
+      footerHtml = `
+        <div class="lazy-load-done">
+          <span>✓ Seluruh ${total} lensa telah berhasil dimuat</span>
+        </div>
+      `;
+    }
+
+    grid.innerHTML = cardsHtml + footerHtml;
+    this.bindCardEvents(grid);
+
+    // Aktifkan Infinite Scroll Otomatis via IntersectionObserver
+    if (count < total) {
+      const sentinel = document.getElementById('lens-lazy-sentinel');
+      const loadBtn = document.getElementById('btn-load-more-lenses');
+
+      if (loadBtn) {
+        loadBtn.onclick = () => {
+          this.loadNextBatch();
+        };
+      }
+
+      if (sentinel && 'IntersectionObserver' in window) {
+        this.lazyObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              this.loadNextBatch();
+            }
+          });
+        }, {
+          rootMargin: '250px 0px',
+          threshold: 0.1
+        });
+        this.lazyObserver.observe(sentinel);
+      }
+    }
+  },
+
+  // Memuat batch berikutnya
+  loadNextBatch() {
+    if (this.state.displayedCount >= this.state.lenses.length) return;
+    this.state.displayedCount += this.state.batchSize;
+    this.renderCardsWithLazyLoad();
+  },
+
+  // Bind Event Clicks untuk Navigasi, Edit, dan Favorit
+  bindCardEvents(grid) {
+    // Navigasi ke Halaman Detail (Ketentuan 4)
+    grid.querySelectorAll('.clean-product-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.card-wishlist-btn') || e.target.closest('.btn-clean-edit-item')) return;
+        const id = card.getAttribute('data-id');
+        window.location.hash = `#lens/${id}`;
+      });
+    });
+
+    // Tombol Edit Mode Admin
+    grid.querySelectorAll('.btn-clean-edit-item').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-edit-lens-id');
+        const lens = this.state.lenses.find(l => l.id === id);
+        if (lens && window.openEditLensModal) {
+          window.openEditLensModal(lens);
+        }
+      });
+    });
+
+    // Tombol Toggle Favorit
+    grid.querySelectorAll('.card-wishlist-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-fav-id');
+        const lens = this.state.lenses.find(l => l.id === id);
+        if (lens) {
+          const isAdded = StorageService.toggleFavoriteLens(lens);
+          btn.classList.toggle('is-active', isAdded);
+          const svg = btn.querySelector('svg');
+          if (svg) {
+            svg.setAttribute('fill', isAdded ? '#0284c7' : 'none');
+            svg.setAttribute('stroke', isAdded ? '#0284c7' : '#6b7280');
+          }
+          if (window.App && window.App.showToast) {
+            window.App.showToast(isAdded ? `Ditambahkan ke Favorit: ${lens.name}` : `Dihapus dari Favorit: ${lens.name}`);
+          }
+        }
+      });
+    });
   }
 };
 

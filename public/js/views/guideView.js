@@ -68,7 +68,9 @@ const GuideView = {
                 alt="${guide.title}" 
                 class="guide-cover-img" 
                 loading="lazy"
-                onerror="this.src='/icons/icon-512.png'"
+                decoding="async"
+                onload="this.classList.add('is-loaded')"
+                onerror="this.src='/icons/icon-512.png'; this.classList.add('is-loaded')"
               />
             </div>
 
